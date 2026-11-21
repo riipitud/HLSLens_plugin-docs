@@ -474,10 +474,7 @@ figcaption {
 }
 .compare-label.l { left: 12px; }
 .compare-label.r { right: 12px; }
-/* hide a label once the divider reaches it */
-.compare[style*="--pos: 0%"] .compare-label.l,
-.compare[style*="--pos: 1%"] .compare-label.l,
-.compare[style*="--pos: 2%"] .compare-label.l { opacity: 0; }
+.compare-label.is-covered { opacity: 0; }
 
 .compare-handle {
   position: absolute;
@@ -520,7 +517,7 @@ figcaption {
 .compare-hint {
   position: absolute;
   left: 50%;
-  bottom: 12px;
+  top: 12px;
   transform: translateX(-50%);
   padding: 3px 12px;
   border-radius: 999px;
@@ -554,6 +551,60 @@ figcaption {
   .compare-label { top: 8px; font-size: 0.68rem; padding: 2px 8px; }
   .compare-label.l { left: 8px; }
   .compare-label.r { right: 8px; }
+}
+
+/* ---------- Zoom box ---------- */
+/* Added by figures.js to any <figure data-zoom="x y w">. Minimal on purpose:
+   thin white outlines, hairline connectors, no fills. */
+
+.zoom-stage { position: relative; overflow: hidden; border-radius: 8px; line-height: 0; }
+.zoom-stage img { display: block; width: 100%; border-radius: 0; }
+
+.zoom-region,
+.zoom-box {
+  position: absolute;
+  pointer-events: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.zoom-region { box-sizing: border-box; }
+.zoom-box {
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.zoom-layer { position: absolute; inset: 0; overflow: hidden; }
+.zoom-layer img,
+.compare-stage .zoom-layer img {
+  position: absolute;
+  height: auto;
+  max-width: none;
+  border-radius: 0;
+}
+.zoom-layer.zoom-right { clip-path: inset(0 0 0 50%); }
+.zoom-split {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  margin-left: -0.75px;
+  background: rgba(255, 255, 255, 0.92);
+}
+.zoom-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.zoom-lines line {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.6));
 }
 
 /* ---------- Bloom pipeline ---------- */
