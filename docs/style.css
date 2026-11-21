@@ -1,26 +1,42 @@
 /* HLSLens documentation
    Colours come from the logo and promo art:
-   ink #0c0b0e, gold #efc878, cream #ffeec4, violet #a99bff */
+   ink #0c0b0e, gold #efc878, cream #ffeec4, violet #a99bff.
+
+   Colour roles (warm base, one cool complement):
+   - Gold / amber   brand accent: rules, headings, table heads, "Q" marks
+   - Violet         the cool complement to gold, kept for links, focus
+                    and the small kicker labels only (softened, not neon)
+   - Rust           problems and warnings
+   - Teal           fixes / solutions (bluer than plain green, so it stays
+                    clear on the warm cream page and pairs with the violet)
+   Neutrals are slightly warm so they sit with the gold instead of fighting it.
+   Every text colour is at least 4.5:1 on the background it is used on. */
 
 :root {
+  color-scheme: light dark;
+
   --ink: #0c0b0e;
   --gold: #efc878;
   --cream: #ffeec4;
 
-  --bg: #faf8f5;
-  --surface: #f2efe9;
-  --text: #1c1a20;
-  --muted: #5f5a68;
-  --rule: #e2ddd5;
-  --link: #5b45d6;
-  --label: #5b45d6;
-  --gold-text: #8a6414;
-  --warn: #c4502b;
-  --warn-bg: #fbece6;
-  --ok: #1f7a54;
-  --ok-bg: #e7f4ed;
-  --q-bg: #eeebff;
-  --gold-bg: #fbf3df;
+  --bg: #fbf9f5;
+  --surface: #f3efe7;
+  --surface-2: #ebe5da;
+  --text: #1f1c19;
+  --muted: #5e5750;
+  --rule: #e3ddd2;
+  --accent: #d4a24a;          /* decorative gold: borders, bars */
+  --gold-text: #7f5a12;       /* gold that is safe for text */
+  --gold-bg: #f8efdb;
+  --link: #4c3fb0;
+  --label: #5a4bb8;
+  --link-bg: #efedf8;
+  --warn: #a83f22;
+  --warn-strong: #c1502e;     /* rust for borders */
+  --warn-bg: #f9ece5;
+  --ok: #1d6b62;
+  --ok-strong: #2a8a7e;
+  --ok-bg: #e8f2f0;
 
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -28,20 +44,24 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0c0b0e;
-    --surface: #16141a;
-    --text: #e9e6ee;
-    --muted: #a19bab;
-    --rule: #26232c;
-    --link: #a99bff;
-    --label: #a99bff;
-    --gold-text: #efc878;
-    --warn: #f08a5d;
-    --warn-bg: #2a1a14;
-    --ok: #6fd1a0;
-    --ok-bg: #12241b;
-    --q-bg: #1d1a2e;
-    --gold-bg: #231d10;
+    --bg: #0e0d10;
+    --surface: #17151a;
+    --surface-2: #201d23;
+    --text: #ece8e2;
+    --muted: #a59f98;
+    --rule: #2b2730;
+    --accent: #c99a45;
+    --gold-text: #ebc477;
+    --gold-bg: #221c12;
+    --link: #b3aaf0;
+    --label: #aea4ea;
+    --link-bg: #1c1a28;
+    --warn: #ef9b7c;
+    --warn-strong: #d9724f;
+    --warn-bg: #261813;
+    --ok: #82cbbd;
+    --ok-strong: #4fa596;
+    --ok-bg: #11201e;
   }
 }
 
@@ -180,7 +200,7 @@ h1 { margin: 4px 0 20px; font-size: 2.2rem; letter-spacing: -0.015em; }
 h2 {
   margin: 56px 0 16px;
   padding-left: 14px;
-  border-left: 4px solid var(--gold);
+  border-left: 4px solid var(--accent);
   font-size: 1.45rem;
   scroll-margin-top: 24px;
 }
@@ -226,7 +246,7 @@ th, td {
 }
 
 th {
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 2px solid var(--accent);
   color: var(--gold-text);
   font-size: 0.75rem;
   font-weight: 600;
@@ -243,7 +263,7 @@ td:first-child { font-weight: 600; }
   margin: 24px 0;
   padding: 14px 18px;
   border-radius: 6px;
-  border-left: 4px solid var(--gold);
+  border-left: 4px solid var(--accent);
   background: var(--gold-bg);
 }
 .glance dl {
@@ -281,32 +301,37 @@ td:first-child { font-weight: 600; }
   text-transform: uppercase;
 }
 
-.callout.tip { border-color: var(--link); background: var(--q-bg); }
-.callout.tip .callout-title { color: var(--link); }
-.callout.warning { border-color: var(--warn); background: var(--warn-bg); }
+.callout.note { border-color: var(--muted); }
+.callout.note .callout-title { color: var(--muted); }
+.callout.tip { border-color: var(--label); background: var(--link-bg); }
+.callout.tip .callout-title { color: var(--label); }
+.callout.warning { border-color: var(--warn-strong); background: var(--warn-bg); }
 .callout.warning .callout-title { color: var(--warn); }
-.callout.performance { border-color: var(--gold-text); background: var(--gold-bg); }
+.callout.performance { border-color: var(--accent); background: var(--gold-bg); }
 .callout.performance .callout-title { color: var(--gold-text); }
 
 /* Collapsible block that isn't a FAQ (e.g. advanced settings) */
 .callout details { margin: 0; border: 0; border-radius: 0; background: none; }
 .callout details > :not(summary), .callout details[open] > summary + * { padding: 0; background: none; border: 0; }
 .callout summary { padding-left: 0; }
+.callout summary:hover { background: none; }
 .callout summary::before, .callout details > p:first-of-type::before { content: none; }
 
 /* ---------- FAQ / collapsibles ---------- */
-/* Every <details> is a card. Questions get violet "Q"/"A" markers,
-   problems (.problems) get a red "Problem" tag and a green "Fix" panel. */
+/* Every <details> is a card. The question / problem is the shaded header;
+   the answer / fix sits on the plain page colour underneath, so the two
+   read as separate blocks without loud colours.
+   Questions: gold "Q" tag, quiet grey "A" tag.
+   Problems (.problems): rust "Problem" tag and edge, teal "Fix" tag. */
 
 details {
   margin: 0 0 10px;
   border: 1px solid var(--rule);
-  border-left: 4px solid var(--label);
+  border-left: 4px solid var(--accent);
   border-radius: 8px;
-  background: var(--surface);
+  background: var(--bg);
   overflow: hidden;
 }
-details[open] { border-color: var(--label); }
 
 summary {
   position: relative;
@@ -314,12 +339,14 @@ summary {
   align-items: baseline;
   gap: 12px;
   padding: 13px 44px 13px 16px;
+  background: var(--surface);
+  color: var(--text);
   font-weight: 600;
   cursor: pointer;
   list-style: none;
 }
 summary::-webkit-details-marker { display: none; }
-summary:hover { background: var(--q-bg); }
+summary:hover { background: var(--surface-2); }
 summary:focus-visible { outline: 2px solid var(--link); outline-offset: -2px; }
 
 summary::before {
@@ -328,8 +355,8 @@ summary::before {
   min-width: 1.6em;
   padding: 0 6px;
   border-radius: 4px;
-  background: var(--q-bg);
-  color: var(--label);
+  background: var(--gold-bg);
+  color: var(--gold-text);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -340,7 +367,7 @@ summary::after {
   position: absolute;
   right: 16px;
   top: 9px;
-  color: var(--label);
+  color: var(--muted);
   font-size: 1.4rem;
   font-weight: 400;
   line-height: 1.4;
@@ -349,8 +376,8 @@ details[open] summary::after { content: "\2212"; }
 
 /* answer / solution body */
 details > :not(summary) { margin-left: 0; margin-right: 0; padding: 0 18px 0 54px; }
-details[open] > summary + * { padding-top: 14px; border-top: 1px solid var(--rule); background: var(--bg); }
-details[open] > :not(summary) { background: var(--bg); }
+details[open] > summary { border-bottom: 1px solid var(--rule); }
+details[open] > summary + * { padding-top: 14px; }
 details > *:last-child { margin-bottom: 0; padding-bottom: 16px; }
 details > pre, details > .table-wrap { margin-left: 54px; margin-right: 18px; padding-left: 16px; padding-right: 16px; }
 details > p:first-of-type::before {
@@ -359,46 +386,41 @@ details > p:first-of-type::before {
   margin-left: -38px;
   padding: 0 6px;
   min-width: 1.6em;
+  border: 1px solid var(--rule);
   border-radius: 4px;
-  background: var(--gold-bg);
-  color: var(--gold-text);
+  color: var(--muted);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-align: center;
-  line-height: 1.65;
+  line-height: 1.5;
 }
 details > p:first-of-type { position: relative; }
 
 /* Troubleshooting: problem vs. solution */
-.problems details { border-left-color: var(--warn); }
-.problems details[open] { border-color: var(--warn); }
-.problems summary:hover { background: var(--warn-bg); }
+.problems details { border-left-color: var(--warn-strong); }
+.problems summary { background: var(--warn-bg); }
+.problems summary:hover { background: var(--surface-2); }
 .problems summary::before {
   content: "Problem";
-  background: var(--warn-bg);
+  background: none;
+  border: 1px solid currentColor;
   color: var(--warn);
   text-transform: uppercase;
-  padding: 1px 8px;
+  padding: 0 7px;
   min-width: 6.2em;
 }
-.problems summary::after { color: var(--warn); }
-.problems details[open] { background: var(--ok-bg); }
-.problems details[open] > summary { background: var(--warn-bg); }
-.problems details pre { border-radius: 0; background: var(--bg); margin-bottom: 16px; }
-.problems details > *:not(summary) { background: var(--ok-bg) !important; border-top: 0 !important; }
-.problems details[open] > summary + * { border-top: 1px solid var(--ok) !important; }
 .problems details > p:first-of-type::before {
   content: "Fix";
-  background: var(--ok);
-  color: var(--bg);
+  border-color: currentColor;
+  background: var(--ok-bg);
+  color: var(--ok);
   text-transform: uppercase;
   min-width: 3.4em;
-  margin-left: -56px;
+  margin-left: -60px;
 }
 .problems details > :not(summary) { padding-left: 74px; }
-.problems details > pre, .problems details > .table-wrap { margin-left: 0; margin-right: 0; padding-left: 74px; }
-.problems details code { background: var(--bg); }
+.problems details > pre, .problems details > .table-wrap { margin-left: 74px; padding-left: 16px; }
 
 .section-note { color: var(--muted); font-size: 0.92rem; margin-top: -4px; }
 
@@ -491,10 +513,10 @@ figcaption {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 28px;                    /* the whole image is draggable, so the grip can stay small */
-  height: 28px;
-  margin: -14px 0 0 -14px;
-  border: 1.5px solid var(--gold);
+  width: 44px;                    /* comfortable touch target */
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 2px solid var(--gold);
   border-radius: 50%;
   background: var(--ink);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -507,11 +529,11 @@ figcaption {
   top: 50%;
   width: 0;
   height: 0;
-  margin-top: -4px;
-  border: 4px solid transparent;
+  margin-top: -6px;
+  border: 6px solid transparent;
 }
-.compare-grip::before { left: 5px; border-right-color: var(--gold); border-left-width: 0; }
-.compare-grip::after { right: 5px; border-left-color: var(--gold); border-right-width: 0; }
+.compare-grip::before { left: 6px; border-right-color: var(--gold); border-left-width: 0; }
+.compare-grip::after { right: 6px; border-left-color: var(--gold); border-right-width: 0; }
 .compare.is-dragging .compare-grip { transform: scale(1.12); }
 
 .compare-hint {
@@ -553,6 +575,60 @@ figcaption {
   .compare-label.r { right: 8px; }
 }
 
+/* ---------- Zoom box ---------- */
+/* Added by figures.js to any <figure data-zoom="x y w">. Minimal on purpose:
+   thin white outlines, hairline connectors, no fills. */
+
+.zoom-stage { position: relative; overflow: hidden; border-radius: 8px; line-height: 0; }
+.zoom-stage img { display: block; width: 100%; border-radius: 0; }
+
+.zoom-region,
+.zoom-box {
+  position: absolute;
+  pointer-events: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.zoom-region { box-sizing: border-box; }
+.zoom-box {
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.zoom-layer { position: absolute; inset: 0; overflow: hidden; }
+.zoom-layer img,
+.compare-stage .zoom-layer img {
+  position: absolute;
+  height: auto;
+  max-width: none;
+  border-radius: 0;
+}
+.zoom-layer.zoom-right { clip-path: inset(0 0 0 50%); }
+.zoom-split {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  margin-left: -0.75px;
+  background: rgba(255, 255, 255, 0.92);
+}
+.zoom-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.zoom-lines line {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.6));
+}
+
 /* ---------- Bloom pipeline ---------- */
 
 .steps {
@@ -564,7 +640,7 @@ figcaption {
 }
 .steps > div {
   padding: 12px 14px;
-  border-top: 2px solid var(--gold-text);
+  border-top: 2px solid var(--accent);
   background: var(--surface);
   font-size: 0.88rem;
   color: var(--muted);
