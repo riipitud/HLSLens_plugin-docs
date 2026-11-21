@@ -123,18 +123,12 @@
   <img src="assets/images/tonemapper-aces-vs-perceptual.webp" alt="The same room with the ACES and the Perceptual tonemapper. ACES pulls warm sunlight toward yellow, Perceptual keeps its hue.">
   <figcaption>The same scene and lights. ACES pulls warm sunlight toward yellow. Perceptual keeps its hue.</figcaption>
 </figure>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/tonemapper/aces-2.png -->
-  <img src="assets/placeholder.svg" alt="ACES tonemapper">
-  <figcaption>ACES tonemapper</figcaption>
+<figure class="compare">
+  <!-- Replace both with your own screenshots (same size and camera) -->
+  <img data-label="ACES" src="assets/placeholder.svg" alt="The scene with the ACES tonemapper">
+  <img data-label="Perceptual" src="assets/placeholder.svg" alt="The same scene with the Perceptual tonemapper">
+  <figcaption>Drag the slider to compare ACES (left) with Perceptual (right).</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/tonemapper/perceptual-2.png -->
-  <img src="assets/placeholder.svg" alt="Perceptual tonemapper">
-  <figcaption>Perceptual tonemapper</figcaption>
-</figure>
-</div>
 <aside class="callout tip">
 <p class="callout-title">Tip</p>
 <p>Emissive lights now show their true color, so you will most likely need to adjust the color of some lights in your scene after switching.</p>
@@ -517,5 +511,6 @@ Tints, the 12 color adjustments and the black and white points are applied. Colo
       </nav>
     </main>
   </div>
+<script src="compare.js" defer></script>
 </body>
 </html>
