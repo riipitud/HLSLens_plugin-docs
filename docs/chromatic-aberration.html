@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chromatic aberration · HLSLens documentation</title>
+  <meta name="description" content="Basic and Spectral chromatic aberration, fringe controls and depth masking.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html" aria-current="page">Chromatic aberration</a>
+          <ul class="on-page">
+            <li><a href="#basic-and-spectral">Basic and Spectral</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="#depth-masking">Depth masking</a></li>
+          </ul>
+        </li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Chromatic aberration</h1>
+
+<p>Chromatic aberration is the colored fringing you see near the edges of a photo. A real lens bends each color of light by a slightly different amount, so red, green and blue don't land in exactly the same place. You get thin colored edges around bright and high-contrast things, and they get stronger toward the corners.</p>
+<p>HLSLens recreates that with a lot more control over the look, and it can limit the effect to a distance range so only the background fringes.</p>
+<p>Bloom and halation are added from a separate texture, so the glow itself doesn't get a fringe. Bright lights fringe at their real brightness.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd>The Chromatic aberration category on the volume</dd>
+<dt>Default</dt>
+<dd>Off. Raise Chroma Intensity above 0 to turn it on.</dd>
+<dt>Cost</dt>
+<dd>Basic is cheap. Spectral costs a bit more, and depth masking adds a small extra pass.</dd>
+</dl>
+</div>
+<h2 id="basic-and-spectral">Basic and Spectral</h2>
+<p><strong>Spectral</strong> is the default and it's HLSLens' own mode. The colors blend into smooth, continuous fringes, more like a rainbow smear than three copies of the image. The stronger the fringe, the more it's spread out, so strong aberration also looks softer. It looks a lot closer to a real lens.</p>
+<p><strong>Basic</strong> is the engine's familiar aberration. Red and blue are pushed apart and green stays where it is, so you get sharp, separate color edges. It's the cheapest option.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/chromatic-aberration/basic.png -->
+  <img src="assets/placeholder.svg" alt="Basic chromatic aberration">
+  <figcaption>Basic</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/chromatic-aberration/spectral.png -->
+  <img src="assets/placeholder.svg" alt="Spectral chromatic aberration">
+  <figcaption>Spectral</figcaption>
+</figure>
+</div>
+<h2 id="settings">Settings</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chroma Mode</td>
+<td>Spectral or Basic.</td>
+<td>Spectral</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Chroma Intensity</td>
+<td>How far the colors are pushed apart. <code>0</code> is off. Negative values swap the fringe colors.</td>
+<td>0</td>
+<td>−10 to 10</td>
+</tr>
+<tr>
+<td>Chroma Fringe Balance</td>
+<td>Which colors the fringe has. <code>0</code> is red and blue, <code>0.5</code> red and cyan, <code>1</code> purple and green.</td>
+<td>0</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Distance Falloff Exponent</td>
+<td>How the fringe grows from the center toward the corners. <code>1</code> grows evenly, like a real lens. Higher values keep the center clean longer and push the effect out to the edges.</td>
+<td>2</td>
+<td>1 to 4</td>
+</tr>
+<tr>
+<td>Chroma Anamorphic Ratio</td>
+<td>Stretches the fringes. Above <code>1</code> gives stronger horizontal fringes, below <code>1</code> stronger vertical ones.</td>
+<td>1</td>
+<td>0.5 to 2</td>
+</tr>
+</tbody>
+</table></div>
+<p>The center of the screen always stays clean, the effect fades out right around it.</p>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>Try an Anamorphic Ratio above 1. The fringes stretch sideways, which gives a cinema-lens look and makes the effect feel a bit more unique.</p>
+</aside>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/chromatic-aberration/anamorphic-1.png -->
+  <img src="assets/placeholder.svg" alt="Anamorphic Ratio 1">
+  <figcaption>Anamorphic Ratio 1</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/chromatic-aberration/anamorphic-2.png -->
+  <img src="assets/placeholder.svg" alt="Anamorphic Ratio 2">
+  <figcaption>Anamorphic Ratio 2</figcaption>
+</figure>
+</div>
+<h2 id="depth-masking">Depth masking</h2>
+<p>You can limit the effect to a distance range from the camera, so for example only the background gets fringing and the foreground stays clean. Turn on <strong>Use Depth</strong> in the Chroma Depth group. It needs an extra depth pass each frame, which costs a little.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use Depth</td>
+<td>Turns depth masking on.</td>
+<td>Off</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Start Depth</td>
+<td>Where the effect starts fading in, in meters. Everything closer is untouched.</td>
+<td>8</td>
+<td>0 to 2000</td>
+</tr>
+<tr>
+<td>Depth Range</td>
+<td>How many meters past Start Depth it takes to reach full strength. Small values give a sharp line, large values a long fade.</td>
+<td>15</td>
+<td>1 to 2000</td>
+</tr>
+<tr>
+<td>Depth Max Distance</td>
+<td>Distance in meters where the effect fades out again. <code>0</code> means no far limit.</td>
+<td>0</td>
+<td>0 to 15000</td>
+</tr>
+</tbody>
+</table></div>
+<p>With the defaults, the fringe starts at 8 meters and is at full strength from 23 meters on.</p>
+<figure>
+  <!-- Replace with: assets/images/chromatic-aberration/depth-background.png -->
+  <img src="assets/placeholder.svg" alt="Chromatic aberration applied only to the background">
+  <figcaption>Chromatic aberration on the background only.</figcaption>
+</figure>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>The sky counts as infinitely far away, so with depth masking on it gets the full effect. Set Depth Max Distance if you want a clean sky.</p>
+</aside>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>Depth is checked at the pixel being drawn, so a bit of color from a near object can still leak into a background fringe right next to its edge.</p>
+</aside>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="halation.html"><span>Previous</span>Halation</a>
+      <a class="next" href="film-grain.html"><span>Next</span>Film grain</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Troubleshooting · HLSLens documentation</title>
+  <meta name="description" content="Fixes for common HLSLens problems and answers to common questions.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html" aria-current="page">Troubleshooting</a>
+          <ul class="on-page">
+            <li><a href="#questions">Questions</a></li>
+            <li><a href="#problems">Problems</a></li>
+          </ul>
+        </li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Reference</p>
+      <h1>Troubleshooting</h1>
+
+<p>Fixes for the problems people run into most, plus a few general questions. Each effect page also has its own Common questions section.</p>
+<h2 id="questions">Questions</h2>
+<details>
+<summary>Does HLSLens work in multiplayer projects?</summary>
+<p>Yes, there's no special setup for either. The only exception is the <a href="vignette.html#damage-indicators">damage indicator</a>, which is singleplayer only for now.</p>
+</details>
+<details>
+<summary>Does HLSLens change motion blur or depth of field?</summary>
+<p>No. Those are left exactly as the engine does them.</p>
+</details>
+<details>
+<summary>Does HLSLens modify engine files?</summary>
+<p>No. The plugin doesn't delete or modify any engine files.</p>
+</details>
+<h2 id="problems">Problems</h2>
+<details>
+<summary>My scene looks distorted or oversaturated.</summary>
+<p>Make sure your level has an <strong>Advanced Post Process Volume</strong> and that the camera is inside it, or that it's set to Infinite Extent (Unbound). Without one, the custom effects have nothing to read their settings from.</p>
+</details>
+<details>
+<summary>The image looks wrong and I removed things from Blendables.</summary>
+<p>A new volume has a material called <code>M_EnginePPDisabler</code> in its <strong>Blendables</strong> list. It's part of how HLSLens takes over from the engine's post-processing. If it's missing, add it back from the HLSLens plugin content (<code>HLSLens/Materials</code>).</p>
+</details>
+<details>
+<summary>The scene looks darker after I turned HLSLens off with r.HLSLens.Enable 0.</summary>
+<p>Also hide or disable your Advanced Post Process Volumes. The engine's post-processing wasn't made for HLSLens' settings, and running both can make the scene darker than it should be.</p>
+</details>
+<details>
+<summary>Changing the exposure compensation doesn't work.</summary>
+<p>First check other plugins and assets, something else might be overriding the exposure. Ultra Dynamic Sky does this by default, for example. Turn off its <strong>Apply Exposure Settings</strong> option if you want to control the exposure from the volume.</p>
+<p>A quick test: try changing the exposure on the engine's default Post Process Volume. If that doesn't work either, the problem is most likely in your project settings or another asset. Also make sure <strong>Game settings</strong> is enabled if you want the volume to control exposure.</p>
+<p><strong>If that didn't help:</strong> this can also happen in projects that have been upgraded through several engine versions. Open this material from the HLSLens plugin content:</p>
+<p><code>text
+/AdvancedPostProcess/HLSLens/Materials/M_EnginePPDisabler.M_EnginePPDisabler</code></p>
+<p>Enable <strong>Disable Pre Exposure Scale</strong> in the material. The scene gets brighter, so you'll probably have to lower the exposure compensation, but you'll have full control of the exposure. Only do this when you really need it. It isn't the default because most projects don't need it and it takes some extra adjusting.</p>
+</details>
+<details>
+<summary>The screen looks too bright.</summary>
+<p>Lower the <strong>Exposure Compensation</strong>. Also check that the bloom isn't too strong, especially if you changed the bloom Tint to white.</p>
+</details>
+<details>
+<summary>Lights look strange and have a huge glare.</summary>
+<p>Lower the glare intensity in the lens flare profile, or the Glare Intensity multiplier on the volume. If it's mostly the sun, lower <strong>Max Size</strong> (Three Streak) or <strong>Glare Source Clamp</strong> instead. They cap the glare of the brightest lights and leave the rest of the scene alone. See <a href="lens-flares.html#glare">Glare</a>.</p>
+</details>
+<details>
+<summary>The halos around lights are too strong or too weak.</summary>
+<p>Change Halo Intensity in the lens flare profile, or the Halo Intensity multiplier on the volume. Flares Master Intensity changes the halo, ghosts, streak and glare together. See <a href="lens-flares.html#volume-settings">Lens flares</a>.</p>
+</details>
+<details>
+<summary>I switched the tonemapper to Perceptual and now my scene is more saturated.</summary>
+<p>The Perceptual tonemapper works differently from ACES, so expect to adjust a little. Start with the <strong>Saturation Curve</strong> in Color Correction → ChannelA → Perceptual Tonemapper. See <a href="tonemapper.html">Tonemapper</a>.</p>
+</details>
+<details>
+<summary>Some settings disappear when I change other settings.</summary>
+<p>That's on purpose. Settings that don't apply are hidden. For example, the Perceptual tonemapper settings only show when Tonemapper Mode is Perceptual, and ChannelB only shows when a LUT blend mode uses it.</p>
+</details>
+<details>
+<summary>Chromatic aberration makes my screen look blurry.</summary>
+<p>In Spectral mode the fringe is spread into a smooth smear, and the stronger it is, the softer it looks. Lower <strong>Chroma Intensity</strong>, raise <strong>Distance Falloff Exponent</strong> to keep the center of the screen clean, or switch to <strong>Basic</strong> mode for sharp edges. See <a href="chromatic-aberration.html">Chromatic aberration</a>.</p>
+</details>
+<details>
+<summary>I can't see any film grain, or the grain doesn't move.</summary>
+<p>Make sure the grain <strong>Intensity</strong> is above 0, it's off by default. The grain changes at the <strong>Frame Rate</strong> setting (24 by default), so if it looks frozen, check that Frame Rate wasn't set very low. See <a href="film-grain.html">Film grain</a>.</p>
+</details>
+<details>
+<summary>My damage indicators stopped showing.</summary>
+<p>The damage indicators are drawn by the vignette, so they vanish when <strong>Vignette Intensity</strong> is 0. Set it to a tiny value like 0.01 if you don't want a visible vignette. Also check that Vignette Damage Master Intensity is above 0 and that Set Master Visibility wasn't left at 0. See <a href="vignette.html#damage-indicators">Damage indicators</a>.</p>
+</details>
+<details>
+<summary>My texture doesn't work in a setting.</summary>
+<p>Virtual textures don't work with post-processing. The volume warns you when you pick one. Use a regular texture for dirt masks, gradients, grain textures and blend masks.</p>
+</details>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="performance.html"><span>Previous</span>Performance</a>
+      <a class="next" href="gallery.html"><span>Next</span>Gallery</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

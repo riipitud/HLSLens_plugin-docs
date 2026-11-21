@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quick start · HLSLens documentation</title>
+  <meta name="description" content="Add the Advanced Post Process Volume, enable effects and toggle HLSLens at runtime.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html" aria-current="page">Quick start</a>
+          <ul class="on-page">
+            <li><a href="#1-add-the-volume">1. Add the volume</a></li>
+            <li><a href="#2-turn-on-the-effects-you-want">2. Turn on the effects you want</a></li>
+            <li><a href="#3-turn-hlslens-on-or-off-at-runtime">3. Turn HLSLens on or off at runtime</a></li>
+          </ul>
+        </li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Getting started</p>
+      <h1>Quick start</h1>
+
+<p>From a fresh install to a working setup in three steps.</p>
+<h2 id="1-add-the-volume">1. Add the volume</h2>
+<p>Search for <strong>Advanced Post Process Volume</strong> in the Place Actors panel and drag it into your level.</p>
+<p>It works like the engine's own Post Process Volume. You can move it, resize it, stack several and let them overlap. Tick <strong>Infinite Extent (Unbound)</strong> in the Details panel if it should affect the whole level, which is what most people want for their main volume.</p>
+<aside class="callout warning">
+<p class="callout-title">Your level needs an Advanced Post Process Volume</p>
+<p>Without one, the custom effects have nothing to read their settings from, and the scene can look distorted or oversaturated.</p>
+</aside>
+<p>A new volume comes ready to use. It already has the Classic Prime <a href="lens-flares.html#profile-and-volume">lens flare profile</a> and a material called <code>M_EnginePPDisabler</code> in its <strong>Blendables</strong> list. It's part of how HLSLens takes over from the engine's post-processing, so leave it there.</p>
+<h2 id="2-turn-on-the-effects-you-want">2. Turn on the effects you want</h2>
+<p>Everything is set in the volume's Details panel. Setup is the same in singleplayer and multiplayer projects.</p>
+<p>Bloom, lens flares, halation and a light vignette are on from the start. <strong>Film Grain</strong>, <strong>Chromatic Aberration</strong> and <strong>Lens Distortion</strong> are off (intensity 0.0), so raise their intensity to turn them on.</p>
+<aside class="callout note">
+<p class="callout-title">0.0 means off, anything else means on</p>
+<p>At exactly 0.0 an effect doesn't run and costs nothing. Even a tiny value like 0.05 has the full cost of the effect, so set unused effects back to 0.0 rather than just very low.</p>
+</aside>
+<h2 id="3-turn-hlslens-on-or-off-at-runtime">3. Turn HLSLens on or off at runtime</h2>
+<p>You can switch the plugin off and on without restarting the editor, which is handy for before/after comparisons:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r.HLSLens.Enable 0</code></td>
+<td>Turns HLSLens off. Your volumes stay in the level.</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.Enable 1</code></td>
+<td>Turns it back on.</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout warning">
+<p class="callout-title">Hide the volumes too</p>
+<p>When you turn HLSLens off this way, also hide or disable your Advanced Post Process Volumes. The engine's post-processing wasn't made for HLSLens' settings, and running both can make the scene look darker than it should.</p>
+</aside>
+<p>More commands are under <a href="console-variables.html">Console variables</a>. From here, the <a href="lens-flares.html">Lens flares</a> and <a href="bloom.html">Bloom</a> pages are good places to continue.</p>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="installation.html"><span>Previous</span>Installation</a>
+      <a class="next" href="lens-flares.html"><span>Next</span>Lens flares</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

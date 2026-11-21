@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lens flares · HLSLens documentation</title>
+  <meta name="description" content="Procedural lens flares in HLSLens: ghosts, halo, streak, glare and Lens Flare Profiles.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html" aria-current="page">Lens flares</a>
+          <ul class="on-page">
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#profile-and-volume">Profile and volume</a></li>
+            <li><a href="#ghosts">Ghosts</a></li>
+            <li><a href="#halo">Halo</a></li>
+            <li><a href="#streak">Streak</a></li>
+            <li><a href="#glare">Glare</a></li>
+            <li><a href="#presets">Presets</a></li>
+            <li><a href="#volume-settings">Volume settings</a></li>
+            <li><a href="#common-questions">Common questions</a></li>
+          </ul>
+        </li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Lens flares</h1>
+
+<p>A lens flare is what you get when a bright light hits a camera lens. A real lens is a stack of differently shaped glass elements, and some of the light bounces between them before it reaches the sensor. Flares were seen as a defect for a long time and filmmakers tried to avoid them. Today they are a look of their own, and used well they make an image feel more real.</p>
+<p>The flares in HLSLens are procedural. They are not images, sprites or Niagara effects, and you don't place anything in your level. Every frame HLSLens finds the bright pixels on screen and builds the flare out of them. The engine does the same thing, HLSLens just gives you a lot more to work with.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd>The look lives in a <strong>Lens Flare Profile</strong> asset. The volume picks the profile and has master controls under Bloom &amp; Lens Flares → Lens Flares.</dd>
+<dt>Layers</dt>
+<dd>Ghosts, Halo, Streak and Glare</dd>
+<dt>Cost</dt>
+<dd>Depends a little on your scene and on the glare mode. See <a href="performance.html">Performance</a>.</dd>
+</dl>
+</div>
+<h2 id="how-it-works">How it works</h2>
+<p>The flare is drawn from the image itself and added before tonemapping. So anything bright can flare: the sun, headlights, a neon sign, a lit window, a reflection. If the light moves, the flare moves with it, and if it changes color the flare does too.</p>
+<aside class="callout warning">
+<p class="callout-title">Only what is on screen can flare</p>
+<p>A light that is behind the camera or just off the edge of the screen makes no flare. Exposure matters too. The same light can flare in a dark scene and not in a bright one, so you might need to adjust the threshold after changing exposure.</p>
+</aside>
+<p>Flares are an artistic imitation of a lens rather than a simulation of one specific lens, so shape them however your project needs.</p>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/scene.png -->
+  <img src="assets/placeholder.svg" alt="A night scene with HLSLens lens flares">
+  <figcaption>Nothing was placed by hand here. The flares come from the bright signs and windows.</figcaption>
+</figure>
+<h2 id="profile-and-volume">Profile and volume</h2>
+<p>A <strong>Lens Flare Profile</strong> is a data asset that describes one lens: its ghosts, halo, streak and glare. You make one in the Content Browser, or start from the presets that ship with the plugin. A new Advanced Post Process Volume uses the <strong>Classic Prime</strong> profile.</p>
+<p>The volume points to a profile and controls how strong each layer is, without touching the profile itself. That way several levels can share one lens and still be tuned on their own.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>What it looks like</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ghosts">Ghosts</a></td>
+<td>Soft circles, hexagons or ovals lined up across the screen. Copies of the light bouncing inside the lens.</td>
+</tr>
+<tr>
+<td><a href="#halo">Halo</a></td>
+<td>A ring around the center of the screen, like the one a wide-angle lens makes.</td>
+</tr>
+<tr>
+<td><a href="#streak">Streak</a></td>
+<td>A thin horizontal line through the light. The anamorphic cinema look.</td>
+</tr>
+<tr>
+<td><a href="#glare">Glare</a></td>
+<td>The star shape on the light itself, also called sunburst or starburst.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="ghosts">Ghosts</h2>
+<p>Ghosts sit on an imaginary line that runs from the light through the center of the screen. When the light moves, they slide along that line. Each ghost's <strong>Scale</strong> decides where on the line it sits:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Scale</th>
+<th><code>−1</code></th>
+<th><code>0</code></th>
+<th><code>0.5</code></th>
+<th><code>1</code></th>
+<th><code>1.5</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Position</strong></td>
+<td>Opposite side of the screen</td>
+<td>Screen center</td>
+<td>Halfway</td>
+<td>On the light</td>
+<td>Past the light</td>
+</tr>
+</tbody>
+</table></div>
+<p>A profile holds up to <strong>12 ghosts</strong> and each one has its own settings, so you can mix small sharp hexagons with big soft ovals. What you pick really depends on the kind of lens you want to copy.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Color</td>
+<td>Color of the ghost. Alpha is its brightness.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>Where the ghost sits on the line. <code>1</code> is on the light, <code>0</code> the screen center, negative values are on the opposite side.</td>
+<td>0.8</td>
+<td>−4 to 4</td>
+</tr>
+<tr>
+<td>Size</td>
+<td>Size as a fraction of the screen height. At <code>0</code> you get a small copy of the whole screen.</td>
+<td>0.05</td>
+<td>0 to 0.5</td>
+</tr>
+<tr>
+<td>Softness</td>
+<td>How soft the outer edge is. Low is crisp, high is blurry.</td>
+<td>0.35</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Rim Strength</td>
+<td>Brightens the edge of the ghost. <code>0</code> gives a flat disc.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Rim Color</td>
+<td>Color of that edge. Only visible when Rim Strength is above 0.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Blade Count</td>
+<td>Gives the ghost corners, like an aperture. <code>0</code> is round, and more blades get closer to a circle again.</td>
+<td>0</td>
+<td>0 to 16</td>
+</tr>
+<tr>
+<td>Aspect</td>
+<td><code>1</code> is a circle, higher is wider, lower is taller.</td>
+<td>1.0</td>
+<td>0.25 to 6</td>
+</tr>
+<tr>
+<td>Crescent Offset</td>
+<td>Cuts a second disc out of the ghost and leaves a crescent. Negative flips the side. <code>0</code> is off.</td>
+<td>0</td>
+<td>−1.5 to 1.5</td>
+</tr>
+<tr>
+<td>Align To Axis</td>
+<td>Turns the shape so it points along the line to the screen center. Only shown for ghosts with blades or a crescent.</td>
+<td>Off</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<details>
+<summary>Advanced ghost settings</summary>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blade Rotation</td>
+<td>Turns the corners, in degrees.</td>
+<td>0</td>
+<td>0 to 360</td>
+</tr>
+<tr>
+<td>Blade Roundness</td>
+<td>Rounds off the corners. <code>0</code> is sharp.</td>
+<td>0</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Source Radius Min</td>
+<td>The ghost fades out when its light is closer to the screen center than this. <code>0</code> is the center, <code>1</code> the corner.</td>
+<td>0</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Source Radius Max</td>
+<td>The ghost fades out when its light is farther from the center than this. <code>2</code> means off.</td>
+<td>2</td>
+<td>0 to 2</td>
+</tr>
+</tbody>
+</table></div>
+</details>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>With Source Radius Min and Max you can make ghosts that only appear when the light is near the edge of the screen, or only near the center. It's a nice way to make the flare feel alive when the camera moves.</p>
+</aside>
+<p>These apply to all ghosts in the profile at once:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ghost Intensity</td>
+<td>Brightness of all ghosts together.</td>
+<td>0.625</td>
+<td>0 to 5</td>
+</tr>
+<tr>
+<td>Ghost Chroma Shift</td>
+<td>Red/blue fringe on the edges of the ghosts.</td>
+<td>0.015</td>
+<td>0 to 0.1</td>
+</tr>
+<tr>
+<td>Ghost Saturation</td>
+<td><code>1</code> keeps the colors as set on each ghost. Higher is more vivid.</td>
+<td>1.0</td>
+<td>0 to 3</td>
+</tr>
+<tr>
+<td>Ghost Energy Conservation</td>
+<td>Advanced. How much big ghosts dim as they spread out. <code>1</code> is physical, so large ghosts are faint. Lower keeps them as bright as small ones.</td>
+<td>1.0</td>
+<td>0 to 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>When you are designing ghosts, <code>r.HLSLens.LensFlare.GhostDebug</code> shows one ghost at a time. Set it to the ghost's index (0 to 11) and back to <code>-1</code> when you're done.</p>
+<h2 id="halo">Halo</h2>
+<p>The halo is a ring around the center of the screen, drawn from the same bright pixels as the ghosts. It can be big or small, soft or sharp, and it can have corners like an aperture.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Halo Intensity</td>
+<td>Brightness of the ring.</td>
+<td>0.5</td>
+<td>0 to 5</td>
+</tr>
+<tr>
+<td>Halo Width</td>
+<td>Radius of the ring.</td>
+<td>0.6</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Halo Mask</td>
+<td>Fades out the inside of the ring. Higher gives a thinner, sharper ring.</td>
+<td>0.5</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Halo Compression</td>
+<td>Bends the ring toward the center, like a fisheye lens.</td>
+<td>0.65</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Halo Chroma Shift</td>
+<td>Splits the colors slightly at the edge.</td>
+<td>0.015</td>
+<td>0 to 0.1</td>
+</tr>
+<tr>
+<td>Halo Ring Smoothness</td>
+<td>Smears the ring around itself so it looks less like a hard line.</td>
+<td>0.2</td>
+<td>0 to 0.5</td>
+</tr>
+<tr>
+<td>Halo Tint</td>
+<td>Colors the ring.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Halo Softness</td>
+<td>Low gives a thin crisp line, high a milky glow.</td>
+<td>0</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Halo Aspect Ratio</td>
+<td>Higher is taller and narrower, lower is wider and flatter.</td>
+<td>1.0</td>
+<td>0.2 to 3</td>
+</tr>
+</tbody>
+</table></div>
+<details>
+<summary>Advanced halo settings</summary>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Halo Edge Sharpness</td>
+<td>How hard the edge transition is.</td>
+<td>1.0</td>
+<td>0.1 to 4</td>
+</tr>
+<tr>
+<td>Halo Blade Count</td>
+<td>Breaks the circle into flat facets like an aperture. 3 to 6 gives clearly visible facets. <code>0</code> is off.</td>
+<td>0</td>
+<td>0 to 12</td>
+</tr>
+<tr>
+<td>Halo Blade Strength</td>
+<td>How visible those facets are.</td>
+<td>1.0</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Halo Tap Count</td>
+<td>Smooths out sparkle and jagged edges. Each step costs a bit more GPU time.</td>
+<td>1</td>
+<td>1 to 5</td>
+</tr>
+<tr>
+<td>Halo Dither Strength</td>
+<td>Adds a little grain to hide banding in the ring.</td>
+<td>0</td>
+<td>0 to 0.1</td>
+</tr>
+<tr>
+<td>Halo Zoom</td>
+<td>How zoomed in the lights look inside the halo.</td>
+<td>1.0</td>
+<td>0.1 to 3</td>
+</tr>
+</tbody>
+</table></div>
+</details>
+<h2 id="streak">Streak</h2>
+<p>The streak is the thin horizontal line through a bright light that anamorphic lenses are known for. It has a bright core line, a wider band of glow around it and a few faint extra lines, and each part has its own color. So a streak can go from a white center to a blue or orange tail.</p>
+<p>Not every lens has one. Classic Prime and Modern Hex have no streak, while the anamorphic presets are built around it. At Intensity <code>0</code> the streak is skipped completely, so an unused streak costs nothing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Streak Intensity</td>
+<td>Strength of the streak. <code>0</code> turns it off.</td>
+<td>0</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Streak Length</td>
+<td><code>1</code> is about edge to edge for a bright light.</td>
+<td>1.0</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Streak Threshold</td>
+<td>How bright a light must be to get a streak. Without it every bright pixel gets smeared and the frame turns into a colored wash, so raise it until only the real light sources streak.</td>
+<td>4.0</td>
+<td>0 to 50</td>
+</tr>
+<tr>
+<td>Streak Thickness</td>
+<td>Thickness of the line.</td>
+<td>0.5</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Streak Tint</td>
+<td>Color of the far tail.</td>
+<td>Light blue</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Streak Band Intensity</td>
+<td>The wide glow around the line. <code>0</code> is off.</td>
+<td>2.0</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Streak Band Width</td>
+<td>How wide that glow is.</td>
+<td>0.02</td>
+<td>0 to 0.06</td>
+</tr>
+<tr>
+<td>Streak Chromatic Split</td>
+<td>Makes one end of the spectrum reach further. Positive gives blue tails, negative red tails. Small values already do a lot.</td>
+<td>0</td>
+<td>−0.25 to 0.25</td>
+</tr>
+<tr>
+<td>Streak Hot Core</td>
+<td>Turns the center of the streak white while the tails keep their color.</td>
+<td>0</td>
+<td>0 to 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>The advanced streak settings are <strong>Streak Core Tint</strong> and <strong>Streak Band Tint</strong> (colors of the core line and the band), and <strong>Streak Secondary Intensity</strong>, which controls the faint extra lines above and below the main one.</p>
+<h2 id="glare">Glare</h2>
+<p>Glare is the shape that sits on the light itself and makes it feel luminous. It is part of the profile, and the volume has a <strong>Glare Intensity</strong> multiplier on top. There are three glare modes:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Three Streak Glare</th>
+<th>Directional Blur</th>
+<th>Diffraction Starburst</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Look</strong></td>
+<td>A tapered star of three streaks: one upright, two diagonal. They tilt outward and get shorter toward the screen edges.</td>
+<td>The bright parts of the image are smeared in several directions. Big bright objects make wide, soft smears.</td>
+<td>The spiky star a real aperture makes, with rainbow colors along the spikes. Can also do vanes and star filter rays.</td>
+</tr>
+<tr>
+<td><strong>Feel</strong></td>
+<td>Photographic</td>
+<td>More artificial, very adjustable</td>
+<td>Physical, camera-like</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Higher</td>
+<td>Much cheaper</td>
+<td>Not benchmarked yet</td>
+</tr>
+</tbody>
+</table></div>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/lens-flares/glare-three-streak.png -->
+  <img src="assets/placeholder.svg" alt="Three Streak glare">
+  <figcaption>Three Streak Glare</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/glare-directional.png -->
+  <img src="assets/placeholder.svg" alt="Directional Blur glare">
+  <figcaption>Directional Blur</figcaption>
+</figure>
+</div>
+<p>Settings every mode has:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Glare Mode</td>
+<td>Three Streak Glare, Directional Blur or Diffraction Starburst.</td>
+<td>Three Streak Glare</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Glare Intensity</td>
+<td>The main brightness control. It doesn't change the length.</td>
+<td>0.3</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Glare Source Clamp</td>
+<td>Stops extremely bright pixels from making glare so bright it blows out the screen. Lower it if the sun's glare is too strong. <code>0</code> means no clamp.</td>
+<td>60</td>
+<td>0 to 200</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="three-streak-glare">Three Streak Glare</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scale</td>
+<td>Length of each streak. X is the upright one, Y and Z the diagonals. <code>0</code> removes a streak, so <code>(1, 0, 0)</code> leaves only the upright one.</td>
+<td>1, 1, 1</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Max Size</td>
+<td>The longest a streak can get, however bright the light. This is what keeps the sun from making a huge glare.</td>
+<td>0.6</td>
+<td>0.01 to 1</td>
+</tr>
+<tr>
+<td>Glare Divider</td>
+<td>How bright a light must be for a long streak. Higher means only the brightest lights get long streaks. Lower lets weak lights have them too.</td>
+<td>1.0</td>
+<td>0 to 200</td>
+</tr>
+<tr>
+<td>Glare Tint</td>
+<td>Colors the glare. Alpha <code>0</code> hides it. The streaks already fade from white to blue to red, so a tint can remove one end. A pure red tint, for example, leaves a white-to-red streak.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="directional-blur">Directional Blur</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Directions</td>
+<td>Number of streak arms. <code>1</code> gives horizontal anamorphic streaks, <code>2</code> a cross, <code>3</code> a six-point star, <code>4</code> an eight-point star.</td>
+<td>3</td>
+<td>1 to 4</td>
+</tr>
+<tr>
+<td>Rotation (degrees)</td>
+<td>Turns the whole star.</td>
+<td>0</td>
+<td>0 to 360</td>
+</tr>
+<tr>
+<td>Streak Length (Passes)</td>
+<td><code>2</code> reaches about 16 pixels, <code>3</code> about 64 and <code>4</code> about 256. More passes cost more.</td>
+<td>3</td>
+<td>2 to 4</td>
+</tr>
+<tr>
+<td>Streak Falloff</td>
+<td>How fast the streak fades toward the tip. 0.85 is short and tight, 0.99 long and gradual.</td>
+<td>0.87</td>
+<td>0.80 to 0.99</td>
+</tr>
+<tr>
+<td>Tint</td>
+<td>Colors the glare. Alpha scales the brightness.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>Directional Blur can also color the streaks by their distance from the light, which imitates the rainbow split of a real lens:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dispersion Intensity</td>
+<td>How strong the color split is. <code>0</code> is off.</td>
+<td>0.7</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Spectral Gradient</td>
+<td>Optional 1D gradient texture. The left edge is the color at the light, the right edge the color at the tip.</td>
+<td>None</td>
+<td>Texture</td>
+</tr>
+<tr>
+<td>Dispersion Bias</td>
+<td>Advanced. Positive pushes the colors toward the tips and keeps more of the streak white.</td>
+<td>0.2</td>
+<td>−1 to 1</td>
+</tr>
+<tr>
+<td>Dispersion Contrast</td>
+<td>Advanced. Higher gives a sharper switch between colors.</td>
+<td>2.0</td>
+<td>0.5 to 6</td>
+</tr>
+<tr>
+<td>Vignette Intensity</td>
+<td>Advanced. How much the screen edges suppress the glare. This hides glare popping in and out at the edges.</td>
+<td>0.25</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Vignette Radius</td>
+<td>Advanced. Where that suppression starts.</td>
+<td>0.45</td>
+<td>0.1 to 0.5</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout performance">
+<p class="callout-title">Performance</p>
+<p>Directional Blur is much cheaper than Three Streak and has more to tweak. If performance matters a lot, I'd use it. With some tuning it can look quite close to the Three Streak glare.</p>
+</aside>
+<h3 id="diffraction-starburst">Diffraction Starburst</h3>
+<p>This mode makes the star a real camera aperture produces. Every blade edge makes two spikes, so with an even blade count you get as many spikes as blades, and with an odd count twice as many. The Diffraction Star and Star Filter presets use it.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blades</td>
+<td>Number of aperture blades.</td>
+<td>7</td>
+<td>0 to 16</td>
+</tr>
+<tr>
+<td>Blade Roundness</td>
+<td>Rounder blades give weaker spikes.</td>
+<td>0.05</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Vanes</td>
+<td>Thin supports in front of the lens, like in a telescope. Each vane adds two spikes, so <code>4</code> makes a cross. <code>0</code> is off.</td>
+<td>0</td>
+<td>0 to 8</td>
+</tr>
+<tr>
+<td>Star Filter Points</td>
+<td>Long rainbow rays, like a cross-screen filter. 4, 6 and 8 are common. <code>0</code> is off.</td>
+<td>0</td>
+<td>0 to 12</td>
+</tr>
+<tr>
+<td>Star Filter Strength</td>
+<td>Brightness of those rays.</td>
+<td>0.6</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Spike Length</td>
+<td>How far the dim tips of the spikes reach.</td>
+<td>0.5</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Rainbow</td>
+<td>Color along the spikes. <code>0</code> is white, <code>1</code> physical, higher exaggerated.</td>
+<td>1.0</td>
+<td>0 to 3</td>
+</tr>
+<tr>
+<td>Detail</td>
+<td>Dust on the lens. Adds fine detail between the spikes.</td>
+<td>0.3</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Starburst Intensity</td>
+<td>Multiplies Glare Intensity for this mode.</td>
+<td>1.0</td>
+<td>0 to 8</td>
+</tr>
+<tr>
+<td>Core Glow</td>
+<td>The round glow where the spikes meet. <code>0</code> leaves only the spikes.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Size</td>
+<td>Size as a fraction of the screen height.</td>
+<td>0.12</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Max Size</td>
+<td>Upper limit for the size, so the sun can't cover the screen.</td>
+<td>0.45</td>
+<td>0 to 1.5</td>
+</tr>
+<tr>
+<td>Rotation (degrees)</td>
+<td>Turns the starburst.</td>
+<td>0</td>
+<td>0 to 360</td>
+</tr>
+<tr>
+<td>Threshold</td>
+<td>How bright a light must be to get a starburst.</td>
+<td>1.0</td>
+<td>0.001 and up</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Glare Tint</strong> from Three Streak works here as well. The advanced settings are <strong>Blade Rotation</strong>, which turns the spikes; <strong>Star Filter Density</strong> and <strong>Star Filter Rotation</strong> (15° by default), which shape the filter rays; and <strong>Brightness Compression</strong>. That last one decides how much brighter a strong light's starburst is than a weak one's: at <code>0</code> the sun outshines a lamp like it would on a real camera, and at <code>1</code> every light gets the same brightness.</p>
+<p>By default a big bright object, like a window, gets one starburst in its middle. Set <code>r.HLSLens.LensFlare.Starburst.BigSources 0</code> if you only want small lights to have one.</p>
+<h2 id="presets">Presets</h2>
+<p>A profile has a button for each preset. Clicking one resets the profile to that look, and you can change anything from there.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Look</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classic Prime</td>
+<td>Lots of soft colored ghosts. Small bright spots near the light, bigger see-through ones further out, and a halo. No streak.</td>
+</tr>
+<tr>
+<td>Anamorphic Azure</td>
+<td>A blue anamorphic streak with a hot white core, wide blue oval ghosts and a faint halo.</td>
+</tr>
+<tr>
+<td>Anamorphic Amber</td>
+<td>A warm orange streak with amber and teal ovals.</td>
+</tr>
+<tr>
+<td>Sci-Fi Anamorphic</td>
+<td>A strong deep-blue streak with a very white core.</td>
+</tr>
+<tr>
+<td>Modern Hex</td>
+<td>Crisp hexagon ghosts in green, magenta and blue, and a thin faceted ring. No streak.</td>
+</tr>
+<tr>
+<td>Diffraction Star</td>
+<td>Small crisp ghosts and a sun star with extra spikes from vanes and a star filter.</td>
+</tr>
+<tr>
+<td>Star Filter</td>
+<td>Long rainbow rays and a few faint ghosts.</td>
+</tr>
+</tbody>
+</table></div>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-classic-prime.png -->
+  <img src="assets/placeholder.svg" alt="Classic Prime preset">
+  <figcaption>Classic Prime</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-anamorphic-azure.png -->
+  <img src="assets/placeholder.svg" alt="Anamorphic Azure preset">
+  <figcaption>Anamorphic Azure</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-anamorphic-amber.png -->
+  <img src="assets/placeholder.svg" alt="Anamorphic Amber preset">
+  <figcaption>Anamorphic Amber</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-sci-fi-anamorphic.png -->
+  <img src="assets/placeholder.svg" alt="Sci-Fi Anamorphic preset">
+  <figcaption>Sci-Fi Anamorphic</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-modern-hex.png -->
+  <img src="assets/placeholder.svg" alt="Modern Hex preset">
+  <figcaption>Modern Hex</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-diffraction-star.png -->
+  <img src="assets/placeholder.svg" alt="Diffraction Star preset">
+  <figcaption>Diffraction Star</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-flares/preset-star-filter.png -->
+  <img src="assets/placeholder.svg" alt="Star Filter preset">
+  <figcaption>Star Filter</figcaption>
+</figure>
+</div>
+<p>The profile also has a <strong>Lens Flare Quality</strong> setting (advanced). Cinematic uses more expensive GPU work and makes the ghosts sharper. Standard and Performance look quite similar, and Performance is an easy way to save some GPU time.</p>
+<h3 id="blending-between-profiles">Blending between profiles</h3>
+<p>When volumes overlap, HLSLens blends their profiles by the volume weights. Colors and numbers blend smoothly. Things that can't blend, like a ghost's blade count, switch over once the blend passes halfway. Ghosts blend slot by slot, so a ghost that only exists in one profile fades in or out.</p>
+<p>So you can walk from a sunny street with a warm vintage lens into a dark corridor with a cold anamorphic one, and the flare changes gradually.</p>
+<h2 id="volume-settings">Volume settings</h2>
+<p>These are on the Advanced Post Process Volume under <strong>Bloom &amp; Lens Flares → Lens Flares</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master Gradient</td>
+<td>A gradient texture that masks or colors the flare by its distance from the screen center.</td>
+<td>Plugin gradient</td>
+<td>Texture</td>
+</tr>
+<tr>
+<td>Flares Master Intensity</td>
+<td>Brightness of the whole flare effect.</td>
+<td>1.0</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Tint</td>
+<td>Colors the whole flare.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Ghost Intensity</td>
+<td>Multiplies the profile's ghost intensity.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Halo Intensity</td>
+<td>Multiplies the profile's halo intensity.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Streak Intensity</td>
+<td>Multiplies the profile's streak intensity.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Glare Intensity</td>
+<td>Multiplies the profile's glare intensity.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+</tbody>
+</table></div>
+<p>Which pixels are bright enough to flare is decided by the <a href="bloom.html#threshold">threshold</a>, which lens flares share with bloom. By default (<strong>Bloom Only</strong>) the flares have no threshold at all, so even dim lights add a little to them.</p>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>For a different color mood, change the Tint, or make your own gradient and use it as the Master Gradient.</p>
+</aside>
+<h2 id="common-questions">Common questions</h2>
+<details>
+<summary>Do I need to set anything up on my lights?</summary>
+<p>No. The flares are procedural and appear wherever something is bright enough.</p>
+</details>
+<details>
+<summary>Are the flares just images?</summary>
+<p>No. Every ghost, ring and streak is drawn by the shader from your scene.</p>
+</details>
+<details>
+<summary>Why is there no flare?</summary>
+<p>Check that the volume's Flares Master Intensity and the Ghost, Halo, Streak and Glare multipliers are above 0, and that a profile is assigned. If you use a lens flare threshold (Shared or Lens Flare Only), it might be too high. Exposure changes how bright everything is, so try raising it. Also make sure the camera is inside the volume, or that the volume is set to Infinite Extent (Unbound).</p>
+</details>
+<details>
+<summary>My whole screen is covered in color.</summary>
+<p>Raise the Streak Threshold, switch the threshold mode to Shared and raise the level, or lower the intensities.</p>
+</details>
+<details>
+<summary>How is this different from the engine's lens flare?</summary>
+<p>The engine gives you a fixed set of ghosts. In HLSLens you design every ghost yourself, and you also get the halo, streak and glare layers.</p>
+</details>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="quick-start.html"><span>Previous</span>Quick start</a>
+      <a class="next" href="bloom.html"><span>Next</span>Bloom</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

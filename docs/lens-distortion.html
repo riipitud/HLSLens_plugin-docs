@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lens distortion · HLSLens documentation</title>
+  <meta name="description" content="Barrel and pincushion lens distortion in HLSLens.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html" aria-current="page">Lens distortion</a>
+          <ul class="on-page">
+            <li><a href="#barrel-distortion">Barrel distortion</a></li>
+            <li><a href="#pincushion-distortion">Pincushion distortion</a></li>
+            <li><a href="#how-the-edges-are-handled">How the edges are handled</a></li>
+            <li><a href="#radius-and-falloff-together">Radius and falloff together</a></li>
+            <li><a href="#animating-it">Animating it</a></li>
+          </ul>
+        </li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Lens distortion</h1>
+
+<p>Real lenses bend straight lines, especially near the edges of the frame. Wide-angle lenses push the middle of the image outward so lines bow out (barrel distortion). Telephoto lenses do the opposite and lines bow inward toward the middle (pincushion distortion). A little of either makes a game camera feel like a physical lens, and a lot of it is good for effects like a drunk or dazed camera, a fisheye look or a scope.</p>
+<p>HLSLens has both, and they are separate effects with their own settings. You can use one or both at the same time.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd>Lens Distortion on the volume, in the Barrel Distortion and Pincushion Distortion groups</dd>
+<dt>Default</dt>
+<dd>Both off (intensity 0)</dd>
+<dt>Cost</dt>
+<dd>Low. When both intensities are 0 the pass doesn't run at all.</dd>
+</dl>
+</div>
+<h2 id="barrel-distortion">Barrel distortion</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Slider</th>
+<th>Typed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Barrel Intensity</td>
+<td>Strength of the distortion. <code>0</code> turns it off.</td>
+<td>0</td>
+<td>0 to 0.5</td>
+<td>0 to 5</td>
+</tr>
+<tr>
+<td>Barrel Radius</td>
+<td>How big the distorted area is. Smaller values keep the effect closer to the center. Very large values give some strange, interesting results.</td>
+<td>2.0</td>
+<td>0 to 0.7</td>
+<td>0 to 50</td>
+</tr>
+<tr>
+<td>Barrel Falloff</td>
+<td>How quickly the distortion ramps up. Higher gives a sharper transition.</td>
+<td>2.0</td>
+<td>0 to 5</td>
+<td>0 to 5</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="pincushion-distortion">Pincushion distortion</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Slider</th>
+<th>Typed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pincushion Intensity</td>
+<td><strong>Negative</strong> values give pincushion distortion, the edges bow inward. <strong>Positive</strong> values do the reverse and bow the image outward. <code>0</code> turns it off.</td>
+<td>0</td>
+<td>−2 to 2</td>
+<td>−2 to 5</td>
+</tr>
+<tr>
+<td>Pincushion Radius</td>
+<td>How big the distorted area is. Smaller values affect a smaller area.</td>
+<td>0.85</td>
+<td>−0.5 to 2</td>
+<td>−0.5 to 2</td>
+</tr>
+<tr>
+<td>Pincushion Falloff</td>
+<td>How quickly the distortion ramps up. Higher gives a sharper transition.</td>
+<td>1.8</td>
+<td>0 to 3</td>
+<td>0 to 3</td>
+</tr>
+</tbody>
+</table></div>
+<p>The negative-is-pincushion direction catches people out. If the image bows the wrong way, flip the sign.</p>
+<p>The slider and the typed limits are different on purpose. The sliders cover the useful range, and if you need more you can type a bigger value straight into the box.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/lens-distortion/pincushion-positive-1.png -->
+  <img src="assets/placeholder.svg" alt="Pincushion Intensity 1.0">
+  <figcaption>Pincushion Intensity 1.0, the image bows outward.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lens-distortion/pincushion-negative-0-7.png -->
+  <img src="assets/placeholder.svg" alt="Pincushion Intensity −0.7">
+  <figcaption>Pincushion Intensity −0.7, the edges bow inward.</figcaption>
+</figure>
+</div>
+<h2 id="how-the-edges-are-handled">How the edges are handled</h2>
+<p>Distorting the image pulls pixels in from outside the screen, where there's nothing to show. To avoid black or smeared borders, HLSLens zooms in a little as the intensity goes up. So strong distortion also crops the edges of the frame slightly, and the camera feels a bit narrower. If you're matching a specific field of view, check it again with distortion on.</p>
+<p>Both effects are corrected for the screen's aspect ratio, so the distortion stays round on wide screens instead of turning oval.</p>
+<p>When you use both, barrel distortion is applied first and pincushion second.</p>
+<h2 id="radius-and-falloff-together">Radius and falloff together</h2>
+<p>Intensity is how much the image bends. Radius and Falloff decide where. Radius sets how far from the center the distortion reaches, and Falloff sets how it's spread inside that area.</p>
+<p>With a low Falloff the bending is spread smoothly over the whole area, like a real lens, but it's also gentler. With a high Falloff the middle of the image is simply magnified and its lines stay straight, while the bending happens in a ring close to the Radius. That ring look is handy for scopes and portholes.</p>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>Very high values bend the screen a lot. That's expected. For most projects I'd stay well below the maximum, otherwise it quickly turns into a fisheye look.</p>
+</aside>
+<h2 id="animating-it">Animating it</h2>
+<p>Every distortion setting can be animated, in Sequencer, in a Blueprint timeline or by blending between volumes. A short pulse of Barrel Intensity on a big impact, or a slow wobble on Pincushion Intensity for a dizzy effect, are easy ways to use it during gameplay.</p>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="film-grain.html"><span>Previous</span>Film grain</a>
+      <a class="next" href="vignette.html"><span>Next</span>Vignette and damage indicators</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

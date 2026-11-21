@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Console variables · HLSLens documentation</title>
+  <meta name="description" content="HLSLens console variables and debug overlays.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html" aria-current="page">Console variables</a>
+          <ul class="on-page">
+            <li><a href="#general">General</a></li>
+            <li><a href="#debug-overlays">Debug overlays</a></li>
+            <li><a href="#bloom-and-lens-flare-stability">Bloom and lens flare stability</a></li>
+            <li><a href="#fine-tuning">Fine-tuning</a></li>
+          </ul>
+        </li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Reference</p>
+      <h1>Console variables</h1>
+
+<p>Everything you normally need is on the Advanced Post Process Volume. A few things that don't belong to a single volume are console variables instead. Each one has a description in the editor too, type the name in the console to see it.</p>
+<h2 id="general">General</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Console variable</th>
+<th>What it does</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r.HLSLens.Enable</code></td>
+<td><code>0</code> turns HLSLens off and <code>1</code> back on, without restarting the editor. Your volumes stay in the level and nothing breaks. If you turn it off, also hide or disable your Advanced Post Process Volumes, otherwise the scene can look darker than it should.</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.EnableDebugging</code></td>
+<td>Turns on HLSLens logging, mostly for tracking down bugs. Keep it off in packaged builds.</td>
+<td>0</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="debug-overlays">Debug overlays</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Console variable</th>
+<th>What it does</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r.HLSLens.Tonemapper.Debug</code></td>
+<td><code>1</code> shows the Perceptual tonemapper curve and tells you if it's broken. Editor and development builds only.</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.TimeOfDay.Debug</code></td>
+<td><code>1</code> shows the Time-of-Day LUT blend: how much of each LUT is used, the current time and a 24-hour timeline. It's a cheat variable, so it isn't available in shipping builds.</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.GhostDebug</code></td>
+<td>Shows only one ghost, which makes designing a profile a lot easier. Set it to the ghost's index (0 to 11), and <code>-1</code> to show all of them again.</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="tonemapper-debug">Tonemapper debug</h3>
+<p>Some combinations of the contrast settings bend the curve into a shape that doesn't work, and the image can then look distorted. The overlay draws the curve and tells you which values to raise or lower to fix it.</p>
+<figure>
+  <!-- Replace with: assets/images/console/tonemapper-debug-broken.png -->
+  <img src="assets/placeholder.svg" alt="The tonemapper debugger showing a broken curve">
+  <figcaption>An example of a broken curve in the tonemapper debugger.</figcaption>
+</figure>
+<h3 id="time-of-day-debug">Time-of-Day debug</h3>
+<figure>
+  <!-- Replace with: assets/images/console/time-of-day-debug.png -->
+  <img src="assets/placeholder.svg" alt="The Time-of-Day debug window">
+  <figcaption>The overlay from <code>r.HLSLens.TimeOfDay.Debug 1</code>. See <a href="lut-blending.html#time-of-day-blending">Time-of-Day blending</a>.</figcaption>
+</figure>
+<h2 id="bloom-and-lens-flare-stability">Bloom and lens flare stability</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Console variable</th>
+<th>What it does</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r.HLSLens.Bloom.TemporalStabilize</code></td>
+<td>Stops lens flares and glare from jittering slightly when the camera moves. It keeps them sharp and isn't aggressive, but you can turn it off if it causes problems.</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.Bloom.TemporalReproject</code></td>
+<td>Works with the stabilizer. It keeps glare and bloom from dimming while the camera turns.</td>
+<td>1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="fine-tuning">Fine-tuning</h2>
+<p>You shouldn't need these often, but they're there if you want more control or need to save a bit of performance.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Console variable</th>
+<th>What it does</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r.HLSLens.LensFlare.GhostBorderFade</code></td>
+<td>Each ghost is a shrunken copy of the whole image, and this soft fade hides its rectangular border. 0.02 is a hard edge, 0.5 very soft.</td>
+<td>0.35</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.StreakLevels.Standard</code></td>
+<td>How many blur levels the streak uses in Standard and Performance quality. Fewer levels give shorter streaks and cost less.</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.StreakLevels.Cinematic</code></td>
+<td>The same for Cinematic quality.</td>
+<td>10</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.StreakHalfHeight</code></td>
+<td>Vertical resolution of the streak. Higher gives a thinner, steadier streak. <code>-1</code> picks by quality (half in Cinematic, a quarter otherwise), <code>0</code> always uses a quarter and <code>1</code> always half, at about twice the streak cost.</td>
+<td>-1</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.Glare.InputMipLevel</code></td>
+<td>Which blurred version of the image the glare is built from. Higher values give a blurrier, softer glare.</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.Starburst.PSFSize</code></td>
+<td>Resolution of the Diffraction Starburst shape, 256 or 512. It's cached, so this is mostly memory, not speed.</td>
+<td>512</td>
+</tr>
+<tr>
+<td><code>r.HLSLens.LensFlare.Starburst.BigSources</code></td>
+<td><code>1</code> gives big bright objects one starburst in their center. <code>0</code> limits starbursts to small lights.</td>
+<td>1</td>
+</tr>
+</tbody>
+</table></div>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="local-exposure.html"><span>Previous</span>Local exposure</a>
+      <a class="next" href="performance.html"><span>Next</span>Performance</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bloom · HLSLens documentation</title>
+  <meta name="description" content="The HLSLens bloom: threshold, falloff, quality modes and every setting.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html" aria-current="page">Bloom</a>
+          <ul class="on-page">
+            <li><a href="#how-bloom-works">How bloom works</a></li>
+            <li><a href="#standard-and-cinematic">Standard and Cinematic</a></li>
+            <li><a href="#threshold">Threshold</a></li>
+            <li><a href="#shaping-the-glow">Shaping the glow</a></li>
+            <li><a href="#cinematic-only-settings">Cinematic-only settings</a></li>
+            <li><a href="#strength-color-and-reach">Strength, color and reach</a></li>
+            <li><a href="#looks-you-can-create">Looks you can create</a></li>
+            <li><a href="#compared-with-the-engines-bloom">Compared with the engine&#x27;s bloom</a></li>
+            <li><a href="#common-questions">Common questions</a></li>
+          </ul>
+        </li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Bloom</h1>
+
+<p>Bloom is the soft glow around bright things. Camera lenses and our eyes both scatter a bit of light from anything bright, so a street lamp never has a perfectly sharp edge, it glows. That glow is a big part of why a scene feels bright and not flat.</p>
+<p>HLSLens replaces Unreal's built-in bloom. It works on the final image, so there's nothing to set up on your lights. Lights, emissive materials, the sky, a shiny reflection, anything bright enough will glow.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd>Bloom &amp; Lens Flares → Bloom, and Bloom &amp; Lens Flares → Threshold</dd>
+<dt>Cost</dt>
+<dd>Standard is cheap. Cinematic does about twice the work, and a higher Blur Pass Amount costs more too.</dd>
+</dl>
+</div>
+<h2 id="how-bloom-works">How bloom works</h2>
+<p>You never have to touch these steps, but knowing them makes the settings easier to understand.</p>
+<div class="steps">
+<div>
+<p><span class="n"><b>01</b>Isolate</span>
+Pick out the bright parts of the image. Only happens if a threshold is on.</p>
+</div>
+<div>
+<p><span class="n"><b>02</b>Shrink</span>
+Make smaller, blurrier copies of the image, each about twice as blurry as the last.</p>
+</div>
+<div>
+<p><span class="n"><b>03</b>Weight</span>
+Decide how much each copy counts. Falloff controls this.</p>
+</div>
+<div>
+<p><span class="n"><b>04</b>Merge</span>
+Stack the copies back together into one smooth glow.</p>
+</div>
+</div>
+<p>A bright light keeps all of its energy through these steps, so even a small lamp gets a big soft halo without cranking up Intensity.</p>
+<p>The engine's bloom uses a fixed set of blur steps, and in some scenes you can see rings in the glow where they meet. HLSLens blends the steps into one smooth curve so the glow fades out without those rings. The <a href="#compared-with-the-engines-bloom">comparison</a> further down shows the difference.</p>
+<h2 id="standard-and-cinematic">Standard and Cinematic</h2>
+<p>The look stays about the same in both modes. Cinematic uses twice as many blur steps, so the glow is a little smoother, and it unlocks three extra settings.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Standard</th>
+<th>Cinematic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Smoothness</strong></td>
+<td>Smooth</td>
+<td>Smoother, no faint steps in the glow</td>
+</tr>
+<tr>
+<td><strong>Extra settings</strong></td>
+<td>—</td>
+<td>Haze Ignores Threshold, Halo Brightness Boost, Spectral Spread</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Low</td>
+<td>About twice Standard</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout performance">
+<p class="callout-title">Performance</p>
+<p>Start with Standard and only switch to Cinematic if you can actually see a difference in your scene. It isn't a big one.</p>
+</aside>
+<h2 id="threshold">Threshold</h2>
+<p>The threshold decides how bright a pixel has to be before it glows. Anything darker than the Threshold Level is ignored, and the Knee softens the cut-off so things don't pop on and off.</p>
+<p>Bloom and lens flares share this section, and <strong>Threshold Mode</strong> chooses which of them gets a threshold:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Threshold Mode</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disabled</td>
+<td>No threshold at all. Every pixel adds a little to both bloom and lens flares.</td>
+</tr>
+<tr>
+<td>Shared (Bloom + Lens Flare)</td>
+<td>Both use the same threshold values. This is the one to pick when you use both effects, because it only builds one set of blurred images instead of two.</td>
+</tr>
+<tr>
+<td>Bloom Only</td>
+<td>The default. Only bloom has a threshold. Lens flares see the raw image, so even dim lights add to the flares.</td>
+</tr>
+<tr>
+<td>Lens Flare Only</td>
+<td>Only lens flares have a threshold. Bloom sees the raw image.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Each mode shows its own Level and Knee in the Details panel (Shared, Bloom or Lens Flare).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Threshold Level</td>
+<td>How bright a pixel must be before it counts. Lower values make more of the image glow.</td>
+<td>Bloom 3.0, Shared and Lens Flare 1.0</td>
+</tr>
+<tr>
+<td>Threshold Knee</td>
+<td>How soft the cut-off is. At <code>0</code> the glow switches on sharply at the threshold.</td>
+<td>0.5</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>For a fully realistic look you can disable the threshold, since in the real world every bright surface blooms a little. A threshold is still a great way to stop the whole scene from glowing and getting that dreamy look when you don't want it.</p>
+</aside>
+<h2 id="shaping-the-glow">Shaping the glow</h2>
+<p>Think of a street lamp. The <strong>core</strong> is the sharp bright part right around the bulb, the <strong>body</strong> is the medium glow where most of the bloom is, and the <strong>haze</strong> is the wide faint glow further out. Falloff and three sliders control the balance between them.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Falloff</td>
+<td>How fast the glow fades away from a light. Lower gives more wide haze, higher keeps it tight. It only moves light between tight and wide glow, the total brightness stays the same.</td>
+<td>2.4</td>
+<td>1.5 to 4.0</td>
+</tr>
+<tr>
+<td>Core Intensity</td>
+<td>Brightness of the sharp part right around a light.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Body Intensity</td>
+<td>Brightness of the medium glow, where most of the visible bloom is.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Haze Intensity</td>
+<td>Brightness of the widest, faintest glow.</td>
+<td>1.0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Haze Size</td>
+<td>How far the haze reaches. <code>0</code> is only the tight glow, <code>1</code> the full reach.</td>
+<td>1.0</td>
+<td>0 to 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Some starting points for Falloff:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Falloff</th>
+<th>Look</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Around 2.0</td>
+<td>Hazy, dreamy, foggy lights</td>
+</tr>
+<tr>
+<td>2.4 to 2.8</td>
+<td>The default range</td>
+</tr>
+<tr>
+<td>Above 3.5</td>
+<td>A tight glow, the haze almost disappears</td>
+</tr>
+</tbody>
+</table></div>
+<p>Falloff and the three intensities don't affect the overall Intensity. So you can change the character of the glow, say less haze and a stronger core, without having to rebalance the brightness afterwards.</p>
+<h2 id="cinematic-only-settings">Cinematic-only settings</h2>
+<p>These only appear when Bloom Quality is set to Cinematic.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Haze Ignores Threshold</td>
+<td>Normally the haze only comes from pixels above the threshold. Turn this up and the widest haze is made from the whole image instead, like the soft veil of light on a real lens. It also stops the glow from popping when something crosses the threshold. Does nothing without a threshold, and costs a bit more.</td>
+<td>0</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Halo Brightness Boost</td>
+<td>Gives much brighter areas a bigger halo, so the sun gets a bigger one than a lamp. This one is artistic, not realistic. <code>0</code> is off.</td>
+<td>0</td>
+<td>0 to 4</td>
+</tr>
+<tr>
+<td>Spectral Spread</td>
+<td>Makes the red part of the glow reach a bit further than the blue part, like on a real lens. You get a subtle warm edge on the outer glow without changing the color of the scene. <code>0</code> is off.</td>
+<td>0.2</td>
+<td>0 to 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="strength-color-and-reach">Strength, color and reach</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intensity</td>
+<td>How strong the bloom is overall.</td>
+<td>1.0</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Tint</td>
+<td>Colors the bloom and also scales it. Darker values make it weaker and black hides it.</td>
+<td>Dark grey</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Blur Pass Amount</td>
+<td>How far the bloom can spread across the screen. Each pass adds a wider layer of glow and costs some GPU time.</td>
+<td>8</td>
+<td>1 to 10</td>
+</tr>
+<tr>
+<td>Dirt Mask</td>
+<td>A texture that looks like dust and smudges on a lens. It shows up where the bloom is bright.</td>
+<td>None</td>
+<td>Texture</td>
+</tr>
+<tr>
+<td>Dirt Mask Tint</td>
+<td>Colors the dirt.</td>
+<td>Grey</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Dirt Mask Intensity</td>
+<td>How visible the dirt is. <code>0</code> hides it.</td>
+<td>0</td>
+<td>0 to 10</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>The default Tint is a dark grey (about 0.08), not white, and it scales the bloom. Keep that in mind if you set the Tint to white: the bloom gets roughly twelve times brighter, so lower the Intensity to match.</p>
+</aside>
+<h2 id="looks-you-can-create">Looks you can create</h2>
+<p>A few ideas to start from. I'd still tune everything to your own scene, but these should point you in the right direction.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Look</th>
+<th>Where to start</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Soft, filmic night</td>
+<td>Falloff around 2.0 to 2.4 and plenty of Haze Intensity. Big soft halos around street lights.</td>
+</tr>
+<tr>
+<td>Car headlights</td>
+<td>Higher Falloff and Core Intensity for tight, bright cores.</td>
+</tr>
+<tr>
+<td>Overexposed sunlight</td>
+<td>Cinematic quality with Halo Brightness Boost raised, so very bright areas get a big glow.</td>
+</tr>
+<tr>
+<td>Dreamy or horror</td>
+<td>Falloff near 2.0, lots of Haze Intensity and full Haze Size. In Cinematic, try Haze Ignores Threshold too.</td>
+</tr>
+<tr>
+<td>Clean and natural</td>
+<td>Leave the defaults and only adjust Intensity.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="compared-with-the-engines-bloom">Compared with the engine's bloom</h2>
+<p>These images show the same bright light with the engine's bloom and with HLSLens. Zoom in to see the difference. Both blooms can be tuned a lot, so the exact result depends on the settings.</p>
+<p>I used the engine's default bloom settings and only raised Bloom Intensity and Bloom Gaussian Intensity. For HLSLens I only raised Bloom Intensity.</p>
+<figure>
+  <!-- Replace with: assets/images/bloom/comparison-linear.png -->
+  <img src="assets/placeholder.svg" alt="Engine bloom compared with HLSLens bloom">
+  <figcaption><strong>Figure 1.</strong> One bright light with the engine bloom (top) and the HLSLens bloom (bottom). The middle shows brightness across the light. On the right both are overlaid: red is the engine, green is HLSLens, yellow is where they match.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/bloom/comparison-log.png -->
+  <img src="assets/placeholder.svg" alt="Bloom comparison on a log scale">
+  <figcaption><strong>Figure 2.</strong> The same comparison on a log scale, which makes the faint edge of the glow easier to see. Flat steps in the curve are what show up as rings in the glow.</figcaption>
+</figure>
+<h2 id="common-questions">Common questions</h2>
+<details>
+<summary>Do I need to add anything to my lights?</summary>
+<p>No. There are no textures or components to add, anything bright enough glows.</p>
+</details>
+<details>
+<summary>Why is nothing glowing?</summary>
+<p>Check that Intensity is above 0 and the Tint isn't black. Then look at the threshold: the default Bloom threshold is 3.0, which is quite high, so in a dim scene nothing may reach it. Lower the level or raise the exposure.</p>
+</details>
+<details>
+<summary>The screen is washed out in white.</summary>
+<p>Lower Intensity, raise the Threshold Level, darken the Tint, or raise Falloff to keep the glow tighter.</p>
+</details>
+<details>
+<summary>Does Falloff make the scene brighter or darker?</summary>
+<p>Not really. It moves light between the tight and the wide glow. Use Intensity for brightness.</p>
+</details>
+<details>
+<summary>How is bloom different from lens flares and halation?</summary>
+<p>Bloom is the soft glow around bright areas. <a href="lens-flares.html">Lens flares</a> are the shapes a camera lens adds. <a href="halation.html">Halation</a> imitates film. They work well together.</p>
+</details>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="lens-flares.html"><span>Previous</span>Lens flares</a>
+      <a class="next" href="halation.html"><span>Next</span>Halation</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

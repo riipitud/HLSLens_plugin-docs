@@ -1,0 +1,414 @@
+/* HLSLens documentation
+   Colours come from the logo and promo art:
+   ink #0c0b0e, gold #efc878, cream #ffeec4, violet #a99bff */
+
+:root {
+  --ink: #0c0b0e;
+  --gold: #efc878;
+  --cream: #ffeec4;
+
+  --bg: #faf8f5;
+  --surface: #f2efe9;
+  --text: #1c1a20;
+  --muted: #5f5a68;
+  --rule: #e2ddd5;
+  --link: #5b45d6;
+  --label: #5b45d6;
+  --gold-text: #8a6414;
+  --warn: #c4502b;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0b0e;
+    --surface: #16141a;
+    --text: #e9e6ee;
+    --muted: #a19bab;
+    --rule: #26232c;
+    --link: #a99bff;
+    --label: #a99bff;
+    --gold-text: #efc878;
+    --warn: #f08a5d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 var(--font);
+}
+
+img { max-width: 100%; height: auto; }
+
+a { color: var(--link); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+
+/* ---------- Header ---------- */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--ink);
+  border-bottom: 1px solid #2a2418;
+  padding: 0 24px;
+}
+
+.menu-link {
+  display: none;
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  color: #f4f1ea;
+  text-decoration: none;
+}
+
+.wordmark {
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+.wordmark b { font-weight: 700; }
+
+.brand-sub {
+  margin-left: 6px;
+  padding-left: 12px;
+  border-left: 1px solid #3a3428;
+  color: var(--gold);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- Layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 760px);
+  gap: 56px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  font-size: 0.92rem;
+}
+
+.sidebar ul { list-style: none; margin: 0 0 24px; padding: 0; }
+.sidebar li { margin: 2px 0; }
+
+.sidebar a {
+  display: block;
+  padding: 3px 0;
+  color: var(--text);
+  text-decoration: none;
+}
+.sidebar a:hover { color: var(--link); }
+
+.sidebar a[aria-current="page"] {
+  color: var(--link);
+  font-weight: 600;
+}
+
+.nav-group {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sidebar .on-page {
+  margin: 4px 0 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+  font-size: 0.85rem;
+}
+.sidebar .on-page a { color: var(--muted); padding: 2px 0; }
+.sidebar .on-page a:hover { color: var(--link); }
+
+/* ---------- Content ---------- */
+
+main { min-width: 0; }
+
+.kicker {
+  margin: 0;
+  color: var(--label);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1, h2, h3 { line-height: 1.25; font-weight: 600; }
+h1 { margin: 4px 0 20px; font-size: 2.2rem; letter-spacing: -0.015em; }
+h2 { margin: 56px 0 14px; font-size: 1.45rem; scroll-margin-top: 24px; }
+h3 { margin: 32px 0 10px; font-size: 1.1rem; scroll-margin-top: 24px; }
+
+p, ul, ol { margin: 0 0 16px; }
+ul, ol { padding-left: 1.3em; }
+li { margin-bottom: 6px; }
+
+.lead { font-size: 1.15rem; }
+
+code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface);
+  font: 0.86em var(--mono);
+}
+
+pre {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: var(--surface);
+}
+pre code { padding: 0; background: none; }
+
+/* ---------- Tables ---------- */
+
+.table-wrap { overflow-x: auto; margin: 0 0 20px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th, td {
+  padding: 9px 12px 9px 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  border-bottom: 2px solid var(--text);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+td:first-child { font-weight: 600; }
+
+/* ---------- "At a glance" box ---------- */
+
+.glance {
+  margin: 24px 0;
+  padding: 14px 18px;
+  border-radius: 6px;
+  background: var(--surface);
+}
+.glance dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 24px;
+  margin: 0;
+}
+.glance dt {
+  color: var(--gold-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+.glance dd { margin: 0; }
+
+/* ---------- Callouts ---------- */
+
+.callout {
+  margin: 24px 0;
+  padding: 12px 18px;
+  border-left: 3px solid var(--muted);
+  background: var(--surface);
+}
+.callout p:last-child { margin-bottom: 0; }
+
+.callout-title {
+  margin-bottom: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.callout.tip { border-color: var(--link); }
+.callout.tip .callout-title { color: var(--link); }
+.callout.warning { border-color: var(--warn); }
+.callout.warning .callout-title { color: var(--warn); }
+.callout.performance { border-color: var(--gold-text); }
+.callout.performance .callout-title { color: var(--gold-text); }
+
+/* Collapsible block that isn't a FAQ (e.g. advanced settings) */
+.callout details { margin-top: 0; }
+
+/* ---------- FAQ / collapsibles ---------- */
+
+details {
+  border-bottom: 1px solid var(--rule);
+}
+h2 + details, details:first-of-type { border-top: 1px solid var(--rule); }
+
+summary {
+  position: relative;
+  padding: 12px 28px 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: "+";
+  position: absolute;
+  right: 4px;
+  top: 10px;
+  color: var(--muted);
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+details[open] summary::after { content: "−"; }
+
+details > :not(summary) { margin-left: 0; }
+details > *:last-child { margin-bottom: 16px; }
+
+/* ---------- Figures ---------- */
+
+figure { margin: 28px 0; }
+figure img { display: block; border-radius: 6px; }
+figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.grid figure { margin: 0; }
+
+/* ---------- Bloom pipeline ---------- */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+  counter-reset: step;
+}
+.steps > div {
+  padding: 12px 14px;
+  border-top: 2px solid var(--gold-text);
+  background: var(--surface);
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.steps p { margin: 0; }
+.steps .n { display: block; color: var(--text); font-weight: 600; margin-bottom: 4px; }
+.steps .n b { color: var(--gold-text); font-weight: 400; margin-right: 6px; }
+
+/* ---------- Overview page index ---------- */
+
+.effects { margin: 16px 0 24px; border-top: 1px solid var(--rule); }
+.effects a {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--text);
+  text-decoration: none;
+}
+.effects a:hover .name { color: var(--link); }
+.effects .name { font-weight: 600; }
+.effects .desc { color: var(--muted); }
+
+.also { list-style: none; padding: 0; columns: 2 260px; column-gap: 40px; }
+.also li { break-inside: avoid; margin-bottom: 14px; color: var(--muted); font-size: 0.92rem; }
+.also strong { display: block; color: var(--text); }
+
+/* ---------- Previous / next ---------- */
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 64px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.pager a { text-decoration: none; font-weight: 600; }
+.pager span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+.pager .next { margin-left: auto; text-align: right; }
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 860px) {
+  .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 28px 16px 40px;
+  }
+  .site-header { padding: 0 16px; }
+  .brand-sub { display: none; }
+
+  .menu-link { display: block; }
+
+  /* The menu moves below the page content; "Menu" in the header jumps to it */
+  .layout > .sidebar { order: 2; align-self: stretch; }
+  .sidebar {
+    position: static;
+    max-height: none;
+    margin: 40px -16px 0;
+    padding: 24px 16px 8px;
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 0;
+  }
+  .sidebar .on-page { display: none; }
+
+  h1 { font-size: 1.8rem; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid { grid-template-columns: 1fr; }
+  .effects a { grid-template-columns: 1fr; gap: 2px; }
+  .glance dl { grid-template-columns: 1fr; gap: 0; }
+  .glance dd { margin-bottom: 8px; }
+}

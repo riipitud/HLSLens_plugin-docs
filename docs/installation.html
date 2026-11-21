@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Installation · HLSLens documentation</title>
+  <meta name="description" content="How to install and enable HLSLens in an Unreal Engine 5 project.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html" aria-current="page">Installation</a>
+        </li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Getting started</p>
+      <h1>Installation</h1>
+
+<ol>
+<li>
+<p><strong>Create or open an Unreal Engine 5 project.</strong></p>
+<p>I made the examples in this documentation with the First Person template in Unreal Engine 5.8. The Third Person template works the same, some names are just different.</p>
+</li>
+<li>
+<p><strong>Install the plugin.</strong></p>
+<p>Install HLSLens from Fab, or copy the plugin folder into your project's <code>Plugins</code> folder. If there's no <code>Plugins</code> folder yet, create one next to your <code>.uproject</code> file:</p>
+<p><code>text
+YourProjectName/
+└── Plugins/
+    └── HLSLens/</code></p>
+</li>
+<li>
+<p><strong>Enable it.</strong></p>
+<p>In the editor go to <strong>Edit → Plugins</strong>, search for HLSLens and enable it. Restart the editor when it asks.</p>
+</li>
+</ol>
+<figure>
+  <!-- Replace with: assets/images/installation/plugins-folder.png -->
+  <img src="assets/placeholder.svg" alt="The project folder with the Plugins folder highlighted">
+  <figcaption>Create the highlighted <code>Plugins</code> folder if you don't have it, then put the <code>HLSLens</code> folder inside.</figcaption>
+</figure>
+<p>Next, the <a href="quick-start.html">Quick start</a> shows how to add the volume and turn on the effects.</p>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="index.html"><span>Previous</span>Overview</a>
+      <a class="next" href="quick-start.html"><span>Next</span>Quick start</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

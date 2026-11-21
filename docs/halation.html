@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Halation · HLSLens documentation</title>
+  <meta name="description" content="Film-style halation in HLSLens and how it differs from bloom.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html" aria-current="page">Halation</a>
+          <ul class="on-page">
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="#halation-or-bloom">Halation or bloom?</a></li>
+            <li><a href="#example">Example</a></li>
+          </ul>
+        </li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Halation</h1>
+
+<p>Halation is the red-orange glow you see around very bright lights on film. It comes from the film itself: light goes through the film, bounces off the back and exposes it a second time, so a soft glow appears around the brightest spots. HLSLens recreates that.</p>
+<p>The glow is deep red around lights that are only just bright enough and turns orange around the really hot ones. It doesn't copy the color of the light, you pick both glow colors yourself.</p>
+<p>It goes really well with bloom, and it's great for dreamy scenes. The last image in the <a href="gallery.html#dreamy">Gallery</a> uses a lot of it.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd>The Halation category on the volume</dd>
+<dt>Default</dt>
+<dd>On, at a low intensity (0.06)</dd>
+<dt>Cost</dt>
+<dd>Almost free. It reuses the bloom texture.</dd>
+</dl>
+</div>
+<h2 id="settings">Settings</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Halation Intensity</td>
+<td>How strong the glow is.</td>
+<td>0.06</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Halation Threshold</td>
+<td>How bright something has to be before it halates. Higher means only very bright lights.</td>
+<td>1.0</td>
+<td>0.1 to 5</td>
+</tr>
+<tr>
+<td>Halation Tint Core</td>
+<td>Glow color for lights that only just reach the threshold.</td>
+<td>Deep red</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Halation Tint Hot</td>
+<td>Glow color for the brightest lights.</td>
+<td>Orange</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>The slider for Intensity stops at 0.4, which is already a strong look. You can type higher values if you need them.</p>
+<h2 id="halation-or-bloom">Halation or bloom?</h2>
+<p>It's easy to mistake halation for an orange bloom, but they are different effects. Bloom is light scattering in a lens or in your eye. Halation is light bouncing around inside film. You can use both at the same time.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Bloom</th>
+<th>Halation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Imitates</strong></td>
+<td>A lens or an eye</td>
+<td>Film</td>
+</tr>
+<tr>
+<td><strong>Color</strong></td>
+<td>The color of the light</td>
+<td>Its own red-orange colors</td>
+</tr>
+<tr>
+<td><strong>Which lights</strong></td>
+<td>Everything bright, threshold optional</td>
+<td>Only lights above its own threshold</td>
+</tr>
+<tr>
+<td><strong>Brightness</strong></td>
+<td>Same color at any brightness</td>
+<td>Goes from red to orange as lights get hotter</td>
+</tr>
+<tr>
+<td><strong>Bright backgrounds</strong></td>
+<td>Doesn't care what is behind it</td>
+<td>Fades out over bright backgrounds</td>
+</tr>
+</tbody>
+</table></div>
+<p>Halation also looks at what is around the light. The light itself hides the glow, so you only see it on the darker pixels next to it. That's why it looks like a halo around the light and not a tint on top of it.</p>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>It works best at night, with strong lights against dark surroundings: street lamps, neon, headlights, fire, windows. Keep it subtle. In bright daytime scenes it does very little, it mostly fades out there anyway.</p>
+</aside>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>Halation is built from the blurred bloom texture, so its size and shape follow your bloom settings. Because it checks the blurred bloom and not the raw pixels, tiny lights get diluted and may need a lower threshold. Exposure also changes which lights qualify.</p>
+</aside>
+<h2 id="example">Example</h2>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/halation/with.png -->
+  <img src="assets/placeholder.svg" alt="Scene with halation">
+  <figcaption>With halation</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/halation/without.png -->
+  <img src="assets/placeholder.svg" alt="Scene without halation">
+  <figcaption>Without halation</figcaption>
+</figure>
+</div>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="bloom.html"><span>Previous</span>Bloom</a>
+      <a class="next" href="chromatic-aberration.html"><span>Next</span>Chromatic aberration</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tonemapper · HLSLens documentation</title>
+  <meta name="description" content="ACES and the HLSLens Perceptual tonemapper, its settings and selective color grading.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html" aria-current="page">Tonemapper</a>
+          <ul class="on-page">
+            <li><a href="#aces-and-perceptual">ACES and Perceptual</a></li>
+            <li><a href="#why-do-colors-look-different">Why do colors look different?</a></li>
+            <li><a href="#how-the-perceptual-tonemapper-works">How the Perceptual tonemapper works</a></li>
+            <li><a href="#perceptual-settings">Perceptual settings</a></li>
+            <li><a href="#bright-lights">Bright lights</a></li>
+            <li><a href="#selective-color-grading">Selective color grading</a></li>
+            <li><a href="#hdr-displays">HDR displays</a></li>
+            <li><a href="#common-questions">Common questions</a></li>
+          </ul>
+        </li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Color</p>
+      <h1>Tonemapper</h1>
+
+<p>A tonemapper decides how the brightness of your scene ends up on a screen. Your lights can be thousands of times brighter than your shadows, but a screen can only show a small part of that range. The tonemapper squeezes it down, and how it does that has a big effect on the colors you see.</p>
+<p>HLSLens has two. <strong>ACES</strong> is the default and it's identical to the engine's own ACES tonemapper. <strong>Perceptual</strong> is my own tonemapper, built to keep colors closer to the ones you actually picked. With ACES, bright emissive lights tend to clip or drift in hue, and that's the main thing Perceptual was made to fix. To switch, set <strong>Tonemapper Mode</strong> to <strong>Perceptual</strong>. You'll find it in the LUT category of the volume.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd><strong>Tonemapper Mode</strong> in the LUT category. The Perceptual settings are in Color Correction → ChannelA → Perceptual Tonemapper.</dd>
+<dt>Perceptual cost</dt>
+<dd>Very low. Slightly more expensive than ACES.</dd>
+</dl>
+</div>
+<h2 id="aces-and-perceptual">ACES and Perceptual</h2>
+<p>Neither one is better in every scene. ACES is a proven look that a lot of people know. Perceptual is more faithful to your colors and gives you more control.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>ACES</th>
+<th>Perceptual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Color</strong></td>
+<td>Squeezes the red, green and blue channels separately</td>
+<td>Squeezes only the lightness and leaves the color alone</td>
+</tr>
+<tr>
+<td><strong>Bright colored lights</strong></td>
+<td>Can drift toward yellow or orange as they get brighter</td>
+<td>Keep their color, then fade to white</td>
+</tr>
+<tr>
+<td><strong>Contrast and saturation</strong></td>
+<td>Linked together in one curve</td>
+<td>Separate controls</td>
+</tr>
+<tr>
+<td><strong>Highlights</strong></td>
+<td>ACES decides</td>
+<td>You decide how and when lights go white</td>
+</tr>
+<tr>
+<td><strong>Tone curve settings</strong></td>
+<td>Film Slope, Toe, Shoulder, Black Clip, White Clip</td>
+<td>Mid Point, Contrast, Black Gradient, Toe End, Shoulder Softness, Shoulder Start</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="why-do-colors-look-different">Why do colors look different?</h2>
+<p>The first thing you'll notice after switching is that colors change. Emissive lights show it most, but they aren't the only ones.</p>
+<p>ACES works on the red, green and blue channels one at a time. When a bright, saturated color is squeezed, each channel is squeezed by a different amount, so the color drifts. Red lights turn orange or yellowish, and the brighter they are, the stronger it gets.</p>
+<p>The Perceptual tonemapper splits every color into three parts: how bright it is, how colorful it is and which hue it is. It only squeezes the brightness. The hue is left alone, so a red light stays red at any brightness. If a light gets too bright, it fades to white instead of changing color.</p>
+<p>Other colors look a little different too. The hue shift ACES adds is gone, and contrast and saturation now come from their own settings instead of one shared curve.</p>
+<figure>
+  <img src="assets/images/tonemapper-aces-vs-perceptual.webp" alt="The same room with the ACES and the Perceptual tonemapper. ACES pulls warm sunlight toward yellow, Perceptual keeps its hue.">
+  <figcaption>The same scene and lights. ACES pulls warm sunlight toward yellow. Perceptual keeps its hue.</figcaption>
+</figure>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/tonemapper/aces-2.png -->
+  <img src="assets/placeholder.svg" alt="ACES tonemapper">
+  <figcaption>ACES tonemapper</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/tonemapper/perceptual-2.png -->
+  <img src="assets/placeholder.svg" alt="Perceptual tonemapper">
+  <figcaption>Perceptual tonemapper</figcaption>
+</figure>
+</div>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>Emissive lights now show their true color, so you will most likely need to adjust the color of some lights in your scene after switching.</p>
+</aside>
+<h2 id="how-the-perceptual-tonemapper-works">How the Perceptual tonemapper works</h2>
+<p>You don't need any of this to use it, but it makes the settings easier to understand.</p>
+<div class="steps">
+<div>
+<p><span class="n"><b>01</b>Grade</span>
+The usual color grading runs first: white balance, saturation, contrast, gain and so on.</p>
+</div>
+<div>
+<p><span class="n"><b>02</b>Split</span>
+The color is moved into OKLab, a color space made to match how people see color, and split into brightness, colorfulness and hue.</p>
+</div>
+<div>
+<p><span class="n"><b>03</b>Shape</span>
+Each part gets its own curve. The brightness curve is the contrast.</p>
+</div>
+<div>
+<p><span class="n"><b>04</b>Finish</span>
+Tints, the 12 color adjustments and the black and white points are applied. Colors that end up too strong are desaturated, not clipped.</p>
+</div>
+</div>
+<p>Clipping is what turns bright saturated lights yellow, so the last step desaturates instead of clipping.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it is</th>
+<th>Controlled by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lightness</td>
+<td>How bright a color is</td>
+<td>Mid Point, Contrast, Black Gradient, Toe End, Shoulder Softness, Shoulder Start</td>
+</tr>
+<tr>
+<td>Chroma</td>
+<td>How colorful it is</td>
+<td>Saturation Curve, Max Chroma</td>
+</tr>
+<tr>
+<td>Hue</td>
+<td>Which color it is</td>
+<td>Grade Hue Angle, Grade Chroma Offset and the 12 color adjustments</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>Because the three parts are separate, you can change contrast without also changing saturation. That is not really possible with ACES.</p>
+</aside>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>The heavy math is not done every frame. The curve is saved in a color grading LUT, which is only rebuilt when a setting changes. ACES works the same way.</p>
+<p>This means overlapping post-process volumes with different color grading or color correction settings cost more: as the player moves, the settings are interpolated and the LUT has to be rebuilt constantly.</p>
+</aside>
+<p>Vignette, Bloom, Halation, Lens Flares and Film Grain are all added before the tonemapper, so they are tonemapped together with the rest of the image.</p>
+<h2 id="perceptual-settings">Perceptual settings</h2>
+<p>These are in <strong>Color Correction → ChannelA → Perceptual Tonemapper</strong> and only show up when Tonemapper Mode is Perceptual. The ACES-only groups, like Film, are hidden in that mode. Each setting also has a tooltip in the editor.</p>
+<p>ChannelA is your main grade. ChannelB has the same settings and only appears when you use <a href="lut-blending.html">LUT blending</a>.</p>
+<h3 id="contrast-curve">Contrast curve</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mid Point</td>
+<td>The pivot of the curve. Moves the line between what counts as shadow and what counts as highlight.</td>
+<td>0.45</td>
+<td>0.05 to 0.95</td>
+</tr>
+<tr>
+<td>Contrast</td>
+<td>How steep the curve is through the mid point. Low is flatter, high is punchier.</td>
+<td>0.5</td>
+<td>0.05 to 1.5</td>
+</tr>
+<tr>
+<td>Black Gradient</td>
+<td>Lifts the darkest shadows off pure black. Low gives deep, crushed blacks, high faded blacks.</td>
+<td>0.05</td>
+<td>0 to 0.5</td>
+</tr>
+<tr>
+<td>Toe End</td>
+<td>How far the shadow part of the curve reaches before it blends into the midtones.</td>
+<td>0.35</td>
+<td>0.05 to 0.8</td>
+</tr>
+<tr>
+<td>Shoulder Softness</td>
+<td>Pulls the brightest highlights down from pure white. Low is bright, high is softer.</td>
+<td>0.05</td>
+<td>0 to 0.5</td>
+</tr>
+<tr>
+<td>Shoulder Start</td>
+<td>How far the highlight part of the curve reaches before it blends into the midtones.</td>
+<td>0.45</td>
+<td>0.1 to 0.95</td>
+</tr>
+</tbody>
+</table></div>
+<p>If a combination of these makes the curve fold over on itself, the image can look broken. <code>r.HLSLens.Tonemapper.Debug 1</code> shows the curve and tells you which value to change, see <a href="console-variables.html#tonemapper-debug">Console variables</a>.</p>
+<h3 id="color">Color</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Saturation Curve</td>
+<td>How saturation changes across the tonal range. Low is more even and more muted. High gives a bigger difference between muted and vivid areas.</td>
+<td>0.8</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Max Chroma</td>
+<td>The point where highlights start fading toward white. Lower starts earlier, which helps against oversaturated highlights. Too high and a bright red light can turn dark red instead of bright.</td>
+<td>0.6</td>
+<td>0.3 to 1</td>
+</tr>
+<tr>
+<td>Grade Hue Angle</td>
+<td>Direction of a white balance shift around the color wheel, in radians.</td>
+<td>0</td>
+<td>−3.14 to 3.14</td>
+</tr>
+<tr>
+<td>Grade Chroma Offset</td>
+<td>How strong that shift is. <code>0</code> is no shift.</td>
+<td>0</td>
+<td>−0.05 to 0.05</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="tints">Tints</h3>
+<p>The tints are in their own <strong>Perceptual Tonemapper Tints</strong> group. Each tint colors part of the image. Its <strong>Amount</strong> sets the strength, from <code>0</code> (no tint, the default) to <code>1</code> (fully tinted).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main Tint and Amount</td>
+<td>Tints the whole image.</td>
+<td>Amount 0 to 1</td>
+</tr>
+<tr>
+<td>Shadows Tint and Amount</td>
+<td>Tints the dark areas.</td>
+<td>Amount 0 to 1</td>
+</tr>
+<tr>
+<td>Mids Tint and Amount</td>
+<td>Tints the midtones.</td>
+<td>Amount 0 to 1</td>
+</tr>
+<tr>
+<td>Highlights Tint and Amount</td>
+<td>Tints the bright areas.</td>
+<td>Amount 0 to 1</td>
+</tr>
+<tr>
+<td>Shadows Amount</td>
+<td>How much of the image counts as shadows. Low is only the darkest areas. Default 0.65.</td>
+<td>0 to 3</td>
+</tr>
+<tr>
+<td>Highlights Amount</td>
+<td>How much of the image counts as highlights. Low is only the brightest areas. Default 0.65.</td>
+<td>0 to 3</td>
+</tr>
+<tr>
+<td>Exposure Masks Contrast</td>
+<td>How sharp the change between shadows, midtones and highlights is. Low is smooth and gradual, high is sharper. Default 0.65.</td>
+<td>0 to 0.9</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="black-and-white-points">Black and white points</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Histogram In Low</td>
+<td>The input black point. Raise it to turn more of the darkest tones black.</td>
+<td>0 to 0.4</td>
+</tr>
+<tr>
+<td>Histogram In High</td>
+<td>The input white point. Lower it to turn more of the brightest tones white.</td>
+<td>0.6 to 1.2</td>
+</tr>
+<tr>
+<td>Histogram Out Low</td>
+<td>The output black point. Raise it to lift the blacks and lower contrast.</td>
+<td>0 to 0.2</td>
+</tr>
+<tr>
+<td>Histogram Out High</td>
+<td>The output white point. Lower it to dim the whites and lower contrast.</td>
+<td>0.8 to 1</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="bright-lights">Bright lights</h2>
+<p>Very bright lights are where the two tonemappers differ the most. In Perceptual mode lights keep their color and then fade to white as they get brighter, instead of turning yellow. These settings control when and how much. The first two are in the LUT category under <strong>Perceptual Tonemapper</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Highlight Shoulder Start (EV)</td>
+<td>How bright a pixel must be before its color starts fading toward white, in stops. <code>0</code> EV is a value of 1.0 and <code>4</code> EV a value of 16.</td>
+<td>0</td>
+<td>0 to 8</td>
+</tr>
+<tr>
+<td>Highlight Desaturation-Blend Strength</td>
+<td>The most a bright pixel can be blended toward white once it passes the shoulder. Higher turns bright lights whiter, lower keeps more color.</td>
+<td>0.5</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Max Chroma</td>
+<td>See <a href="#color">Color</a> above.</td>
+<td>0.6</td>
+<td>0.3 to 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Raise Highlight Shoulder Start (EV) and only very bright lights lose their color, so lights stay vivid longer. Lower it and hot lights turn white sooner.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/tonemapper/shoulder-ev-0.png -->
+  <img src="assets/placeholder.svg" alt="Highlight Shoulder Start (EV) at 0.0">
+  <figcaption>Highlight Shoulder Start (EV) = 0.0</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/tonemapper/shoulder-ev-4.png -->
+  <img src="assets/placeholder.svg" alt="Highlight Shoulder Start (EV) at 4.0">
+  <figcaption>Highlight Shoulder Start (EV) = 4.0</figcaption>
+</figure>
+</div>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p><strong>Shoulder Start</strong> in the contrast curve is a different setting. It shapes the whole image. <strong>Highlight Shoulder Start (EV)</strong> only decides what counts as a very bright light.</p>
+</aside>
+<h2 id="selective-color-grading">Selective color grading</h2>
+<p>You can change the brightness, hue and saturation of each color in the scene on its own, across 12 color channels. Say you want the orange tones to lean a little red and be a touch darker without touching anything else. That's what these are for.</p>
+<p>Every color has the same three settings, named after the color, for example <strong>Orange Hue-Shift</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Color</em> Luma-Shift</td>
+<td>Brightens or darkens that color. <code>1.0</code> is no change, lower darkens and higher brightens.</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td><em>Color</em> Hue-Shift</td>
+<td>Rotates that color toward a neighboring hue. <code>0</code> is no shift.</td>
+<td>−2 to 2</td>
+</tr>
+<tr>
+<td><em>Color</em> Chroma-Shift</td>
+<td>Saturates or desaturates that color. <code>1.0</code> is no change, lower desaturates and higher saturates.</td>
+<td>0 to 2</td>
+</tr>
+</tbody>
+</table></div>
+<p>The 12 colors are Pink, Red, Orange, Yellow, Lime, Green, Aqua, Cyan, Light Blue, Blue, Violet and Magenta.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/tonemapper/selective-default.png -->
+  <img src="assets/placeholder.svg" alt="The default Perceptual tonemapper look">
+  <figcaption>The default Perceptual tonemapper look</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/tonemapper/selective-orange-desaturated.png -->
+  <img src="assets/placeholder.svg" alt="The same scene with orange desaturated">
+  <figcaption>The same scene with orange desaturated. The magenta wallpaper keeps its saturation. Only the orange decorations and the warm lights are desaturated.</figcaption>
+</figure>
+</div>
+<h2 id="hdr-displays">HDR displays</h2>
+<p>The Perceptual curve is made for normal SDR screens. On HDR displays the final tone curve is ACES.</p>
+<aside class="callout warning">
+<p class="callout-title">Warning</p>
+<p>On HDR displays, Mid Point, Contrast, Black Gradient, Toe End, Shoulder Softness and Shoulder Start do nothing. The highlight fade to white and the gamut fit are not applied either. If you ship on both SDR and HDR, the two will not look the same.</p>
+</aside>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Works on HDR</th>
+<th>Does not work on HDR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tints, Saturation Curve, the 12 color adjustments, the black and white points and the engine's color grading</td>
+<td>The contrast curve, the highlight fade to white, the gamut fit and LUT textures</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="common-questions">Common questions</h2>
+<details>
+<summary>Is the ACES mode the same as the engine's?</summary>
+<p>Yes. It is identical to the engine's ACES tonemapper.</p>
+</details>
+<details>
+<summary>My scene looks different after switching. Is something broken?</summary>
+<p>No. Perceptual doesn't shift the hue of bright colors like ACES does, and contrast and saturation come from different settings. You'll probably need to adjust the color of a few lights. I'd also suggest looking at the Saturation Curve to get the saturation where you want it.</p>
+</details>
+<details>
+<summary>My bright red light looks dark red.</summary>
+<p><strong>Max Chroma</strong> is probably too high. Lower it so highlights start fading toward white earlier.</p>
+</details>
+<details>
+<summary>My lights look too white or too dull.</summary>
+<p>Change <strong>Highlight Shoulder Start (EV)</strong>. Lowering it keeps more color but can make lights look matte, and raising it makes them whiter. <strong>Highlight Desat Blend Strength</strong> and <strong>Max Chroma</strong> also change how fast lights go white.</p>
+</details>
+<details>
+<summary>Do my LUTs still work?</summary>
+<p>Yes, on normal screens. They are applied after the tonemapper. On HDR displays they are not applied.</p>
+</details>
+<details>
+<summary>The curve settings do nothing on my HDR monitor.</summary>
+<p>That is expected. See <a href="#hdr-displays">HDR displays</a> above.</p>
+</details>
+<details>
+<summary>Does Perceptual cost more than ACES?</summary>
+<p>A little. See <a href="performance.html">Performance</a> for the benchmarks.</p>
+</details>
+<details>
+<summary>The result looks wrong.</summary>
+<p>Enable <code>r.HLSLens.Tonemapper.Debug 1</code> to see the tone curve. If the curve is broken, the overlay tells you what to change. It works in the editor and development builds, not in shipping builds.</p>
+</details>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="vignette.html"><span>Previous</span>Vignette and damage indicators</a>
+      <a class="next" href="lut-blending.html"><span>Next</span>LUT blending</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

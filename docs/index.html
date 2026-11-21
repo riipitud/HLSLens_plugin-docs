@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HLSLens documentation</title>
+  <meta name="description" content="What HLSLens is and where to find each part of the documentation.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html" aria-current="page">Overview</a>
+          <ul class="on-page">
+            <li><a href="#before-you-start">Before you start</a></li>
+            <li><a href="#effects">Effects</a></li>
+            <li><a href="#color-and-exposure">Color and exposure</a></li>
+            <li><a href="#reference">Reference</a></li>
+          </ul>
+        </li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Getting started</p>
+      <h1>Overview</h1>
+
+<p>HLSLens replaces parts of Unreal Engine 5's post-processing with my own effects, written in HLSL. It adds its own volume, the <strong>Advanced Post Process Volume</strong>, and every setting lives in that volume's Details panel. So it works like the engine's Post Process Volume, with no <code>.ini</code> files or console variables needed. The plugin doesn't delete or modify any engine files.</p>
+<p>If you're new, start with <a href="installation.html">Installation</a> and then the <a href="quick-start.html">Quick start</a>.</p>
+<h2 id="before-you-start">Before you start</h2>
+<aside class="callout warning">
+<p class="callout-title">A volume is required</p>
+<p>Without an Advanced Post Process Volume in your level, the custom effects have nothing to read their settings from.</p>
+</aside>
+<ul>
+<li>Most optional effects are off by default. Film Grain, Chromatic Aberration and Lens Distortion start at intensity 0.0.</li>
+<li>The Perceptual tonemapper changes your look. It shows emissive colors more accurately, so you'll likely need to adjust some light colors. ACES is still there and works with every HLSLens effect.</li>
+<li>HLSLens costs slightly more GPU time than the engine's default post-processing. The <a href="performance.html">Performance</a> page has the numbers.</li>
+<li>Motion blur, depth of field, anti-aliasing, global illumination and reflections aren't touched. They work the same as with the engine's post-processing.</li>
+</ul>
+<h2 id="effects">Effects</h2>
+<div class="effects">
+<p><a href="lens-flares.html">
+  <span class="name">Lens flares</span>
+  <span class="desc">Ghosts, halo, streak and three kinds of glare, saved in reusable lens profiles. Seven presets included.</span>
+</a>
+<a href="bloom.html">
+  <span class="name">Bloom</span>
+  <span class="desc">A Kawase-blur bloom built to avoid the rings the engine's bloom can show in its falloff.</span>
+</a>
+<a href="halation.html">
+  <span class="name">Halation</span>
+  <span class="desc">The red-orange film glow around the brightest lights.</span>
+</a>
+<a href="chromatic-aberration.html">
+  <span class="name">Chromatic aberration</span>
+  <span class="desc">Basic and Spectral fringing, anamorphic stretch and depth masking.</span>
+</a>
+<a href="film-grain.html">
+  <span class="name">Film grain</span>
+  <span class="desc">Procedural or texture-based grain with separate strength for shadows, midtones and highlights.</span>
+</a>
+<a href="lens-distortion.html">
+  <span class="name">Lens distortion</span>
+  <span class="desc">Barrel and pincushion distortion that can be used together.</span>
+</a>
+<a href="vignette.html">
+  <span class="name">Vignette and damage indicators</span>
+  <span class="desc">A colorable vignette, and a directional damage indicator driven from Blueprints.</span>
+</a></p>
+</div>
+<h2 id="color-and-exposure">Color and exposure</h2>
+<div class="effects">
+<p><a href="tonemapper.html">
+  <span class="name">Tonemapper</span>
+  <span class="desc">ACES, or the Perceptual tonemapper that keeps lights closer to their real color. Selective control over 12 colors.</span>
+</a>
+<a href="lut-blending.html">
+  <span class="name">LUT blending</span>
+  <span class="desc">Two full color grades blended by distance, a mask or the time of day.</span>
+</a>
+<a href="local-exposure.html">
+  <span class="name">Local exposure</span>
+  <span class="desc">The engine's local exposure plus HLSLens' own method and highlight rescue.</span>
+</a></p>
+</div>
+<h2 id="reference">Reference</h2>
+<div class="effects">
+<p><a href="console-variables.html">
+  <span class="name">Console variables</span>
+  <span class="desc">Turning HLSLens on and off, debug overlays and fine-tuning.</span>
+</a>
+<a href="performance.html">
+  <span class="name">Performance</span>
+  <span class="desc">Benchmarks against the engine's default post-processing, and how to make it cheaper.</span>
+</a>
+<a href="troubleshooting.html">
+  <span class="name">Troubleshooting</span>
+  <span class="desc">Exposure, brightness, glare and other common problems.</span>
+</a>
+<a href="gallery.html">
+  <span class="name">Gallery</span>
+  <span class="desc">The engine's default look next to HLSLens.</span>
+</a></p>
+</div>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="next" href="installation.html"><span>Next</span>Installation</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

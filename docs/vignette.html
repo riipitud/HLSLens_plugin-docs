@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vignette and damage indicators · HLSLens documentation</title>
+  <meta name="description" content="The HLSLens vignette and the directional damage indicator system.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html" aria-current="page">Vignette and damage indicators</a>
+          <ul class="on-page">
+            <li><a href="#vignette">Vignette</a></li>
+            <li><a href="#damage-indicators">Damage indicators</a></li>
+          </ul>
+        </li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Vignette and damage indicators</h1>
+
+<h2 id="vignette">Vignette</h2>
+<p>The vignette darkens the edges of the screen, the way most real lenses do. It pulls the eye toward the middle of the frame. HLSLens' vignette can also be colored, moved and stretched, and every setting can be animated, so it works for gameplay feedback too, like a pulsing red edge at low health.</p>
+<p>The settings are in the Vignette category of the volume.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vignette Intensity</td>
+<td>Overall strength. <code>0</code> is invisible, <code>1</code> fully applied.</td>
+<td>0.3</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Vignette Radius</td>
+<td>How far in the darkening reaches. Higher keeps it at the edges, lower brings it further into the middle.</td>
+<td>0.75</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Vignette Smoothness</td>
+<td>How soft the edge is. Higher gives a smooth fade, lower a harder edge.</td>
+<td>0.3</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Vignette Border Color</td>
+<td>The color at the edges. Black darkens, any other color tints.</td>
+<td>Black</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Tile Scale</td>
+<td>Stretches the shape. Use it to make the vignette rounder or more stretched.</td>
+<td>1, 1</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Vignette Center</td>
+<td>Moves the center of the vignette. <code>0, 0</code> is the middle of the screen.</td>
+<td>0, 0</td>
+<td>−2 to 2</td>
+</tr>
+</tbody>
+</table></div>
+<p>The vignette is on by default at a mild 0.3. Bloom is darkened by the vignette as well, so the glow fades toward the edges together with the image.</p>
+<p>If you don't want a vignette but do use damage indicators, don't set Vignette Intensity all the way to 0, see the warning below.</p>
+<p>Animating it is the easy way to make effects with it. Drive Vignette Intensity and Border Color from a Blueprint timeline or Sequencer, or blend between two volumes, and you get a heartbeat pulse, a fade to black, or a colored flash. This <a href="https://youtu.be/GFS9iiOLdQw">example video on YouTube</a> shows a few things you can do.</p>
+<h2 id="damage-indicators">Damage indicators</h2>
+<p>The damage indicator shows the player where a hit came from by lighting up the edge of the screen on that side. It uses the vignette, but it's driven from Blueprints, because the direction, strength and color change with every hit.</p>
+<p>It currently works in <strong>singleplayer only</strong>.</p>
+<aside class="callout warning">
+<p class="callout-title">Keep Vignette Intensity above 0</p>
+<p>The damage indicators are drawn by the vignette, so they disappear when Vignette Intensity is 0. If you want damage indicators without a visible vignette, set Vignette Intensity to a tiny value like 0.01.</p>
+</aside>
+<h3 id="setup">Setup</h3>
+<ol>
+<li>
+<p><strong>Add a VignetteDamageIndicator component to your player character.</strong></p>
+<p>Only the player needs it. Enemies and other damage dealers don't.</p>
+</li>
+<li>
+<p><strong>Call one of the Register Damage Hit functions when the player takes damage.</strong></p>
+<p>Use them from wherever you handle damage, for example the Event Any Damage or Event Point Damage of your character.</p>
+</li>
+</ol>
+<figure>
+  <!-- Replace with: assets/images/vignette/damage-blueprint.png -->
+  <img src="assets/placeholder.svg" alt="Example Blueprint for the damage indicator">
+  <figcaption>Example Blueprint. Replace the ReceiveDamage event with your own event or function.</figcaption>
+</figure>
+<h3 id="the-functions">The functions</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Function</th>
+<th>When to use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Register Damage Hit From World Location</td>
+<td>The recommended default. Pass where the damage came from, for example a bullet's impact point or an explosion's position.</td>
+</tr>
+<tr>
+<td>Register Damage Hit From Actor</td>
+<td>Same as above, but it uses the actor's location. Handy when you have the attacker and not a hit location.</td>
+</tr>
+<tr>
+<td>Register Damage Hit From Angle</td>
+<td>Pins the indicator to a side of the screen, whatever happened in the world. Good for poison or fall damage.</td>
+</tr>
+<tr>
+<td>Clear All Damage Indicators</td>
+<td>Removes every indicator right away, for example on respawn.</td>
+</tr>
+<tr>
+<td>Set Master Visibility</td>
+<td>Fades the whole system, 0 to 1. Useful during cutscenes or when a menu is open.</td>
+</tr>
+</tbody>
+</table></div>
+<p>All three Register functions take an <strong>Intensity</strong> from 0 to 1 (higher values are clamped) that sets how big and visible the indicator is, and a <strong>Damage Color</strong> (red by default). Use the color to tell damage types apart, like green for poison and orange for fire.</p>
+<p><strong>From Angle</strong> works with a value from 0 to 1 around the screen: <code>0</code> is right, <code>0.25</code> top, <code>0.5</code> left and <code>0.75</code> bottom. It also takes a <strong>Spread</strong>, which is how wide the lit-up part is.</p>
+<p>A hit from directly in front lights up the top of the screen and a hit from behind lights up the bottom. When damage comes from straight above or below the player, there's no clear side, so the whole edge of the screen lights up instead.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/vignette/damage-front-left.png -->
+  <img src="assets/placeholder.svg" alt="Damage indicator for damage from the front left">
+  <figcaption>Damage from the front left.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/vignette/damage-left-large.png -->
+  <img src="assets/placeholder.svg" alt="Damage indicator for a large amount of damage from the left">
+  <figcaption>A lot of damage from the left side, from two damage dealers.</figcaption>
+</figure>
+</div>
+<h3 id="several-hits-at-once">Several hits at once</h3>
+<p>Up to <strong>4</strong> indicators can be on screen at once. Hits that come from about the same direction are merged into one indicator, so a burst of machine-gun fire doesn't fill all four. If all four are busy, the faintest one is replaced.</p>
+<p>Each indicator fades in, holds and fades out. You can change the timing on the component:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component setting</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default Fade In Seconds</td>
+<td>0.08</td>
+</tr>
+<tr>
+<td>Default Hold Seconds</td>
+<td>0.35</td>
+</tr>
+<tr>
+<td>Default Fade Out Seconds</td>
+<td>0.6</td>
+</tr>
+<tr>
+<td>Default Spread</td>
+<td>0.15 (used by From World Location and From Actor)</td>
+</tr>
+</tbody>
+</table></div>
+<p>On the volume, two settings change how the indicators look:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vignette Damage Master Intensity</td>
+<td>How visible damage indicators are. <code>0</code> hides them.</td>
+<td>1.0</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Vignette Damage Edge Bias</td>
+<td>How tightly the color hugs the screen edge. Lower lets it spread further toward the center.</td>
+<td>1.5</td>
+<td>0.1 to 8</td>
+</tr>
+</tbody>
+</table></div>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="lens-distortion.html"><span>Previous</span>Lens distortion</a>
+      <a class="next" href="tonemapper.html"><span>Next</span>Tonemapper</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

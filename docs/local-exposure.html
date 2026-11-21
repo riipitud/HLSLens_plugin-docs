@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local exposure · HLSLens documentation</title>
+  <meta name="description" content="Local exposure in HLSLens: quality modes and highlight rescue.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html" aria-current="page">Local exposure</a>
+          <ul class="on-page">
+            <li><a href="#quality">Quality</a></li>
+            <li><a href="#cross-bilateral-2d-settings">Cross Bilateral 2D settings</a></li>
+            <li><a href="#local-exposure-and-lens-flares">Local exposure and lens flares</a></li>
+          </ul>
+        </li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Color</p>
+      <h1>Local exposure</h1>
+
+<p>Normal auto exposure picks one brightness for the whole frame. In a scene with a dark room and a bright window that means either the room is black or the window is blown out. Local exposure fixes that by adjusting the brightness in different parts of the image separately, so dark areas get brighter and bright areas get darker while the overall exposure stays the same.</p>
+<p>Unreal already has local exposure, and HLSLens keeps it working. The engine's own local exposure settings (Highlight Contrast, Shadow Contrast, Detail Strength and so on) are moved into a <strong>Local Exposure</strong> category on the volume, and HLSLens adds a choice of method plus a few settings of its own.</p>
+<p>Local exposure is applied before bloom and lens flares, so they react to the locally adjusted image.</p>
+<h2 id="quality">Quality</h2>
+<p><strong>Local Exposure Quality</strong> picks the method.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cross Bilateral 2D</td>
+<td>The default. HLSLens' own method. It unlocks the four settings below.</td>
+</tr>
+<tr>
+<td>Bilateral Grid</td>
+<td>The same approach the engine uses. Pick it if you want local exposure to behave exactly like in a normal Post Process Volume.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="cross-bilateral-2d-settings">Cross Bilateral 2D settings</h2>
+<p>These only appear when Local Exposure Quality is Cross Bilateral 2D. At their defaults they do nothing extra, so turning them up is optional.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Highlight Rescue Strength</td>
+<td>Local exposure tends to pull down the brightest spots in an area, which can make lights look dull. This brings the brightest pixels in each area back up so lights keep their punch. <code>0</code> is off.</td>
+<td>0</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Detail Variance Sensitivity</td>
+<td>Makes the engine's Detail Strength adapt to the image. Busy, high-contrast areas get more detail and flat areas get less, so you can push detail without making smooth walls or the sky noisy. <code>0</code> applies Detail Strength evenly.</td>
+<td>0</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Center Weight Radius</td>
+<td>Limits Highlight Rescue to the middle of the screen. How far from the center it reaches, where 0.5 is about the edge of the screen. The default of 1 covers the whole screen.</td>
+<td>1</td>
+<td>0 to 10</td>
+</tr>
+<tr>
+<td>Center Weight Falloff</td>
+<td>How softly Highlight Rescue fades out past the Center Weight Radius.</td>
+<td>1</td>
+<td>0 to 10</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>Start with Highlight Rescue Strength around 1 and see if your lights look brighter. If it only matters for what the player looks at, bring Center Weight Radius down to about 0.3 so the edges of the screen are left alone.</p>
+</aside>
+<h2 id="local-exposure-and-lens-flares">Local exposure and lens flares</h2>
+<p>Lens flares and streaks see the image after local exposure. That keeps them consistent with what's on screen, but it can also make flares from very bright lights a bit weaker. If your flares lose punch after turning local exposure up, try Highlight Rescue Strength first.</p>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="lut-blending.html"><span>Previous</span>LUT blending</a>
+      <a class="next" href="console-variables.html"><span>Next</span>Console variables</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

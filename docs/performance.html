@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Performance · HLSLens documentation</title>
+  <meta name="description" content="HLSLens GPU cost compared with the engine's default post-processing.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html" aria-current="page">Performance</a>
+          <ul class="on-page">
+            <li><a href="#reducing-the-cost">Reducing the cost</a></li>
+            <li><a href="#benchmark-summary">Benchmark summary</a></li>
+            <li><a href="#tests-1-and-2-soul-city">Tests 1 and 2: Soul City</a></li>
+            <li><a href="#tests-3-to-5-custom-test-level">Tests 3 to 5: custom test level</a></li>
+          </ul>
+        </li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Reference</p>
+      <h1>Performance</h1>
+
+<p>In short, HLSLens costs more GPU time than the engine's default post-processing. It was slower than the engine's default setup (ACES tonemapper, lens flares and bloom) in every benchmark below. With a typical set of effects it added <strong>0.25 to 0.64 ms</strong>, about 12% to 23%. With every major effect on in Soul City it added 0.65 ms (about 46%), but the engine had no chromatic aberration or film grain in that test, so it isn't a fair comparison.</p>
+<p>Your numbers will be different. The cost depends on your hardware and resolution, and on the scene: how many bright surfaces there are when glare is on, which effects you use, which threshold mode bloom and lens flares use, whether anything reads scene depth, and so on. Take these as examples, not promises.</p>
+<h2 id="reducing-the-cost">Reducing the cost</h2>
+<p>Leave unused effects at exactly 0.0, then they don't run at all. Switching the glare from Three Streak to Directional Blur saved 0.19 ms in the custom test level, and ACES instead of the Perceptual tonemapper saved about 0.14 ms there. Setting <a href="bloom.html#threshold">threshold mode</a> to Shared when you use both bloom and lens flares also helps, and the lens flare profile has a Performance quality option.</p>
+<h2 id="benchmark-summary">Benchmark summary</h2>
+<p>The engine default in every test: ACES tonemapper, lens flares and bloom.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Scene</th>
+<th>HLSLens configuration</th>
+<th>Engine / HLSLens</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Soul City</td>
+<td>Perceptual tonemapper, lens flares, bloom, halation</td>
+<td>1.40 / 1.65 ms</td>
+<td>+0.25 ms (+18%)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Soul City</td>
+<td>Every major effect: Perceptual tonemapper, lens flares (Three Streak glare), bloom, chromatic aberration (blurred), film grain, halation</td>
+<td>1.40 / 2.05 ms</td>
+<td>+0.65 ms (+46%)*</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Custom level</td>
+<td>Perceptual tonemapper, lens flares (Three Streak glare), bloom, halation</td>
+<td>2.75 / 3.39 ms</td>
+<td>+0.64 ms (+23%)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Custom level</td>
+<td>ACES tonemapper, lens flares (Directional Blur glare), bloom, halation</td>
+<td>2.74 / 3.06 ms</td>
+<td>+0.32 ms (+12%)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Custom level</td>
+<td>Perceptual tonemapper, lens flares (Directional Blur glare), bloom, halation</td>
+<td>2.74 / 3.20 ms</td>
+<td>+0.46 ms (+17%)</td>
+</tr>
+</tbody>
+</table></div>
+<p>* The engine baseline in test 2 did not include chromatic aberration or film grain, so it is not a like-for-like comparison.</p>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>The PostProcessing GPU cost already includes bloom, tonemapping and the other post-process passes.</p>
+</aside>
+<h2 id="tests-1-and-2-soul-city">Tests 1 and 2: Soul City</h2>
+<p>Soul City is an Epic Games sample. The default post-processing was kept as Epic set it up, with only the exposure reduced. Measured on a GTX 1080 at 1440p.</p>
+<p>In the engine's run only lens flares, bloom and tonemapping were enabled. The HLSLens run also had halation enabled.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/performance/soul-city-engine.png -->
+  <img src="assets/placeholder.svg" alt="Engine default post-processing cost in Soul City">
+  <figcaption>Engine default: 1.40 ms (ACES tonemapper, lens flares, bloom).</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/performance/soul-city-hlslens.png -->
+  <img src="assets/placeholder.svg" alt="HLSLens post-processing cost in Soul City">
+  <figcaption>HLSLens: 1.65 ms (Perceptual tonemapper, lens flares, bloom, halation). Test 1: +0.25 ms, about 18%.</figcaption>
+</figure>
+</div>
+<figure>
+  <!-- Replace with: assets/images/performance/soul-city-all-effects.png -->
+  <img src="assets/placeholder.svg" alt="HLSLens cost with every major effect in Soul City">
+  <figcaption>Test 2, HLSLens with every major effect: 2.05 ms (Perceptual tonemapper, lens flares with Three Streak glare, bloom, blurred chromatic aberration, film grain, halation). Not comparable with the engine result, which had chromatic aberration and film grain disabled. It shows how much the extra effects add.</figcaption>
+</figure>
+<h2 id="tests-3-to-5-custom-test-level">Tests 3 to 5: custom test level</h2>
+<p>The same scene with different HLSLens configurations.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/performance/custom-engine-1.png -->
+  <img src="assets/placeholder.svg" alt="Engine default cost in the custom level">
+  <figcaption>Engine default: 2.75 ms.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/performance/custom-test-3.png -->
+  <img src="assets/placeholder.svg" alt="HLSLens test 3 cost">
+  <figcaption>Test 3: 3.39 ms (Perceptual tonemapper, Three Streak glare, bloom, halation). +0.64 ms, about 23%.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/performance/custom-engine-2.png -->
+  <img src="assets/placeholder.svg" alt="Engine default cost in the custom level, second run">
+  <figcaption>Engine default: 2.74 ms.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/performance/custom-test-4.png -->
+  <img src="assets/placeholder.svg" alt="HLSLens test 4 cost">
+  <figcaption>Test 4: 3.06 ms (ACES tonemapper, Directional Blur glare, bloom, halation). +0.32 ms, about 12%.</figcaption>
+</figure>
+</div>
+<figure>
+  <!-- Replace with: assets/images/performance/custom-test-5.png -->
+  <img src="assets/placeholder.svg" alt="HLSLens test 5 cost">
+  <figcaption>Test 5: 3.20 ms (Perceptual tonemapper, Directional Blur glare, bloom, halation). +0.46 ms, about 17%.</figcaption>
+</figure>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="console-variables.html"><span>Previous</span>Console variables</a>
+      <a class="next" href="troubleshooting.html"><span>Next</span>Troubleshooting</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

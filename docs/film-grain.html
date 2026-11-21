@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Film grain · HLSLens documentation</title>
+  <meta name="description" content="Procedural and texture-based film grain, tonal response and every setting.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html" aria-current="page">Film grain</a>
+          <ul class="on-page">
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#grain">Grain</a></li>
+            <li><a href="#values-shadows-midtones-and-highlights">Values: shadows, midtones and highlights</a></li>
+            <li><a href="#texture">Texture</a></li>
+          </ul>
+        </li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html">LUT blending</a></li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Effects</p>
+      <h1>Film grain</h1>
+
+<p>Film grain is the fine, noisy texture in film footage. It comes from the tiny light-sensitive particles in the film. In a game it breaks up a clean, flat image and makes a scene feel like it was filmed.</p>
+<p>HLSLens makes the grain on the GPU, so you don't need a texture. It changes at film speed, 24 times a second by default, no matter how fast your game runs. If you'd rather use a scan of real film, you can do that too.</p>
+<div class="glance">
+<dl>
+<dt>Where to find it</dt>
+<dd>Film Grain on the volume, split into Grain, Values and Texture</dd>
+<dt>Default</dt>
+<dd>Off. Raise Intensity above 0 to turn it on.</dd>
+<dt>Cost</dt>
+<dd>Very low</dd>
+</dl>
+</div>
+<figure>
+  <!-- Replace with: assets/images/film-grain/dark-scene.png -->
+  <img src="assets/placeholder.svg" alt="Film grain on a dark scene next to the Film Grain settings">
+  <figcaption>Film grain on a dark scene, next to the Film Grain settings.</figcaption>
+</figure>
+<h2 id="how-it-works">How it works</h2>
+<p>The grain is added before the tonemapper, together with bloom and halation, and that has a few nice side effects. Black stays black, the grain never lifts the dark areas. The tonemapper squeezes the grain in the highlights afterward, like on a film print. It also sits on top of the bloom and halation glow instead of under it. And it stays the same size at 1080p and at 4K.</p>
+<p>The grain pattern is built once and then only moved around, which is why it's so cheap. Only changing Seed, Grain Size, Blue Grain Size or Shape builds a new one, so everything else is safe to animate.</p>
+<h2 id="grain">Grain</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intensity</td>
+<td>Overall strength. <code>0</code> turns the grain off.</td>
+<td>0</td>
+<td>0 to 0.5</td>
+</tr>
+<tr>
+<td>Grain Size</td>
+<td>Size of the grain in pixels. Scales with the resolution. <code>0</code> is single-pixel noise.</td>
+<td>1.5</td>
+<td>0 to 6</td>
+</tr>
+<tr>
+<td>Color Amount</td>
+<td><code>0</code> puts the same grain on every channel, so it looks black and white. <code>1</code> gives each channel its own grain. The strength stays the same either way.</td>
+<td>0.5</td>
+<td>0 to 1</td>
+</tr>
+<tr>
+<td>Blue Grain Size</td>
+<td>Size of the blue grain compared to Grain Size. Real film has different grain sizes per color. Needs Color Amount above 0.</td>
+<td>1.25</td>
+<td>0.5 to 4</td>
+</tr>
+<tr>
+<td>Shape</td>
+<td><code>1</code> is normal grain. Above <code>1</code> gives sparse, spiky grain, below <code>1</code> flatter grain. The strength stays the same.</td>
+<td>1.0</td>
+<td>0.5 to 2</td>
+</tr>
+<tr>
+<td>Tint</td>
+<td>Multiplies the grain strength per color channel.</td>
+<td>White</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Frame Rate</td>
+<td>How many times per second the grain changes.</td>
+<td>24</td>
+<td>1 to 120</td>
+</tr>
+<tr>
+<td>Seed</td>
+<td>Changes the grain pattern.</td>
+<td>0</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>Lower the Frame Rate for a choppier, more vintage look. The grain runs at this rate whatever your game's FPS is, and it keeps moving when the game is paused.</p>
+</aside>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/film-grain/color-amount-0.png -->
+  <img src="assets/placeholder.svg" alt="Color Amount 0">
+  <figcaption>Color Amount 0</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/film-grain/color-amount-1.png -->
+  <img src="assets/placeholder.svg" alt="Color Amount 1">
+  <figcaption>Color Amount 1</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/film-grain/shape-0-5.png -->
+  <img src="assets/placeholder.svg" alt="Shape 0.5">
+  <figcaption>Shape 0.5</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/film-grain/shape-2.png -->
+  <img src="assets/placeholder.svg" alt="Shape 2">
+  <figcaption>Shape 2</figcaption>
+</figure>
+</div>
+<h2 id="values-shadows-midtones-and-highlights">Values: shadows, midtones and highlights</h2>
+<p>The grain doesn't have to be equally strong everywhere. Real film grain shows most in the shadows and midtones, and the defaults follow that.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grain Intensity Shadows</td>
+<td>Grain strength in the dark areas.</td>
+<td>1.2</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Grain Intensity Midtones</td>
+<td>Grain strength in the middle tones.</td>
+<td>1.0</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Grain Intensity Highlights</td>
+<td>Grain strength in the bright areas.</td>
+<td>0.5</td>
+<td>0 to 2</td>
+</tr>
+<tr>
+<td>Shadows Split (EV)</td>
+<td>Where shadows turn into midtones, in stops from mid grey.</td>
+<td>−2</td>
+<td>−6 to 2</td>
+</tr>
+<tr>
+<td>Highlights Split (EV)</td>
+<td>Where midtones turn into highlights, in stops from mid grey.</td>
+<td>2</td>
+<td>−2 to 6</td>
+</tr>
+</tbody>
+</table></div>
+<p>So by default anything more than two stops darker than mid grey counts as shadow, and anything more than two stops brighter counts as highlight.</p>
+<aside class="callout tip">
+<p class="callout-title">Tip</p>
+<p>Keep Highlights lower than Shadows and Midtones. Strong grain in bright areas tends to look a bit weird.</p>
+</aside>
+<h2 id="texture">Texture</h2>
+<p>Set a <strong>Grain Texture</strong> to use your own grain, for example a scan of real film. Grain Size, Blue Grain Size and Shape are ignored then. Frame Rate, Seed, Tint, Color Amount and the Values settings still work.</p>
+<p><strong>Texture Scale</strong> (default 1) sets how many screen pixels one texel covers. At 1 it's one to one. Other values filter the texture, which lowers the grain contrast a little. A texture doesn't scale with resolution, so a scan that looks right at 1080p looks finer at 4K.</p>
+<p>The texture needs to be:</p>
+<ul>
+<li>RGB. The green channel doubles as the black and white grain.</li>
+<li>sRGB off, no mips and no compression. Compression adds blocky artifacts.</li>
+<li>Centered on mid grey. 0.5 means no change, darker values darken the image and brighter values brighten it.</li>
+<li>Seamless, because it's tiled across the screen.</li>
+</ul>
+<p>Virtual textures don't work with post-processing, the volume warns you if you pick one.</p>
+<aside class="callout note">
+<p class="callout-title">Note</p>
+<p>With a texture, Color Amount can make the grain a bit stronger, up to about 1.4× on the green channel. Check the look again after changing it.</p>
+</aside>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="chromatic-aberration.html"><span>Previous</span>Chromatic aberration</a>
+      <a class="next" href="lens-distortion.html"><span>Next</span>Lens distortion</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>

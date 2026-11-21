@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LUT blending · HLSLens documentation</title>
+  <meta name="description" content="Blend LUTs and color correction by scene depth, a custom mask or time of day.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/images/logo.png" alt="" width="28" height="28">
+      <span class="wordmark"><b>HLSL</b>ens</span>
+      <span class="brand-sub">Documentation</span>
+    </a>
+    <a class="menu-link" href="#site-nav">Menu</a>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="site-nav" aria-label="Documentation">
+      <p class="nav-group">Getting started</p>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="quick-start.html">Quick start</a></li>
+      </ul>
+      <p class="nav-group">Effects</p>
+      <ul>
+        <li><a href="lens-flares.html">Lens flares</a></li>
+        <li><a href="bloom.html">Bloom</a></li>
+        <li><a href="halation.html">Halation</a></li>
+        <li><a href="chromatic-aberration.html">Chromatic aberration</a></li>
+        <li><a href="film-grain.html">Film grain</a></li>
+        <li><a href="lens-distortion.html">Lens distortion</a></li>
+        <li><a href="vignette.html">Vignette and damage indicators</a></li>
+      </ul>
+      <p class="nav-group">Color</p>
+      <ul>
+        <li><a href="tonemapper.html">Tonemapper</a></li>
+        <li><a href="lut-blending.html" aria-current="page">LUT blending</a>
+          <ul class="on-page">
+            <li><a href="#blend-modes">Blend modes</a></li>
+            <li><a href="#depth-based-blending">Depth-based blending</a></li>
+            <li><a href="#custom-mask-blending">Custom mask blending</a></li>
+            <li><a href="#time-of-day-blending">Time-of-Day blending</a></li>
+          </ul>
+        </li>
+        <li><a href="local-exposure.html">Local exposure</a></li>
+      </ul>
+      <p class="nav-group">Reference</p>
+      <ul>
+        <li><a href="console-variables.html">Console variables</a></li>
+        <li><a href="performance.html">Performance</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <p class="kicker">Color</p>
+      <h1>LUT blending</h1>
+
+<p>LUT blending lets one volume hold two complete color grades and blend between them. It's not just two LUT textures: each grade has the full set of color correction settings too, so you can, for example, give the shadows a warmer tint close to the camera and a colder one in the distance.</p>
+<p>The two grades are <strong>ChannelA</strong> and <strong>ChannelB</strong> in the Color Correction category. ChannelA is always there. ChannelB appears once you pick a blend mode that uses it.</p>
+<p>The blending is cached heavily, so on average the LUT pass runs less often than in the engine's own post-processing.</p>
+<h2 id="blend-modes">Blend modes</h2>
+<p>Set <strong>Blend Mode</strong> in the LUT category. Only one mode can be active at a time.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Blend Mode</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uniform (Screen-Wide)</td>
+<td>The default. No blending, only ChannelA is used, the same as a normal volume.</td>
+</tr>
+<tr>
+<td>Depth-Based (Near to Far)</td>
+<td>ChannelA close to the camera, ChannelB far away.</td>
+</tr>
+<tr>
+<td>Custom Mask</td>
+<td>A grayscale texture decides where each channel shows on screen.</td>
+</tr>
+<tr>
+<td>Time of Day</td>
+<td>ChannelA during the day, ChannelB at night, blended by the current time.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Blend Sharpness</strong> (default 1, range 0.1 to 10) appears for Depth-Based and Custom Mask. It controls the shape of the transition: higher values give a harder edge between the two grades.</p>
+<h2 id="depth-based-blending">Depth-based blending</h2>
+<p>Everything closer than <strong>Blend Distance Start</strong> uses ChannelA, everything beyond <strong>Blend Distance End</strong> uses ChannelB, and the space between is a smooth blend. You'll find these in the <strong>Depth Blend</strong> group.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blend Distance Start</td>
+<td>Distance in meters where the blend from ChannelA to ChannelB begins.</td>
+<td>15</td>
+</tr>
+<tr>
+<td>Blend Distance End</td>
+<td>Distance in meters where ChannelB is fully active. Always keep it larger than Start.</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Invert Depth Blend</td>
+<td>Swaps the direction, so near pixels use ChannelB and far pixels ChannelA.</td>
+<td>Off</td>
+</tr>
+</tbody>
+</table></div>
+<figure>
+  <!-- Replace with: assets/images/lut-blending/depth-desaturate.png -->
+  <img src="assets/placeholder.svg" alt="Depth-based blending desaturating the background">
+  <figcaption>The background is desaturated while the foreground keeps its colors.</figcaption>
+</figure>
+<p>It's also an easy way to make distant fog, with a LUT, with the color correction settings, or both.</p>
+<figure>
+  <!-- Replace with: assets/images/lut-blending/depth-fog-night.png -->
+  <img src="assets/placeholder.svg" alt="Distant fog made with depth-based blending">
+  <figcaption>Distant fog made with depth-based blending.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lut-blending/depth-fog-day.png -->
+  <img src="assets/placeholder.svg" alt="Stylized dark blue fog during the day">
+  <figcaption>The same idea during the day. I wanted the fog to stay stylized and dark blue, and you can see how completely the colors change with distance.</figcaption>
+</figure>
+<h2 id="custom-mask-blending">Custom mask blending</h2>
+<p>Add a grayscale texture as the <strong>Custom Blend Mask</strong>. Black shows ChannelA, white shows ChannelB, and grey mixes them. The texture is stretched to fill the screen whatever its size or aspect ratio.</p>
+<p>This is really useful for weapon scopes. You can tint, desaturate or darken what's seen through the scope, or everything around it.</p>
+<div class="grid">
+<figure>
+  <!-- Replace with: assets/images/lut-blending/scope-1.png -->
+  <img src="assets/placeholder.svg" alt="Desaturated scene with a normal-color scope view">
+  <figcaption>The scene is desaturated, the scope shows normal colors.</figcaption>
+</figure>
+<figure>
+  <!-- Replace with: assets/images/lut-blending/scope-2.png -->
+  <img src="assets/placeholder.svg" alt="Saturated, darkened scene with a desaturated scope view">
+  <figcaption>The scene is saturated and darker, the scope is desaturated.</figcaption>
+</figure>
+</div>
+<aside class="callout warning">
+<p class="callout-title">Moving scopes</p>
+<p>The mask is fixed to the screen, so it has to match where the scope actually is. If the scope moves, drive the mask from a render target, or only show the effect when the weapon is fairly still.</p>
+</aside>
+<p>It works for UI too. Unreal can blur and tint the background of a widget, but it can't change the colors of the scene behind it. With a custom mask you can saturate or desaturate the scene behind a HUD element.</p>
+<p>Virtual textures don't work with post-processing, the volume warns you if you pick one as a mask.</p>
+<h2 id="time-of-day-blending">Time-of-Day blending</h2>
+<p>In this mode ChannelA is the day look and ChannelB the night look. You tell HLSLens what time it is, and it blends both the LUTs and the color correction settings for you. No need for two volumes with weights you change by hand.</p>
+<h3 id="passing-in-the-time">Passing in the time</h3>
+<p>The time goes to the <strong>Post Process Settings Subsystem</strong>:</p>
+<ol>
+<li>Open a Blueprint that knows the time, for example your clock Blueprint or a day and night system.</li>
+<li>Search for <strong>Post Process Settings Subsystem</strong> in the graph.</li>
+<li>Drag off it and type <strong>Set Time</strong> to see the setters, then pick the one that matches your time format.</li>
+<li>Call it regularly, every frame or every second, depending on how smooth you want it.</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Takes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Set Time Of Day Hours 24</td>
+<td>Decimal hours. 14.5 is 2:30 PM.</td>
+</tr>
+<tr>
+<td>Set Time Of Day Hours Minutes</td>
+<td>Hours and minutes as two integers.</td>
+</tr>
+<tr>
+<td>Set Time Of Day Continental 2400</td>
+<td>0 to 2400. 1430 is 2:30 PM.</td>
+</tr>
+<tr>
+<td>Set Time Of Day Normalized</td>
+<td>0 to 1. 0.25 is 6 AM, 0.5 noon, 0.75 6 PM.</td>
+</tr>
+<tr>
+<td>Set Time Of Day Timecode</td>
+<td>An Unreal Timecode.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Values outside the range wrap around, so 25 hours is 1 AM.</p>
+<figure>
+  <!-- Replace with: assets/images/lut-blending/time-of-day-blueprint.png -->
+  <img src="assets/placeholder.svg" alt="Blueprint setup for Time-of-Day LUT blending">
+  <figcaption>Setting up Time-of-Day LUT blending in a Blueprint.</figcaption>
+</figure>
+<h3 id="time-jumps">Time jumps</h3>
+<p>If the time jumps by more than 15 minutes, for example when the player sleeps or you skip time in a cutscene, the blend catches up smoothly in a fraction of a second instead of snapping. You can change that with <strong>Set Time Smoothing</strong>: the first value is how many seconds it takes to close half the gap (0.4 by default, 0 turns smoothing off), and the second is how big a jump in minutes counts. After a level load, or whenever you do want a hard cut, call <strong>Snap Time Of Day Normalized</strong> instead.</p>
+<h3 id="when-day-and-night-start">When day and night start</h3>
+<p>The <strong>Time of Day: Time thresholds</strong> group in the LUT category sets the transitions. Each threshold has hours and minutes (0 to 59).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Threshold</th>
+<th>What it means</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Night to Day Start</td>
+<td>The day look starts blending in.</td>
+<td>5:00</td>
+</tr>
+<tr>
+<td>Night to Day End</td>
+<td>The night look is fully gone.</td>
+<td>6:00</td>
+</tr>
+<tr>
+<td>Day to Night Start</td>
+<td>The night look starts blending in.</td>
+<td>18:00</td>
+</tr>
+<tr>
+<td>Day to Night End</td>
+<td>Fully night.</td>
+<td>19:00</td>
+</tr>
+</tbody>
+</table></div>
+<p>So with the defaults it's fully night until 5:00, fully day from 6:00 to 18:00 and fully night again after 19:00. The blend in between eases in and out rather than moving at a constant speed.</p>
+<p>To see what the blend is doing, turn on the overlay with <code>r.HLSLens.TimeOfDay.Debug 1</code>. It shows the current time, how much of each LUT is used and a 24-hour timeline.</p>
+<figure>
+  <!-- Replace with: assets/images/lut-blending/time-of-day-debug.png -->
+  <img src="assets/placeholder.svg" alt="The Time-of-Day debug overlay">
+  <figcaption>Here the time is 5:16, with Night to Day set from 4:00 to 8:00. Because the blend eases in, the night LUT (LUT B) still has most of the weight at 76%.</figcaption>
+</figure>
+
+      <nav class="pager" aria-label="Previous and next page">
+      <a class="prev" href="tonemapper.html"><span>Previous</span>Tonemapper</a>
+      <a class="next" href="local-exposure.html"><span>Next</span>Local exposure</a>
+      </nav>
+    </main>
+  </div>
+</body>
+</html>
