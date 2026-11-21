@@ -16,6 +16,11 @@
   --label: #5b45d6;
   --gold-text: #8a6414;
   --warn: #c4502b;
+  --warn-bg: #fbece6;
+  --ok: #1f7a54;
+  --ok-bg: #e7f4ed;
+  --q-bg: #eeebff;
+  --gold-bg: #fbf3df;
 
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -32,6 +37,11 @@
     --label: #a99bff;
     --gold-text: #efc878;
     --warn: #f08a5d;
+    --warn-bg: #2a1a14;
+    --ok: #6fd1a0;
+    --ok-bg: #12241b;
+    --q-bg: #1d1a2e;
+    --gold-bg: #231d10;
   }
 }
 
@@ -167,7 +177,13 @@ main { min-width: 0; }
 
 h1, h2, h3 { line-height: 1.25; font-weight: 600; }
 h1 { margin: 4px 0 20px; font-size: 2.2rem; letter-spacing: -0.015em; }
-h2 { margin: 56px 0 14px; font-size: 1.45rem; scroll-margin-top: 24px; }
+h2 {
+  margin: 56px 0 16px;
+  padding-left: 14px;
+  border-left: 4px solid var(--gold);
+  font-size: 1.45rem;
+  scroll-margin-top: 24px;
+}
 h3 { margin: 32px 0 10px; font-size: 1.1rem; scroll-margin-top: 24px; }
 
 p, ul, ol { margin: 0 0 16px; }
@@ -210,8 +226,8 @@ th, td {
 }
 
 th {
-  border-bottom: 2px solid var(--text);
-  color: var(--muted);
+  border-bottom: 2px solid var(--gold);
+  color: var(--gold-text);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -227,7 +243,8 @@ td:first-child { font-weight: 600; }
   margin: 24px 0;
   padding: 14px 18px;
   border-radius: 6px;
-  background: var(--surface);
+  border-left: 4px solid var(--gold);
+  background: var(--gold-bg);
 }
 .glance dl {
   display: grid;
@@ -250,7 +267,8 @@ td:first-child { font-weight: 600; }
 .callout {
   margin: 24px 0;
   padding: 12px 18px;
-  border-left: 3px solid var(--muted);
+  border-left: 4px solid var(--muted);
+  border-radius: 0 6px 6px 0;
   background: var(--surface);
 }
 .callout p:last-child { margin-bottom: 0; }
@@ -263,44 +281,126 @@ td:first-child { font-weight: 600; }
   text-transform: uppercase;
 }
 
-.callout.tip { border-color: var(--link); }
+.callout.tip { border-color: var(--link); background: var(--q-bg); }
 .callout.tip .callout-title { color: var(--link); }
-.callout.warning { border-color: var(--warn); }
+.callout.warning { border-color: var(--warn); background: var(--warn-bg); }
 .callout.warning .callout-title { color: var(--warn); }
-.callout.performance { border-color: var(--gold-text); }
+.callout.performance { border-color: var(--gold-text); background: var(--gold-bg); }
 .callout.performance .callout-title { color: var(--gold-text); }
 
 /* Collapsible block that isn't a FAQ (e.g. advanced settings) */
-.callout details { margin-top: 0; }
+.callout details { margin: 0; border: 0; border-radius: 0; background: none; }
+.callout details > :not(summary), .callout details[open] > summary + * { padding: 0; background: none; border: 0; }
+.callout summary { padding-left: 0; }
+.callout summary::before, .callout details > p:first-of-type::before { content: none; }
 
 /* ---------- FAQ / collapsibles ---------- */
+/* Every <details> is a card. Questions get violet "Q"/"A" markers,
+   problems (.problems) get a red "Problem" tag and a green "Fix" panel. */
 
 details {
-  border-bottom: 1px solid var(--rule);
+  margin: 0 0 10px;
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--label);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
 }
-h2 + details, details:first-of-type { border-top: 1px solid var(--rule); }
+details[open] { border-color: var(--label); }
 
 summary {
   position: relative;
-  padding: 12px 28px 12px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 13px 44px 13px 16px;
   font-weight: 600;
   cursor: pointer;
   list-style: none;
 }
 summary::-webkit-details-marker { display: none; }
+summary:hover { background: var(--q-bg); }
+summary:focus-visible { outline: 2px solid var(--link); outline-offset: -2px; }
+
+summary::before {
+  content: "Q";
+  flex: none;
+  min-width: 1.6em;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--q-bg);
+  color: var(--label);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
 summary::after {
   content: "+";
   position: absolute;
-  right: 4px;
-  top: 10px;
-  color: var(--muted);
-  font-size: 1.2rem;
+  right: 16px;
+  top: 9px;
+  color: var(--label);
+  font-size: 1.4rem;
   font-weight: 400;
+  line-height: 1.4;
 }
-details[open] summary::after { content: "−"; }
+details[open] summary::after { content: "\2212"; }
 
-details > :not(summary) { margin-left: 0; }
-details > *:last-child { margin-bottom: 16px; }
+/* answer / solution body */
+details > :not(summary) { margin-left: 0; margin-right: 0; padding: 0 18px 0 54px; }
+details[open] > summary + * { padding-top: 14px; border-top: 1px solid var(--rule); background: var(--bg); }
+details[open] > :not(summary) { background: var(--bg); }
+details > *:last-child { margin-bottom: 0; padding-bottom: 16px; }
+details > pre, details > .table-wrap { margin-left: 54px; margin-right: 18px; padding-left: 16px; padding-right: 16px; }
+details > p:first-of-type::before {
+  content: "A";
+  position: absolute;
+  margin-left: -38px;
+  padding: 0 6px;
+  min-width: 1.6em;
+  border-radius: 4px;
+  background: var(--gold-bg);
+  color: var(--gold-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  line-height: 1.65;
+}
+details > p:first-of-type { position: relative; }
+
+/* Troubleshooting: problem vs. solution */
+.problems details { border-left-color: var(--warn); }
+.problems details[open] { border-color: var(--warn); }
+.problems summary:hover { background: var(--warn-bg); }
+.problems summary::before {
+  content: "Problem";
+  background: var(--warn-bg);
+  color: var(--warn);
+  text-transform: uppercase;
+  padding: 1px 8px;
+  min-width: 6.2em;
+}
+.problems summary::after { color: var(--warn); }
+.problems details[open] { background: var(--ok-bg); }
+.problems details[open] > summary { background: var(--warn-bg); }
+.problems details pre { border-radius: 0; background: var(--bg); margin-bottom: 16px; }
+.problems details > *:not(summary) { background: var(--ok-bg) !important; border-top: 0 !important; }
+.problems details[open] > summary + * { border-top: 1px solid var(--ok) !important; }
+.problems details > p:first-of-type::before {
+  content: "Fix";
+  background: var(--ok);
+  color: var(--bg);
+  text-transform: uppercase;
+  min-width: 3.4em;
+  margin-left: -56px;
+}
+.problems details > :not(summary) { padding-left: 74px; }
+.problems details > pre, .problems details > .table-wrap { margin-left: 0; margin-right: 0; padding-left: 74px; }
+.problems details code { background: var(--bg); }
+
+.section-note { color: var(--muted); font-size: 0.92rem; margin-top: -4px; }
 
 /* ---------- Figures ---------- */
 
