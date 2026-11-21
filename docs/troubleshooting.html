@@ -62,6 +62,7 @@
 
 <p>Fixes for the problems people run into most, plus a few general questions. Each effect page also has its own Common questions section.</p>
 <h2 id="questions">Questions</h2>
+<div class="faq">
 <details>
 <summary>Does HLSLens work in multiplayer projects?</summary>
 <p>Yes, there's no special setup for either. The only exception is the <a href="vignette.html#damage-indicators">damage indicator</a>, which is singleplayer only for now.</p>
@@ -74,7 +75,10 @@
 <summary>Does HLSLens modify engine files?</summary>
 <p>No. The plugin doesn't delete or modify any engine files.</p>
 </details>
+</div>
 <h2 id="problems">Problems</h2>
+<p class="section-note">Find the symptom, then follow the fix underneath it.</p>
+<div class="problems">
 <details>
 <summary>My scene looks distorted or oversaturated.</summary>
 <p>Make sure your level has an <strong>Advanced Post Process Volume</strong> and that the camera is inside it, or that it's set to Infinite Extent (Unbound). Without one, the custom effects have nothing to read their settings from.</p>
@@ -92,8 +96,7 @@
 <p>First check other plugins and assets, something else might be overriding the exposure. Ultra Dynamic Sky does this by default, for example. Turn off its <strong>Apply Exposure Settings</strong> option if you want to control the exposure from the volume.</p>
 <p>A quick test: try changing the exposure on the engine's default Post Process Volume. If that doesn't work either, the problem is most likely in your project settings or another asset. Also make sure <strong>Game settings</strong> is enabled if you want the volume to control exposure.</p>
 <p><strong>If that didn't help:</strong> this can also happen in projects that have been upgraded through several engine versions. Open this material from the HLSLens plugin content:</p>
-<p><code>text
-/AdvancedPostProcess/HLSLens/Materials/M_EnginePPDisabler.M_EnginePPDisabler</code></p>
+<pre><code>/AdvancedPostProcess/HLSLens/Materials/M_EnginePPDisabler.M_EnginePPDisabler</code></pre>
 <p>Enable <strong>Disable Pre Exposure Scale</strong> in the material. The scene gets brighter, so you'll probably have to lower the exposure compensation, but you'll have full control of the exposure. Only do this when you really need it. It isn't the default because most projects don't need it and it takes some extra adjusting.</p>
 </details>
 <details>
@@ -132,6 +135,7 @@
 <summary>My texture doesn't work in a setting.</summary>
 <p>Virtual textures don't work with post-processing. The volume warns you when you pick one. Use a regular texture for dirt masks, gradients, grain textures and blend masks.</p>
 </details>
+</div>
 
       <nav class="pager" aria-label="Previous and next page">
       <a class="prev" href="performance.html"><span>Previous</span>Performance</a>
