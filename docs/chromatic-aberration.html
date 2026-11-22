@@ -61,8 +61,8 @@
       <p class="kicker">Effects</p>
       <h1>Chromatic aberration</h1>
 
-<p>Chromatic aberration is the colored fringing you see near the edges of a photo. A real lens bends each color of light by a slightly different amount, so red, green and blue don't land in exactly the same place. You get thin colored edges around bright and high-contrast things, and they get stronger toward the corners.</p>
-<p>HLSLens recreates that with a lot more control over the look, and it can limit the effect to a distance range so only the background fringes.</p>
+<p>Chromatic aberration is colored fringing you see near the edges of a photo. A real lens bends each color of light by a slightly different amount. So red, green and blue don't land in exactly the same place. You get thin colored edges around bright high-contrast things and they get stronger toward the corners.</p>
+<p>HLSLens recreates that with a lot more control over the look. You can also limit the effect to a distance range so only the background fringes.</p>
 <p>Bloom and halation are added from a separate texture, so the glow itself doesn't get a fringe. Bright lights fringe at their real brightness.</p>
 <div class="glance">
 <dl>
@@ -75,7 +75,7 @@
 </dl>
 </div>
 <h2 id="basic-and-spectral">Basic and Spectral</h2>
-<p><strong>Spectral</strong> is the default and it's HLSLens' own mode. The colors blend into smooth, continuous fringes, more like a rainbow smear than three copies of the image. The stronger the fringe, the more it's spread out, so strong aberration also looks softer. It looks a lot closer to a real lens.</p>
+<p><strong>Spectral</strong> is the default and it's HLSLens' own mode. The colors blend into smooth, continuous fringes, more like a smear than three exact copies of the image. The stronger the fringe, the more it's spread out, so strong aberration also looks softer. It looks a lot closer to a realistic lens.</p>
 <p><strong>Basic</strong> is the engine's familiar aberration. Red and blue are pushed apart and green stays where it is, so you get sharp, separate color edges. It's the cheapest option.</p>
 <div class="grid">
 <figure>
@@ -137,20 +137,13 @@
 <p class="callout-title">Tip</p>
 <p>Try an Anamorphic Ratio above 1. The fringes stretch sideways, which gives a cinema-lens look and makes the effect feel a bit more unique.</p>
 </aside>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/chromatic-aberration/anamorphic-1.png -->
-  <img src="assets/placeholder.svg" alt="Anamorphic Ratio 1">
-  <figcaption>Anamorphic Ratio 1</figcaption>
+<figure class="compare">
+  <img data-label="Ratio 1" src="assets/images/chromatic-aberration/anamorphic-1.webp" alt="City lights at night with chromatic aberration at Anamorphic Ratio 1. The color fringes are short.">
+  <img data-label="Ratio 2.5" src="assets/images/chromatic-aberration/anamorphic-2-5.webp" alt="The same city lights at Anamorphic Ratio 2.5. The color fringes stretch out sideways.">
+  <figcaption>Drag the slider to compare Anamorphic Ratio 1 (left) with Anamorphic Ratio 2.5 (right).</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/chromatic-aberration/anamorphic-2.png -->
-  <img src="assets/placeholder.svg" alt="Anamorphic Ratio 2">
-  <figcaption>Anamorphic Ratio 2</figcaption>
-</figure>
-</div>
 <h2 id="depth-masking">Depth masking</h2>
-<p>You can limit the effect to a distance range from the camera, so for example only the background gets fringing and the foreground stays clean. Turn on <strong>Use Depth</strong> in the Chroma Depth group. It needs an extra depth pass each frame, which costs a little.</p>
+<p>You can limit the effect to a distance range from the camera, so for example only the background gets fringing and the foreground stays clean. Turn on <strong>Use Depth</strong> in the Chroma Depth group. It only costs a little.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -208,5 +201,6 @@
       </nav>
     </main>
   </div>
+<script src="figures.js" defer></script>
 </body>
 </html>

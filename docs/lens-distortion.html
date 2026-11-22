@@ -63,8 +63,8 @@
       <p class="kicker">Effects</p>
       <h1>Lens distortion</h1>
 
-<p>Real lenses bend straight lines, especially near the edges of the frame. Wide-angle lenses push the middle of the image outward so lines bow out (barrel distortion). Telephoto lenses do the opposite and lines bow inward toward the middle (pincushion distortion). A little of either makes a game camera feel like a physical lens, and a lot of it is good for effects like a drunk or dazed camera, a fisheye look or a scope.</p>
-<p>HLSLens has both, and they are separate effects with their own settings. You can use one or both at the same time.</p>
+<p>Some lenses bend straight lines. Wide-angle lenses push the middle of the image outward so lines bow out (barrel distortion). Telephoto lenses do the opposite and lines bow inward toward the middle (pincushion distortion). It is good for effects like a drunk camera, a fisheye look, bodycam or a scope.</p>
+<p>HLSLens has both, you can use one or both at the same time.</p>
 <div class="glance">
 <dl>
 <dt>Where to find it</dt>
@@ -145,8 +145,6 @@
 </tr>
 </tbody>
 </table></div>
-<p>The negative-is-pincushion direction catches people out. If the image bows the wrong way, flip the sign.</p>
-<p>The slider and the typed limits are different on purpose. The sliders cover the useful range, and if you need more you can type a bigger value straight into the box.</p>
 <div class="grid">
 <figure>
   <!-- Replace with: assets/images/lens-distortion/pincushion-positive-1.png -->
@@ -160,18 +158,18 @@
 </figure>
 </div>
 <h2 id="how-the-edges-are-handled">How the edges are handled</h2>
-<p>Distorting the image pulls pixels in from outside the screen, where there's nothing to show. To avoid black or smeared borders, HLSLens zooms in a little as the intensity goes up. So strong distortion also crops the edges of the frame slightly, and the camera feels a bit narrower. If you're matching a specific field of view, check it again with distortion on.</p>
+<p>Distorting the image pulls pixels in from outside the screen, where there's nothing to show. To avoid black or smeared borders, HLSLens zooms in a little as the intensity goes up. So strong distortion also crops the edges of the frame slightly, and the camera feels a bit narrower.</p>
 <p>Both effects are corrected for the screen's aspect ratio, so the distortion stays round on wide screens instead of turning oval.</p>
 <p>When you use both, barrel distortion is applied first and pincushion second.</p>
 <h2 id="radius-and-falloff-together">Radius and falloff together</h2>
-<p>Intensity is how much the image bends. Radius and Falloff decide where. Radius sets how far from the center the distortion reaches, and Falloff sets how it's spread inside that area.</p>
-<p>With a low Falloff the bending is spread smoothly over the whole area, like a real lens, but it's also gentler. With a high Falloff the middle of the image is simply magnified and its lines stay straight, while the bending happens in a ring close to the Radius. That ring look is handy for scopes and portholes.</p>
+<p>Intensity is how much the image bends. Radius and Falloff decide where. Radius sets how far from the center the distortion reaches and Falloff sets how it's spread inside that area.</p>
+<p>With a low Falloff the bending is spread smoothly over the whole area, like a real lens, but it's also gentler. With a high Falloff the middle of the image is magnified and its lines stay straight, the bending mainly happens in a ring close to the Radius.</p>
 <aside class="callout note">
 <p class="callout-title">Note</p>
-<p>Very high values bend the screen a lot. That's expected. For most projects I'd stay well below the maximum, otherwise it quickly turns into a fisheye look.</p>
+<p>Very high values bend the screen a lot. For most projects I'd stay well below the maximum, otherwise it turns into a fisheye look.</p>
 </aside>
 <h2 id="animating-it">Animating it</h2>
-<p>Every distortion setting can be animated, in Sequencer, in a Blueprint timeline or by blending between volumes. A short pulse of Barrel Intensity on a big impact, or a slow wobble on Pincushion Intensity for a dizzy effect, are easy ways to use it during gameplay.</p>
+<p>Every distortion setting can be animated, in Sequencer, in a Blueprint timeline or by blending between volumes. A short pulse of Barrel Intensity on a big impact is an easy way to use it during gameplay for example.</p>
 
       <nav class="pager" aria-label="Previous and next page">
       <a class="prev" href="film-grain.html"><span>Previous</span>Film grain</a>

@@ -66,8 +66,8 @@
       <p class="kicker">Color</p>
       <h1>Tonemapper</h1>
 
-<p>A tonemapper decides how the brightness of your scene ends up on a screen. Your lights can be thousands of times brighter than your shadows, but a screen can only show a small part of that range. The tonemapper squeezes it down, and how it does that has a big effect on the colors you see.</p>
-<p>HLSLens has two. <strong>ACES</strong> is the default and it's identical to the engine's own ACES tonemapper. <strong>Perceptual</strong> is my own tonemapper, built to keep colors closer to the ones you actually picked. With ACES, bright emissive lights tend to clip or drift in hue, and that's the main thing Perceptual was made to fix. To switch, set <strong>Tonemapper Mode</strong> to <strong>Perceptual</strong>. You'll find it in the LUT category of the volume.</p>
+<p>A tonemapper decides how the brightness of your scene ends up on a screen. Your lights can be thousands of times brighter than your shadows, but a screen can only show a small part of that range. The tonemapper squeezes it down, how it does that has a big effect on the colors you see.</p>
+<p>HLSLens has two. <strong>ACES</strong> is the default and it's identical to the engine's own ACES tonemapper. <strong>Perceptual</strong> is my own tonemapper, built to keep colors closer to the ones you actually picked. With ACES, bright emissive lights tend to clip or drift in hue and that's the main thing Perceptual was made to fix. To switch, set <strong>Tonemapper Mode</strong> to <strong>Perceptual</strong>. You'll find it in the LUT category of the volume.</p>
 <div class="glance">
 <dl>
 <dt>Where to find it</dt>
@@ -117,23 +117,28 @@
 <h2 id="why-do-colors-look-different">Why do colors look different?</h2>
 <p>The first thing you'll notice after switching is that colors change. Emissive lights show it most, but they aren't the only ones.</p>
 <p>ACES works on the red, green and blue channels one at a time. When a bright, saturated color is squeezed, each channel is squeezed by a different amount, so the color drifts. Red lights turn orange or yellowish, and the brighter they are, the stronger it gets.</p>
-<p>The Perceptual tonemapper splits every color into three parts: how bright it is, how colorful it is and which hue it is. It only squeezes the brightness. The hue is left alone, so a red light stays red at any brightness. If a light gets too bright, it fades to white instead of changing color.</p>
-<p>Other colors look a little different too. The hue shift ACES adds is gone, and contrast and saturation now come from their own settings instead of one shared curve.</p>
+<p>The Perceptual tonemapper splits every color into three parts: 1) how bright it is, 2) how colorful it is and 3) which hue it is. It only squeezes the brightness. The hue is left alone, so a red light stays red at any brightness. If a light gets too bright, it fades to white instead of changing color.</p>
+<p>Other colors look a little different too. The hue shift ACES adds is gone, also contrast and saturation now come from their own settings instead of one shared curve.</p>
 <figure>
   <img src="assets/images/tonemapper-aces-vs-perceptual.webp" alt="The same room with the ACES and the Perceptual tonemapper. ACES pulls warm sunlight toward yellow, Perceptual keeps its hue.">
   <figcaption>The same scene and lights. ACES pulls warm sunlight toward yellow. Perceptual keeps its hue.</figcaption>
 </figure>
-<figure class="compare">
+<figure class="compare" data-zoom="52 62 14" data-zoom-pos="bl" data-zoom-size="40">
   <img data-label="ACES" src="assets/images/tonemapper/aces-2.webp" alt="The living room with the ACES tonemapper. The sunlit floor looks flatter and more orange.">
   <img data-label="Perceptual" src="assets/images/tonemapper/perceptual-2.webp" alt="The same living room with the Perceptual tonemapper. The sunlit floor keeps more color and detail.">
-  <figcaption>Drag the slider to compare ACES (left) with Perceptual (right).</figcaption>
+  <figcaption>Drag the slider to compare ACES (left) with Perceptual (right). The zoom box shows the marked area up close, ACES on the left half and Perceptual on the right.</figcaption>
+</figure>
+<figure class="compare">
+  <img data-label="ACES" src="assets/images/tonemapper/aces-portrait.webp" alt="A character portrait in a tunnel with the ACES tonemapper.">
+  <img data-label="Perceptual" src="assets/images/tonemapper/perceptual-portrait.webp" alt="The same character portrait with the Perceptual tonemapper.">
+  <figcaption>Drag the slider to compare ACES (left) with Perceptual (right) on a character.</figcaption>
 </figure>
 <aside class="callout tip">
 <p class="callout-title">Tip</p>
 <p>Emissive lights now show their true color, so you will most likely need to adjust the color of some lights in your scene after switching.</p>
 </aside>
 <h2 id="how-the-perceptual-tonemapper-works">How the Perceptual tonemapper works</h2>
-<p>You don't need any of this to use it, but it makes the settings easier to understand.</p>
+<p>You don't really need to know all of this, but it makes the settings easier to understand.</p>
 <div class="steps">
 <div>
 <p><span class="n"><b>01</b>Grade</span>
@@ -409,7 +414,7 @@ Tints, the 12 color adjustments and the black and white points are applied. Colo
 <p><strong>Shoulder Start</strong> in the contrast curve is a different setting. It shapes the whole image. <strong>Highlight Shoulder Start (EV)</strong> only decides what counts as a very bright light.</p>
 </aside>
 <h2 id="selective-color-grading">Selective color grading</h2>
-<p>You can change the brightness, hue and saturation of each color in the scene on its own, across 12 color channels. Say you want the orange tones to lean a little red and be a touch darker without touching anything else. That's what these are for.</p>
+<p>You can change the brightness, hue and saturation of each color in the scene on its own, across 12 different color channels. For example if you want the orange tones to lean a little red and be a touch darker without changing the rest of the scene.</p>
 <p>Every color has the same three settings, named after the color, for example <strong>Orange Hue-Shift</strong>.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -477,7 +482,7 @@ Tints, the 12 color adjustments and the black and white points are applied. Colo
 </details>
 <details>
 <summary>My scene looks different after switching. Is something broken?</summary>
-<p>No. Perceptual doesn't shift the hue of bright colors like ACES does, and contrast and saturation come from different settings. You'll probably need to adjust the color of a few lights. I'd also suggest looking at the Saturation Curve to get the saturation where you want it.</p>
+<p>No. Perceptual doesn't shift the hue of bright colors like ACES does, and contrast and saturation come from different settings. You'll probably need to adjust the color of a few lights. I'd also suggest looking at the Saturation Curve as the Perceptual tonemapper often likes to make the scene a bit more saturated or desaturated by default.</p>
 </details>
 <details>
 <summary>My bright red light looks dark red.</summary>

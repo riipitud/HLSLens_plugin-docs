@@ -62,9 +62,9 @@
       <p class="kicker">Color</p>
       <h1>LUT blending</h1>
 
-<p>LUT blending lets one volume hold two complete color grades and blend between them. It's not just two LUT textures: each grade has the full set of color correction settings too, so you can, for example, give the shadows a warmer tint close to the camera and a colder one in the distance.</p>
+<p>LUT blending lets one volume hold two complete color grades and blend between them. It's not blending only two LUT textures, each grade has all of the color correction settings as well. So you can, for example, give the shadows a warmer tint close to the camera and a colder one in the distance.</p>
 <p>The two grades are <strong>ChannelA</strong> and <strong>ChannelB</strong> in the Color Correction category. ChannelA is always there. ChannelB appears once you pick a blend mode that uses it.</p>
-<p>The blending is cached heavily, so on average the LUT pass runs less often than in the engine's own post-processing.</p>
+<p>The blending is cached heavily, so on average the LUT pass runs less often than in the engine's own post-processing. This saves some performance.</p>
 <h2 id="blend-modes">Blend modes</h2>
 <p>Set <strong>Blend Mode</strong> in the LUT category. Only one mode can be active at a time.</p>
 <div class="table-wrap"><table>
@@ -77,7 +77,7 @@
 <tbody>
 <tr>
 <td>Uniform (Screen-Wide)</td>
-<td>The default. No blending, only ChannelA is used, the same as a normal volume.</td>
+<td>The default. Only ChannelA is used, it works the same as the engine's post-processing volume.</td>
 </tr>
 <tr>
 <td>Depth-Based (Near to Far)</td>
@@ -93,7 +93,7 @@
 </tr>
 </tbody>
 </table></div>
-<p><strong>Blend Sharpness</strong> (default 1, range 0.1 to 10) appears for Depth-Based and Custom Mask. It controls the shape of the transition: higher values give a harder edge between the two grades.</p>
+<p><strong>Blend Sharpness</strong> (default 1, range 0.1 to 10) appears for Depth-Based and Custom Mask. It controls the transition. Higher values give a harder edge between the two grades.</p>
 <h2 id="depth-based-blending">Depth-based blending</h2>
 <p>Everything closer than <strong>Blend Distance Start</strong> uses ChannelA, everything beyond <strong>Blend Distance End</strong> uses ChannelB, and the space between is a smooth blend. You'll find these in the <strong>Depth Blend</strong> group.</p>
 <div class="table-wrap"><table>
@@ -127,7 +127,7 @@
   <img src="assets/placeholder.svg" alt="Depth-based blending desaturating the background">
   <figcaption>The background is desaturated while the foreground keeps its colors.</figcaption>
 </figure>
-<p>It's also an easy way to make distant fog, with a LUT, with the color correction settings, or both.</p>
+<p>It's also an easy way to make distant fog. You can use a LUT for that or the color correction settings. I used both in the example.</p>
 <figure>
   <!-- Replace with: assets/images/lut-blending/depth-fog-night.png -->
   <img src="assets/placeholder.svg" alt="Distant fog made with depth-based blending">
@@ -136,11 +136,11 @@
 <figure>
   <!-- Replace with: assets/images/lut-blending/depth-fog-day.png -->
   <img src="assets/placeholder.svg" alt="Stylized dark blue fog during the day">
-  <figcaption>The same idea during the day. I wanted the fog to stay stylized and dark blue, and you can see how completely the colors change with distance.</figcaption>
+  <figcaption>The same idea during the day. This time I wanted the fog to look stylized and dark blue.</figcaption>
 </figure>
 <h2 id="custom-mask-blending">Custom mask blending</h2>
-<p>Add a grayscale texture as the <strong>Custom Blend Mask</strong>. Black shows ChannelA, white shows ChannelB, and grey mixes them. The texture is stretched to fill the screen whatever its size or aspect ratio.</p>
-<p>This is really useful for weapon scopes. You can tint, desaturate or darken what's seen through the scope, or everything around it.</p>
+<p>Add a grayscale texture as the <strong>Custom Blend Mask</strong>. Black shows ChannelA, white shows ChannelB and grey mixes them. The texture is stretched to fill the screen whatever its size or aspect ratio.</p>
+<p>This could be really useful for weapon scopes. You can tint, desaturate or darken what's seen through the scope or everything around it.</p>
 <div class="grid">
 <figure>
   <!-- Replace with: assets/images/lut-blending/scope-1.png -->
@@ -155,12 +155,12 @@
 </div>
 <aside class="callout warning">
 <p class="callout-title">Moving scopes</p>
-<p>The mask is fixed to the screen, so it has to match where the scope actually is. If the scope moves, drive the mask from a render target, or only show the effect when the weapon is fairly still.</p>
+<p>The mask is fixed to the screen, so it has to match where the scope actually is. If the scope moves, then the mask will be off. You should drive the mask from a render target or only show the effect when the weapon is fairly still.</p>
 </aside>
 <p>It works for UI too. Unreal can blur and tint the background of a widget, but it can't change the colors of the scene behind it. With a custom mask you can saturate or desaturate the scene behind a HUD element.</p>
-<p>Virtual textures don't work with post-processing, the volume warns you if you pick one as a mask.</p>
+<p>Virtual textures don't work with post-processing, you will get a warning if you use one.</p>
 <h2 id="time-of-day-blending">Time-of-Day blending</h2>
-<p>In this mode ChannelA is the day look and ChannelB the night look. You tell HLSLens what time it is, and it blends both the LUTs and the color correction settings for you. No need for two volumes with weights you change by hand.</p>
+<p>In this mode ChannelA is the day look and ChannelB the night look. You tell HLSLens what time it is and it blends the LUTs and the color correction settings for you. This way you don't need two volumes with weights that have to be changed by hand.</p>
 <h3 id="passing-in-the-time">Passing in the time</h3>
 <p>The time goes to the <strong>Post Process Settings Subsystem</strong>:</p>
 <ol>
@@ -206,7 +206,7 @@
   <figcaption>Setting up Time-of-Day LUT blending in a Blueprint.</figcaption>
 </figure>
 <h3 id="time-jumps">Time jumps</h3>
-<p>If the time jumps by more than 15 minutes, for example when the player sleeps or you skip time in a cutscene, the blend catches up smoothly in a fraction of a second instead of snapping. You can change that with <strong>Set Time Smoothing</strong>: the first value is how many seconds it takes to close half the gap (0.4 by default, 0 turns smoothing off), and the second is how big a jump in minutes counts. After a level load, or whenever you do want a hard cut, call <strong>Snap Time Of Day Normalized</strong> instead.</p>
+<p>If the time jumps by more than 15 minutes, for example when the player sleeps or you skip time in a cutscene, the blend catches up smoothly in a fraction of a second instead of snapping. You can change that with <strong>Set Time Smoothing</strong>: the first value is how many seconds it takes to close half the gap (0.4 by default, 0 turns smoothing off). The second value sets how big a jump in minutes counts. After a level load or whenever you do want a hard cut, call <strong>SnapTimeOfDayNormalized</strong> instead.</p>
 <h3 id="when-day-and-night-start">When day and night start</h3>
 <p>The <strong>Time of Day: Time thresholds</strong> group in the LUT category sets the transitions. Each threshold has hours and minutes (0 to 59).</p>
 <div class="table-wrap"><table>

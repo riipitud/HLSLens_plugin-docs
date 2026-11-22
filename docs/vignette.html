@@ -61,7 +61,7 @@
       <h1>Vignette and damage indicators</h1>
 
 <h2 id="vignette">Vignette</h2>
-<p>The vignette darkens the edges of the screen, the way most real lenses do. It pulls the eye toward the middle of the frame. HLSLens' vignette can also be colored, moved and stretched, and every setting can be animated, so it works for gameplay feedback too, like a pulsing red edge at low health.</p>
+<p>The vignette darkens the edges of the screen, the way most real lenses do. It pulls the eye toward the middle of the frame. HLSLens' vignette can also be colored, moved and stretched, every setting can also be animated. So it works for gameplay feedback too, like a pulsing red edge at low health.</p>
 <p>The settings are in the Vignette category of the volume.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -112,8 +112,8 @@
 </tbody>
 </table></div>
 <p>The vignette is on by default at a mild 0.3. Bloom is darkened by the vignette as well, so the glow fades toward the edges together with the image.</p>
-<p>If you don't want a vignette but do use damage indicators, don't set Vignette Intensity all the way to 0, see the warning below.</p>
-<p>Animating it is the easy way to make effects with it. Drive Vignette Intensity and Border Color from a Blueprint timeline or Sequencer, or blend between two volumes, and you get a heartbeat pulse, a fade to black, or a colored flash. This <a href="https://youtu.be/GFS9iiOLdQw">example video on YouTube</a> shows a few things you can do.</p>
+<p>If you don't want a vignette but do use damage indicators, don't set Vignette Intensity all the way to 0.</p>
+<p>Animating it is the easy way to make effects with it. Change the Vignette Intensity and Border Color from a Blueprint timeline or Sequencer. For example you can get a heartbeat pulse, fade to black, or a colored flash. This <a href="https://youtu.be/GFS9iiOLdQw">example video on YouTube</a> shows a few things you can do.</p>
 <h2 id="damage-indicators">Damage indicators</h2>
 <p>The damage indicator shows the player where a hit came from by lighting up the edge of the screen on that side. It uses the vignette, but it's driven from Blueprints, because the direction, strength and color change with every hit.</p>
 <p>It currently works in <strong>singleplayer only</strong>.</p>
@@ -184,7 +184,7 @@
 </figure>
 </div>
 <h3 id="several-hits-at-once">Several hits at once</h3>
-<p>Up to <strong>4</strong> indicators can be on screen at once. Hits that come from about the same direction are merged into one indicator, so a burst of machine-gun fire doesn't fill all four. If all four are busy, the faintest one is replaced.</p>
+<p>Up to <strong>4</strong> indicators can be on screen at once. Hits that come from about the same direction are merged into one indicator, so a burst of machine-gun fire doesn't fill all four. If all four are busy, the weakest one is replaced.</p>
 <p>Each indicator fades in, holds and fades out. You can change the timing on the component:</p>
 <div class="table-wrap"><table>
 <thead>

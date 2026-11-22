@@ -62,8 +62,8 @@
       <p class="kicker">Effects</p>
       <h1>Film grain</h1>
 
-<p>Film grain is the fine, noisy texture in film footage. It comes from the tiny light-sensitive particles in the film. In a game it breaks up a clean, flat image and makes a scene feel like it was filmed.</p>
-<p>HLSLens makes the grain on the GPU, so you don't need a texture. It changes at film speed, 24 times a second by default, no matter how fast your game runs. If you'd rather use a scan of real film, you can do that too.</p>
+<p>Film grain is the fine, noisy texture in film footage. It comes from the tiny light-sensitive particles in the film. In a game it makes a scene feel as if it was filmed.</p>
+<p>HLSLens makes the grain on the GPU, so you don't need a texture. It changes at film speed, 24 times a second by default, no matter how fast your game runs. If you'd rather use a scan of real film (film grain texture), you can do that too.</p>
 <div class="glance">
 <dl>
 <dt>Where to find it</dt>
@@ -80,8 +80,8 @@
   <figcaption>Film grain on a dark scene, next to the Film Grain settings.</figcaption>
 </figure>
 <h2 id="how-it-works">How it works</h2>
-<p>The grain is added before the tonemapper, together with bloom and halation, and that has a few nice side effects. Black stays black, the grain never lifts the dark areas. The tonemapper squeezes the grain in the highlights afterward, like on a film print. It also sits on top of the bloom and halation glow instead of under it. And it stays the same size at 1080p and at 4K.</p>
-<p>The grain pattern is built once and then only moved around, which is why it's so cheap. Only changing Seed, Grain Size, Blue Grain Size or Shape builds a new one, so everything else is safe to animate.</p>
+<p>The grain is added before the tonemapper, together with bloom and halation. This has a few nice side effects. Black stays black, the grain never lifts the dark areas. The tonemapper squeezes the grain in the highlights afterward, like on a film print. It also sits on top of the bloom and halation glow instead of under it. And it stays the same size at 1080p and at 4K.</p>
+<p>The more expensive grain pattern is built once and then just moved around, which is why it's so cheap. Only changing Seed, Grain Size, Blue Grain Size or Shape builds a new one, so everything else is safe to animate during gameplay.</p>
 <h2 id="grain">Grain</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -145,7 +145,7 @@
 </table></div>
 <aside class="callout tip">
 <p class="callout-title">Tip</p>
-<p>Lower the Frame Rate for a choppier, more vintage look. The grain runs at this rate whatever your game's FPS is, and it keeps moving when the game is paused.</p>
+<p>Lower the Frame Rate for a choppier, more vintage look. The grain runs at this rate whatever your game's FPS is, it also keeps moving when the game is paused. The Frame Rate is capped by the game's FPS.</p>
 </aside>
 <div class="grid">
 <figure>
@@ -219,8 +219,8 @@
 <p>Keep Highlights lower than Shadows and Midtones. Strong grain in bright areas tends to look a bit weird.</p>
 </aside>
 <h2 id="texture">Texture</h2>
-<p>Set a <strong>Grain Texture</strong> to use your own grain, for example a scan of real film. Grain Size, Blue Grain Size and Shape are ignored then. Frame Rate, Seed, Tint, Color Amount and the Values settings still work.</p>
-<p><strong>Texture Scale</strong> (default 1) sets how many screen pixels one texel covers. At 1 it's one to one. Other values filter the texture, which lowers the grain contrast a little. A texture doesn't scale with resolution, so a scan that looks right at 1080p looks finer at 4K.</p>
+<p>Set a <strong>Grain Texture</strong> to use your own grain. Grain Size, Blue Grain Size and Shape are ignored then. Frame Rate, Seed, Tint, Color Amount and the Values settings still work.</p>
+<p><strong>Texture Scale</strong> (default 1) sets how many screen pixels one texel covers. At 1 it's one to one. Other values filter the texture, which lowers the grain contrast a little. A texture doesn't scale with resolution, so a scan that looks one way at 1080p looks finer at 4K.</p>
 <p>The texture needs to be:</p>
 <ul>
 <li>RGB. The green channel doubles as the black and white grain.</li>
@@ -228,7 +228,7 @@
 <li>Centered on mid grey. 0.5 means no change, darker values darken the image and brighter values brighten it.</li>
 <li>Seamless, because it's tiled across the screen.</li>
 </ul>
-<p>Virtual textures don't work with post-processing, the volume warns you if you pick one.</p>
+<p>Virtual textures don't work with post-processing, you will get a warning.</p>
 <aside class="callout note">
 <p class="callout-title">Note</p>
 <p>With a texture, Color Amount can make the grain a bit stronger, up to about 1.4× on the green channel. Check the look again after changing it.</p>
