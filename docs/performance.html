@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Performance · HLSLens documentation</title>
-  <meta name="description" content="HLSLens GPU cost compared with the engine's default post-processing.">
+  <meta name="description" content="HLSLens GPU cost per effect, memory use, how to reduce the cost and how it compares with the engine's default post-processing.">
   <link rel="icon" href="assets/favicon.png">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -47,10 +47,14 @@
         <li><a href="console-variables.html">Console variables</a></li>
         <li><a href="performance.html" aria-current="page">Performance</a>
           <ul class="on-page">
+            <li><a href="#cost-per-effect">Cost per effect</a></li>
+            <li><a href="#memory">Memory</a></li>
             <li><a href="#reducing-the-cost">Reducing the cost</a></li>
+            <li><a href="#measuring-it-yourself">Measuring it yourself</a></li>
             <li><a href="#benchmark-summary">Benchmark summary</a></li>
-            <li><a href="#tests-1-and-2-soul-city">Tests 1 and 2: Soul City</a></li>
-            <li><a href="#tests-3-to-5-custom-test-level">Tests 3 to 5: custom test level</a></li>
+            <li><a href="#tests-1-to-3-farm-scene">Tests 1 to 3: farm scene</a></li>
+            <li><a href="#tests-4-and-5-soul-city">Tests 4 and 5: Soul City</a></li>
+            <li><a href="#tests-6-to-8-custom-test-level">Tests 6 to 8: custom test level</a></li>
           </ul>
         </li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
@@ -62,12 +66,172 @@
       <p class="kicker">Reference</p>
       <h1>Performance</h1>
 
-<p>In short, HLSLens costs more GPU time than the engine's default post-processing. It was slower than the engine's default setup (ACES tonemapper, lens flares and bloom) in every benchmark below. With a typical set of effects it added <strong>0.25 to 0.64 ms</strong>, about 12% to 23%. With every major effect on in Soul City it added 0.65 ms (about 46%), but the engine had no chromatic aberration or film grain in that test, so it isn't a fair comparison.</p>
-<p>Your numbers will be different. The cost depends on your hardware and resolution, and on the scene: how many bright surfaces there are when glare is on, which effects you use, which threshold mode bloom and lens flares use, whether anything reads scene depth, and so on. Take these as examples, not promises.</p>
+<p>How much GPU time HLSLens takes depends far more on <em>how</em> you set it up than on the plugin itself. In the tests below it ranged from slightly cheaper than the engine's own post-processing to about half again as expensive, in the same scene, just by changing the lens flare profile. So instead of one number, this page shows what each effect costs, what drives the cost and how to measure it in your own project.</p>
+<p>All tests were measured on a <strong>GTX 1080 at 2560×1440</strong> with SMAA. A newer GPU will be faster, a lower resolution cheaper, and your scene will behave differently. Take the numbers as examples, not promises.</p>
+
+<h2 id="cost-per-effect">Cost per effect</h2>
+<p>Measured in the farm scene described <a href="#tests-1-to-3-farm-scene">below</a>, with one effect changed at a time.</p>
+<h3 id="lens-flares-and-bloom">Lens flares and bloom</h3>
+<p>These have their own passes in <code>stat gpu</code>. <strong>PostProcess LensFlare</strong> is the whole lens flare. <strong>PostProcess Glare</strong> and <strong>PostProcess Flare</strong> (ghosts and halo) are parts of it.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Effect</th>
+<th>GPU time</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lens flares, Classic Prime</td>
+<td>1.60 ms</td>
+<td>Three Streak glare 1.42 ms, ghosts and halo 0.15 ms</td>
+</tr>
+<tr>
+<td>Lens flares, Diffraction Star</td>
+<td>1.27 ms</td>
+<td>Diffraction Starburst glare 1.14 ms, ghosts and halo 0.11 ms</td>
+</tr>
+<tr>
+<td>Lens flares, Anamorphic Azure</td>
+<td>0.40 ms</td>
+<td>Directional Blur glare 0.21 ms, ghosts and halo 0.11 ms, streak 0.05 ms</td>
+</tr>
+<tr>
+<td>Bloom, Standard</td>
+<td>0.12 ms</td>
+<td>The default</td>
+</tr>
+<tr>
+<td>Bloom, Cinematic</td>
+<td>0.22 ms</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <strong>glare is almost the whole cost</strong> of the lens flares. The ghosts and halo take a small fraction, and the streak is the cheapest part at 0.05 ms.</p>
+<p>The lens flare quality mostly changes the ghosts. With the Diffraction Star profile:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lens Flare Quality</th>
+<th>Lens flares</th>
+<th>Ghosts and halo</th>
+<th>Postprocessing total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Performance</td>
+<td>1.24 ms</td>
+<td>0.11 ms</td>
+<td>2.83 ms</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td>1.27 ms</td>
+<td>0.11 ms</td>
+<td>2.88 ms</td>
+</tr>
+<tr>
+<td>Cinematic</td>
+<td>1.55 ms</td>
+<td>0.44 ms</td>
+<td>3.12 ms</td>
+</tr>
+</tbody>
+</table></div>
+<p>In this scene Performance saved very little over Standard, while Cinematic added about a quarter of a millisecond for sharper ghosts. A scene with more or bigger ghosts on screen will show a bigger difference.</p>
+
+<h3 id="effects-in-the-tonemapper-pass">Effects in the tonemapper pass</h3>
+<p>Chromatic aberration, film grain, halation and lens distortion run inside the tonemapper pass, so their cost is how much that pass grows. On its own, the ACES tonemapper pass took 0.14 to 0.16 ms.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Effect</th>
+<th>Added cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chromatic aberration, Spectral</td>
+<td>about 0.19 ms</td>
+</tr>
+<tr>
+<td>Chromatic aberration, Basic</td>
+<td>about 0.02 ms</td>
+</tr>
+<tr>
+<td>Film grain</td>
+<td>about 0.03 ms</td>
+</tr>
+<tr>
+<td>Lens distortion</td>
+<td>about 0.02 to 0.03 ms</td>
+</tr>
+<tr>
+<td>Halation</td>
+<td>about 0.01 ms</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are small enough that normal measurement noise matters. The tonemapper pass moves by a few hundredths of a millisecond on its own, so halation in particular was too cheap to measure exactly.</p>
+
+<h2 id="memory">Memory</h2>
+<p>Memory use is about the same as the engine's. Measured with <code>stat RHI</code>, with bloom and lens flares on (Diffraction Star, Standard quality):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Memory type</th>
+<th>Engine</th>
+<th>HLSLens</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2D render targets</td>
+<td>605.96 MB</td>
+<td>604 MB</td>
+<td>about 2 MB less</td>
+</tr>
+<tr>
+<td>3D render targets</td>
+<td>0.44 MB</td>
+<td>0.69 MB</td>
+<td>0.25 MB more</td>
+</tr>
+<tr>
+<td>Structured buffers</td>
+<td>—</td>
+<td>—</td>
+<td>0.13 MB more</td>
+</tr>
+</tbody>
+</table></div>
+
 <h2 id="reducing-the-cost">Reducing the cost</h2>
-<p>Leave unused effects at exactly 0.0, then they don't run at all. Switching the glare from Three Streak to Directional Blur saved 0.19 ms in the custom test level, and ACES instead of the Perceptual tonemapper saved about 0.14 ms there. Setting <a href="bloom.html#threshold">threshold mode</a> to Shared when you use both bloom and lens flares also helps, and the lens flare profile has a Performance quality option.</p>
+<ul>
+<li><strong>Pick the glare mode with care.</strong> It is the biggest single cost. Directional Blur is far cheaper than Three Streak or Diffraction Starburst: in the farm test Anamorphic Azure was 1.1 ms cheaper than Classic Prime.</li>
+<li><strong>Leave unused effects at exactly 0.0.</strong> Then they don't run at all.</li>
+<li><strong>Use Basic chromatic aberration</strong> if you don't need the Spectral look. It costs about a tenth as much.</li>
+<li><strong>Keep bloom and lens flares on Standard quality</strong> unless you can see the difference.</li>
+<li><strong>Use ACES</strong> if you don't need the Perceptual tonemapper. It saved about 0.14 ms in the custom test level.</li>
+<li><strong>Set the <a href="bloom.html#threshold">threshold mode</a> to Shared</strong> when you use both bloom and lens flares.</li>
+</ul>
+
+<h2 id="measuring-it-yourself">Measuring it yourself</h2>
+<p>The only numbers that really count are the ones from your own scene on your target hardware.</p>
+<ol>
+<li>Open the console and type <code>stat gpu</code>.</li>
+<li>Look at the <strong>Postprocessing</strong> row for the total. The HLSLens passes show up as <strong>PostProcess LensFlare</strong>, <strong>PostProcess Glare</strong>, <strong>PostProcess Bloom</strong>, <strong>PostProcess Tonemapper</strong> and so on.</li>
+<li>Keep the camera still and wait a few seconds so the averages settle. Use the Avg column.</li>
+<li>Change one thing at a time, and compare with the same camera and the same effects turned on in the engine's Post Process Volume.</li>
+</ol>
+<p>Numbers measured in the editor include some editor overhead. A packaged or Standalone build gives cleaner results.</p>
+
 <h2 id="benchmark-summary">Benchmark summary</h2>
-<p>The engine default in every test: ACES tonemapper, lens flares and bloom.</p>
+<p>Each test is compared with the engine's default post-processing in the same scene: ACES tonemapper, lens flares and bloom.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -81,34 +245,55 @@
 <tbody>
 <tr>
 <td>1</td>
+<td>Farm</td>
+<td>ACES, bloom, lens flares: Classic Prime (Three Streak glare)</td>
+<td>2.15 / 3.19 ms</td>
+<td>+1.04 ms (+48%)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Farm</td>
+<td>ACES, bloom, lens flares: Diffraction Star (Diffraction Starburst glare)</td>
+<td>2.15 / 2.88 ms</td>
+<td>+0.73 ms (+34%)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Farm</td>
+<td>ACES, bloom, lens flares: Anamorphic Azure (Directional Blur glare)</td>
+<td>2.15 / 2.08 ms</td>
+<td>−0.07 ms (−3%)</td>
+</tr>
+<tr>
+<td>4</td>
 <td>Soul City</td>
 <td>Perceptual tonemapper, lens flares, bloom, halation</td>
 <td>1.40 / 1.65 ms</td>
 <td>+0.25 ms (+18%)</td>
 </tr>
 <tr>
-<td>2</td>
+<td>5</td>
 <td>Soul City</td>
 <td>Every major effect: Perceptual tonemapper, lens flares (Three Streak glare), bloom, chromatic aberration (blurred), film grain, halation</td>
 <td>1.40 / 2.05 ms</td>
 <td>+0.65 ms (+46%)*</td>
 </tr>
 <tr>
-<td>3</td>
+<td>6</td>
 <td>Custom level</td>
 <td>Perceptual tonemapper, lens flares (Three Streak glare), bloom, halation</td>
 <td>2.75 / 3.39 ms</td>
 <td>+0.64 ms (+23%)</td>
 </tr>
 <tr>
-<td>4</td>
+<td>7</td>
 <td>Custom level</td>
 <td>ACES tonemapper, lens flares (Directional Blur glare), bloom, halation</td>
 <td>2.74 / 3.06 ms</td>
 <td>+0.32 ms (+12%)</td>
 </tr>
 <tr>
-<td>5</td>
+<td>8</td>
 <td>Custom level</td>
 <td>Perceptual tonemapper, lens flares (Directional Blur glare), bloom, halation</td>
 <td>2.74 / 3.20 ms</td>
@@ -116,12 +301,68 @@
 </tr>
 </tbody>
 </table></div>
-<p>* The engine baseline in test 2 did not include chromatic aberration or film grain, so it is not a like-for-like comparison.</p>
+<p>* The engine baseline in test 5 did not include chromatic aberration or film grain, so it is not a like-for-like comparison.</p>
 <aside class="callout note">
 <p class="callout-title">Note</p>
-<p>The PostProcessing GPU cost already includes bloom, tonemapping and the other post-process passes.</p>
+<p>The Postprocessing GPU cost already includes bloom, tonemapping and the other post-process passes.</p>
 </aside>
-<h2 id="tests-1-and-2-soul-city">Tests 1 and 2: Soul City</h2>
+
+<h2 id="tests-1-to-3-farm-scene">Tests 1 to 3: farm scene</h2>
+<p>A sunny stylized scene looking toward the sun, so there is a lot of bright sky for the flares and glare to work with. Only bloom and lens flares were on, every other HLSLens effect was off, and all runs used ACES, Standard bloom quality and Standard lens flare quality. The only thing that changed between the HLSLens runs was the lens flare profile. Measured in the editor viewport on a GTX 1080 at 2560×1440 with SMAA.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Run</th>
+<th>Postprocessing</th>
+<th>Whole frame (GPU)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Engine default</td>
+<td>2.15 ms</td>
+<td>21.77 ms</td>
+</tr>
+<tr>
+<td>Classic Prime</td>
+<td>3.19 ms</td>
+<td>22.44 ms</td>
+</tr>
+<tr>
+<td>Diffraction Star</td>
+<td>2.88 ms</td>
+<td>22.34 ms</td>
+</tr>
+<tr>
+<td>Anamorphic Azure</td>
+<td>2.08 ms</td>
+<td>21.39 ms</td>
+</tr>
+</tbody>
+</table></div>
+<p>Put next to the whole frame, the difference is small: under 1 ms out of about 22 ms, a few percent. Lighting, shadows and Lumen take far more. The whole-frame numbers also move by a few tenths of a millisecond from run to run, so don't read too much into small differences there.</p>
+<p>A few of the captures as examples. The last one is from the <a href="#effects-in-the-tonemapper-pass">per-effect tests</a> and shows the tonemapper pass growing to 0.33 ms with Spectral chromatic aberration.</p>
+<div class="grid">
+<figure>
+  <a href="assets/images/performance/farm-engine.webp"><img src="assets/images/performance/farm-engine.webp" alt="Unreal Engine stat gpu overlay over a sunny farm scene with the engine's default post-processing. Postprocessing 2.15 ms." loading="lazy"></a>
+  <figcaption>Engine default: 2.15 ms.</figcaption>
+</figure>
+<figure>
+  <a href="assets/images/performance/farm-classic-prime.webp"><img src="assets/images/performance/farm-classic-prime.webp" alt="The same farm scene with HLSLens and the Classic Prime lens flare profile. Postprocessing 3.19 ms." loading="lazy"></a>
+  <figcaption>Test 1, Classic Prime: 3.19 ms, the most expensive profile tested.</figcaption>
+</figure>
+<figure>
+  <a href="assets/images/performance/farm-anamorphic-azure.webp"><img src="assets/images/performance/farm-anamorphic-azure.webp" alt="The same farm scene with HLSLens and the Anamorphic Azure lens flare profile. Postprocessing 2.08 ms." loading="lazy"></a>
+  <figcaption>Test 3, Anamorphic Azure: 2.08 ms, the cheapest.</figcaption>
+</figure>
+<figure>
+  <a href="assets/images/performance/farm-chroma-spectral.webp"><img src="assets/images/performance/farm-chroma-spectral.webp" alt="The farm scene with Spectral chromatic aberration. PostProcess Tonemapper 0.33 ms." loading="lazy"></a>
+  <figcaption>Spectral chromatic aberration: tonemapper pass 0.33 ms instead of 0.14 ms.</figcaption>
+</figure>
+</div>
+<p class="section-note">Click an image to open it at full size.</p>
+
+<h2 id="tests-4-and-5-soul-city">Tests 4 and 5: Soul City</h2>
 <p>Soul City is an Epic Games sample. The default post-processing was kept as Epic set it up, with only the exposure reduced. Measured on a GTX 1080 at 1440p.</p>
 <p>In the engine's run only lens flares, bloom and tonemapping were enabled. The HLSLens run also had halation enabled.</p>
 <div class="grid">
@@ -133,15 +374,15 @@
 <figure>
   <!-- Replace with: assets/images/performance/soul-city-hlslens.png -->
   <img src="assets/placeholder.svg" alt="HLSLens post-processing cost in Soul City">
-  <figcaption>HLSLens: 1.65 ms (Perceptual tonemapper, lens flares, bloom, halation). Test 1: +0.25 ms, about 18%.</figcaption>
+  <figcaption>HLSLens: 1.65 ms (Perceptual tonemapper, lens flares, bloom, halation). Test 4: +0.25 ms, about 18%.</figcaption>
 </figure>
 </div>
 <figure>
   <!-- Replace with: assets/images/performance/soul-city-all-effects.png -->
   <img src="assets/placeholder.svg" alt="HLSLens cost with every major effect in Soul City">
-  <figcaption>Test 2, HLSLens with every major effect: 2.05 ms (Perceptual tonemapper, lens flares with Three Streak glare, bloom, blurred chromatic aberration, film grain, halation). Not comparable with the engine result, which had chromatic aberration and film grain disabled. It shows how much the extra effects add.</figcaption>
+  <figcaption>Test 5, HLSLens with every major effect: 2.05 ms (Perceptual tonemapper, lens flares with Three Streak glare, bloom, blurred chromatic aberration, film grain, halation). Not comparable with the engine result, which had chromatic aberration and film grain disabled. It shows how much the extra effects add.</figcaption>
 </figure>
-<h2 id="tests-3-to-5-custom-test-level">Tests 3 to 5: custom test level</h2>
+<h2 id="tests-6-to-8-custom-test-level">Tests 6 to 8: custom test level</h2>
 <p>The same scene with different HLSLens configurations.</p>
 <div class="grid">
 <figure>
@@ -151,8 +392,8 @@
 </figure>
 <figure>
   <!-- Replace with: assets/images/performance/custom-test-3.png -->
-  <img src="assets/placeholder.svg" alt="HLSLens test 3 cost">
-  <figcaption>Test 3: 3.39 ms (Perceptual tonemapper, Three Streak glare, bloom, halation). +0.64 ms, about 23%.</figcaption>
+  <img src="assets/placeholder.svg" alt="HLSLens test 6 cost">
+  <figcaption>Test 6: 3.39 ms (Perceptual tonemapper, Three Streak glare, bloom, halation). +0.64 ms, about 23%.</figcaption>
 </figure>
 <figure>
   <!-- Replace with: assets/images/performance/custom-engine-2.png -->
@@ -161,14 +402,14 @@
 </figure>
 <figure>
   <!-- Replace with: assets/images/performance/custom-test-4.png -->
-  <img src="assets/placeholder.svg" alt="HLSLens test 4 cost">
-  <figcaption>Test 4: 3.06 ms (ACES tonemapper, Directional Blur glare, bloom, halation). +0.32 ms, about 12%.</figcaption>
+  <img src="assets/placeholder.svg" alt="HLSLens test 7 cost">
+  <figcaption>Test 7: 3.06 ms (ACES tonemapper, Directional Blur glare, bloom, halation). +0.32 ms, about 12%.</figcaption>
 </figure>
 </div>
 <figure>
   <!-- Replace with: assets/images/performance/custom-test-5.png -->
-  <img src="assets/placeholder.svg" alt="HLSLens test 5 cost">
-  <figcaption>Test 5: 3.20 ms (Perceptual tonemapper, Directional Blur glare, bloom, halation). +0.46 ms, about 17%.</figcaption>
+  <img src="assets/placeholder.svg" alt="HLSLens test 8 cost">
+  <figcaption>Test 8: 3.20 ms (Perceptual tonemapper, Directional Blur glare, bloom, halation). +0.46 ms, about 17%.</figcaption>
 </figure>
 
       <nav class="pager" aria-label="Previous and next page">
