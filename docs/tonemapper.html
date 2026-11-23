@@ -73,7 +73,7 @@
 <dt>Where to find it</dt>
 <dd><strong>Tonemapper Mode</strong> in the LUT category. The Perceptual settings are in Color Correction → ChannelA → Perceptual Tonemapper.</dd>
 <dt>Perceptual cost</dt>
-<dd>Very low. Slightly more expensive than ACES.</dd>
+<dd>Very low. The same as ACES every frame.</dd>
 </dl>
 </div>
 <h2 id="aces-and-perceptual">ACES and Perceptual</h2>
@@ -502,7 +502,7 @@ Tints, the 12 color adjustments and the black and white points are applied. Colo
 </details>
 <details>
 <summary>Does Perceptual cost more than ACES?</summary>
-<p>A little. See <a href="performance.html">Performance</a> for the benchmarks.</p>
+<p>Not every frame. In testing the tonemapper pass cost the same with both. The heavier math is done in the color grading LUT pass, which only runs when a color setting changes or volumes blend. See <a href="performance.html#the-lut-pass">Performance</a>.</p>
 </details>
 <details>
 <summary>The result looks wrong.</summary>
