@@ -75,8 +75,7 @@
 </dl>
 </div>
 <figure>
-  <!-- Replace with: assets/images/film-grain/dark-scene.png -->
-  <img src="assets/placeholder.svg" alt="Film grain on a dark scene next to the Film Grain settings">
+  <a href="assets/images/film-grain/dark-scene.webp"><img src="assets/images/film-grain/dark-scene.webp" alt="A glowing Check-In sign in a dark scene with visible film grain, next to the Film Grain settings in the Details panel: Intensity 0.3, Color Amount 0.5, Shape 2.0."></a>
   <figcaption>Film grain on a dark scene, next to the Film Grain settings.</figcaption>
 </figure>
 <h2 id="how-it-works">How it works</h2>
@@ -147,28 +146,16 @@
 <p class="callout-title">Tip</p>
 <p>Lower the Frame Rate for a choppier, more vintage look. The grain runs at this rate whatever your game's FPS is, it also keeps moving when the game is paused. The Frame Rate is capped by the game's FPS.</p>
 </aside>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/film-grain/color-amount-0.png -->
-  <img src="assets/placeholder.svg" alt="Color Amount 0">
-  <figcaption>Color Amount 0</figcaption>
+<figure class="compare">
+  <img data-label="Color 0" src="assets/images/film-grain/color-amount-0.webp" alt="A dark bar with black and white film grain, Color Amount 0." loading="lazy">
+  <img data-label="Color 1" src="assets/images/film-grain/color-amount-1.webp" alt="The same bar with colored film grain, Color Amount 1." loading="lazy">
+  <figcaption>Drag the slider to compare Color Amount 0 (left) with 1 (right).</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/film-grain/color-amount-1.png -->
-  <img src="assets/placeholder.svg" alt="Color Amount 1">
-  <figcaption>Color Amount 1</figcaption>
+<figure class="compare">
+  <img data-label="Shape 0.5" src="assets/images/film-grain/shape-0-5.webp" alt="The same bar with film grain at Shape 0.5." loading="lazy">
+  <img data-label="Shape 2.0" src="assets/images/film-grain/shape-2.webp" alt="The same bar with film grain at Shape 2.0." loading="lazy">
+  <figcaption>Drag the slider to compare Shape 0.5 (left) with 2.0 (right). Both use the default Color Amount of 0.5.</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/film-grain/shape-0-5.png -->
-  <img src="assets/placeholder.svg" alt="Shape 0.5">
-  <figcaption>Shape 0.5</figcaption>
-</figure>
-<figure>
-  <!-- Replace with: assets/images/film-grain/shape-2.png -->
-  <img src="assets/placeholder.svg" alt="Shape 2">
-  <figcaption>Shape 2</figcaption>
-</figure>
-</div>
 <h2 id="values-shadows-midtones-and-highlights">Values: shadows, midtones and highlights</h2>
 <p>The grain doesn't have to be equally strong everywhere. Real film grain shows most in the shadows and midtones, and the defaults follow that.</p>
 <div class="table-wrap"><table>
@@ -240,5 +227,6 @@
       </nav>
     </main>
   </div>
+<script src="figures.js" defer></script>
 </body>
 </html>
