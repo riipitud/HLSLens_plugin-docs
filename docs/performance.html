@@ -64,8 +64,8 @@
       <p class="kicker">Reference</p>
       <h1>Performance</h1>
 
-<p>How much GPU time HLSLens takes depends mostly on <em>how</em> you set it up, and on the scene. In the tests below, with bloom and lens flares on, it ranged from slightly cheaper than the engine's own post-processing to about 1 ms more. Most of that range comes from one choice: the lens flare profile, and above all its glare mode. The other effects are small and cost about the same in every scene.</p>
-<p>So instead of one number, this page shows what each effect costs, how the engine compares in two very different scenes, and how to measure it in your own project. Your hardware, resolution and scene will give different numbers. Take these as examples, not promises.</p>
+<p>How much GPU time HLSLens takes depends mostly on <em>how</em> you set it up and on the scene. In the tests below, with bloom and lens flares on, it ranged from slightly cheaper than the engine's own post-processing to about 1 ms more. Most of that range comes from one choice, the lens flare profile and above all its glare mode. The other effects are small and cost about the same, they don't depend on the scene itself.</p>
+<p>So instead of one number, this page shows what each effect costs and how the engine compares in two very different scenes. Your hardware, resolution and scene will give different numbers. These are just examples, not promises.</p>
 
 <h2 id="test-setup">Test setup</h2>
 <div class="glance">
@@ -87,7 +87,7 @@
 <h2 id="cost-per-effect">Cost per effect</h2>
 
 <h3 id="lens-flares">Lens flares</h3>
-<p>The lens flares are by far the biggest cost, and almost all of it is the <strong>glare</strong>. In <code>stat gpu</code>, <strong>PostProcess LensFlare</strong> is the whole lens flare. <strong>PostProcess Glare</strong> and <strong>PostProcess Flare</strong> (ghosts and halo) are parts of it.</p>
+<p>The lens flares are by far the biggest cost, and almost all of it is the <strong>glare</strong>. In <code>stat gpu</code>, <strong>PostProcess LensFlare</strong> is the whole lens flare. <strong>PostProcess Glare</strong> and <strong>PostProcess Flare</strong> (ghosts and halo) are parts of it. All of it is counted inside the Postprocessing GPU time.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -115,7 +115,7 @@
 </tbody>
 </table></div>
 <p>The glare cost depends a lot on the scene. Three Streak was about five times more expensive in the sunny farm than at night, because it does more work the more of the screen is bright. Diffraction Starburst changed less between the scenes, so at night it was the most expensive one. Directional Blur was the cheapest overall in both scenes, although at night Three Streak glare cost about the same.</p>
-<p>The rest is small. The ghosts and halo took 0.11 to 0.30 ms, a bit more in the night scene with its many separate lights. The streak of the anamorphic profile took 0.05 ms.</p>
+<p>The rest is small. The ghosts and halo took 0.11 to 0.30 ms, a bit more in the night scene with its many separate lights. The streaks of the anamorphic profile took 0.05 ms, it is the cheapest lens flare effect.</p>
 <p>The <strong>Lens Flare Quality</strong> mostly changes the ghosts. With Diffraction Star in the farm scene:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -173,7 +173,7 @@
 </table></div>
 
 <h3 id="effects-in-the-tonemapper-pass">Effects in the tonemapper pass</h3>
-<p>Chromatic aberration, film grain, halation, vignette, lens distortion and LUT blending all run inside the tonemapper pass, so their cost is how much that pass grows. On its own the tonemapper pass took 0.14 ms in both scenes.</p>
+<p>Chromatic aberration, film grain, halation, vignette, lens distortion and LUT blending all run inside the tonemapper pass, so their cost is how much that pass grows. The tonemapper pass takes on average 0.14 ms with all of the effects disabled.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -246,11 +246,11 @@
 </tbody>
 </table></div>
 <p class="section-note">* Measured several times: in the farm scene the pass was slightly faster with the vignette on. Treat it as no extra cost.</p>
-<p>The two scenes give almost the same numbers, so these costs don't depend much on the scene. <strong>Chromatic aberration in Spectral mode</strong> is the most expensive effect here. Everything else adds a few hundredths of a millisecond. Values this small are close to the measurement noise, the tonemapper pass alone moves by about 0.01 to 0.03 ms between measurements.</p>
-<p>Two results were also checked against the Postprocessing total in Soul City, and it grew by the same amount as the tonemapper pass: depth-based LUT blending took it from 2.28 to 2.33 ms, and barrel distortion from 2.22 to 2.27 ms.</p>
+<p>The two scenes give almost the same numbers, so these costs don't depend much on the scene. <strong>Chromatic aberration in Spectral mode</strong> is the most expensive effect here. Everything else adds a few hundredths of a millisecond. Values this small are close to the measurement noise, the tonemapper pass alone moves by about 0.01 to 0.03 ms between measurements (0.13 to 0.16 ms).</p>
+<p>The results have also been checked against the Postprocessing total.</p>
 
 <h3 id="the-lut-pass">The Perceptual tonemapper and the LUT pass</h3>
-<p>The Perceptual tonemapper cost the same as ACES every frame (0.13 and 0.14 ms). Its heavy math is done in the color grading LUT pass, and that pass only runs when a color setting changes or is being blended. In a normal scene it doesn't run at all.</p>
+<p>The Perceptual tonemapper costs the same as ACES (the tonemapper took 0.13 and 0.14 ms). Its heavy math is done in the color grading LUT pass and that pass only runs when a color setting changes or is being blended.</p>
 <p>Overlapping volumes with different color settings make it run every frame while the player moves between them. It runs at a very low resolution, so this should still be cheap, but it is the one case where the color settings cost more than the numbers above.</p>
 
 <h2 id="memory">Memory</h2>
@@ -429,11 +429,10 @@
 
 <h2 id="reducing-the-cost">Reducing the cost</h2>
 <ul>
-<li><strong>Pick the glare mode with care.</strong> It is the biggest single cost. Directional Blur is the cheapest. Three Streak gets expensive in bright scenes, and Diffraction Starburst was expensive in both test scenes.</li>
-<li><strong>Leave unused effects at exactly 0.0.</strong> Then they don't run at all.</li>
-<li><strong>Use Basic chromatic aberration</strong> if you don't need the Spectral look. It costs a fraction as much.</li>
-<li><strong>Keep bloom and lens flares on Standard quality</strong> unless you can see the difference. Cinematic bloom costs about 0.1 ms more.</li>
-<li><strong>Set the <a href="bloom.html#threshold">threshold mode</a> to Shared</strong> when you use both bloom and lens flares.</li>
+<li><strong>Pick the glare mode carefully.</strong> It is the biggest cost. Directional Blur is the cheapest. Three Streak gets expensive in bright scenes, and Diffraction Starburst was expensive in both test scenes.</li>
+<li><strong>Leave unused effects at exactly 0.0.</strong> Then they don't run and waste performance.</li>
+<li><strong>Use Basic chromatic aberration</strong> if you don't need the Spectral look. It costs way less.</li>
+<li><strong>Keep bloom and lens flares on Standard quality</strong> unless you can see the difference. Cinematic bloom costs about 0.1 ms more. It's only meant for cinematic projects, it's not really worth it otherwise.</li>
 <li><strong>Avoid constantly blending volumes with different color settings</strong> if you don't need it. That keeps the LUT pass from running every frame.</li>
 </ul>
 

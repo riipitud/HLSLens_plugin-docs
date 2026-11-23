@@ -243,9 +243,8 @@
 <p>So with the defaults it's fully night until 5:00, fully day from 6:00 to 18:00 and fully night again after 19:00. The blend in between eases in and out rather than moving at a constant speed.</p>
 <p>To see what the blend is doing, turn on the overlay with <code>r.HLSLens.TimeOfDay.Debug 1</code>. It shows the current time, how much of each LUT is used and a 24-hour timeline.</p>
 <figure>
-  <!-- Replace with: assets/images/lut-blending/time-of-day-debug.png -->
-  <img src="assets/placeholder.svg" alt="The Time-of-Day debug overlay">
-  <figcaption>Here the time is 5:16, with Night to Day set from 4:00 to 8:00. Because the blend eases in, the night LUT (LUT B) still has most of the weight at 76%.</figcaption>
+  <a href="assets/images/lut-blending/time-of-day-debug.webp"><img src="assets/images/lut-blending/time-of-day-debug.webp" alt="The Time-of-Day debug overlay over a mountain scene. It shows the time 07:39, LUT A (Day) 57% and LUT B (Night) 43%, and a 24-hour timeline." loading="lazy"></a>
+  <figcaption>Here the time is 7:39 and the day look is still blending in. The day LUT (LUT A) has 57% of the weight and the night LUT (LUT B) 43%.</figcaption>
 </figure>
 
       <nav class="pager" aria-label="Previous and next page">

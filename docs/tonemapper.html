@@ -247,6 +247,10 @@ Tints, the 12 color adjustments and the black and white points are applied. Colo
 </tbody>
 </table></div>
 <p>If a combination of these makes the curve fold over on itself, the image can look broken. <code>r.HLSLens.Tonemapper.Debug 1</code> shows the curve and tells you which value to change, see <a href="console-variables.html#tonemapper-debug">Console variables</a>.</p>
+<figure>
+  <a href="assets/images/tonemapper/debug-broken-curve.webp"><img src="assets/images/tonemapper/debug-broken-curve.webp" alt="The tonemapper debug overlay showing a broken curve. The curve dips near the middle, and the errors say Shoulder Start 0.544 is too high and must be at most 0.366." loading="lazy"></a>
+  <figcaption>A broken curve. Shoulder Start is too high, so the curve dips around the middle, and the overlay says how far to lower it.</figcaption>
+</figure>
 <h3 id="color">Color</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -397,18 +401,11 @@ Tints, the 12 color adjustments and the black and white points are applied. Colo
 </tbody>
 </table></div>
 <p>Raise Highlight Shoulder Start (EV) and only very bright lights lose their color, so lights stay vivid longer. Lower it and hot lights turn white sooner.</p>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/tonemapper/shoulder-ev-0.png -->
-  <img src="assets/placeholder.svg" alt="Highlight Shoulder Start (EV) at 0.0">
-  <figcaption>Highlight Shoulder Start (EV) = 0.0</figcaption>
+<figure class="compare">
+  <img data-label="EV 0.0" src="assets/images/tonemapper/shoulder-ev-0.webp" alt="A glowing wall lamp with Highlight Shoulder Start (EV) at 0.0. The brightest parts of the glass fade toward white.">
+  <img data-label="EV 4.0" src="assets/images/tonemapper/shoulder-ev-4.webp" alt="The same wall lamp with Highlight Shoulder Start (EV) at 4.0. The glass keeps more of its orange color.">
+  <figcaption>Drag the slider to compare Highlight Shoulder Start (EV) 0.0 (left) with 4.0 (right).</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/tonemapper/shoulder-ev-4.png -->
-  <img src="assets/placeholder.svg" alt="Highlight Shoulder Start (EV) at 4.0">
-  <figcaption>Highlight Shoulder Start (EV) = 4.0</figcaption>
-</figure>
-</div>
 <aside class="callout note">
 <p class="callout-title">Note</p>
 <p><strong>Shoulder Start</strong> in the contrast curve is a different setting. It shapes the whole image. <strong>Highlight Shoulder Start (EV)</strong> only decides what counts as a very bright light.</p>
