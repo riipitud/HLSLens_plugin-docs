@@ -110,11 +110,11 @@
 <tr>
 <td>Anamorphic Azure (Directional Blur)</td>
 <td>0.40 ms, glare 0.21</td>
-<td>—</td>
+<td>0.48 ms, glare 0.28</td>
 </tr>
 </tbody>
 </table></div>
-<p>The glare cost depends a lot on the scene. Three Streak was about five times more expensive in the sunny farm than at night, because it does more work the more of the screen is bright. Diffraction Starburst changed less between the scenes, so at night it was the most expensive one. Directional Blur was the cheapest.</p>
+<p>The glare cost depends a lot on the scene. Three Streak was about five times more expensive in the sunny farm than at night, because it does more work the more of the screen is bright. Diffraction Starburst changed less between the scenes, so at night it was the most expensive one. Directional Blur was the cheapest overall in both scenes, although at night Three Streak glare cost about the same.</p>
 <p>The rest is small. The ghosts and halo took 0.11 to 0.30 ms, a bit more in the night scene with its many separate lights. The streak of the anamorphic profile took 0.05 ms.</p>
 <p>The <strong>Lens Flare Quality</strong> mostly changes the ghosts. With Diffraction Star in the farm scene:</p>
 <div class="table-wrap"><table>
@@ -185,43 +185,48 @@
 <tbody>
 <tr>
 <td>Chromatic aberration, Spectral with depth</td>
-<td>—</td>
+<td>+0.31 ms</td>
 <td>+0.33 ms</td>
 </tr>
 <tr>
 <td>Chromatic aberration, Spectral</td>
-<td>+0.19 ms</td>
+<td>+0.25 ms</td>
 <td>+0.28 ms</td>
 </tr>
 <tr>
 <td>Chromatic aberration, Basic</td>
-<td>+0.02 ms</td>
+<td>+0.05 ms</td>
 <td>+0.06 ms</td>
 </tr>
 <tr>
 <td>Vignette</td>
-<td>—</td>
+<td>−0.03 ms*</td>
 <td>+0.06 ms</td>
 </tr>
 <tr>
 <td>Film grain, generated</td>
-<td>+0.03 ms</td>
+<td>+0.05 ms</td>
 <td>+0.06 ms</td>
 </tr>
 <tr>
 <td>Film grain, 128×128 texture</td>
-<td>—</td>
+<td>+0.05 ms</td>
 <td>+0.05 ms</td>
 </tr>
 <tr>
 <td>LUT blending, depth-based</td>
-<td>—</td>
+<td>+0.04 ms</td>
 <td>+0.05 ms</td>
 </tr>
 <tr>
-<td>Lens distortion</td>
+<td>Lens distortion, barrel or pincushion</td>
 <td>+0.02 to 0.03 ms</td>
+<td>+0.05 to 0.06 ms</td>
+</tr>
+<tr>
+<td>Lens distortion, both at once</td>
 <td>—</td>
+<td>+0.05 ms</td>
 </tr>
 <tr>
 <td>Halation</td>
@@ -230,18 +235,19 @@
 </tr>
 <tr>
 <td>LUT blending, Time of Day</td>
-<td>—</td>
+<td>+0.01 ms</td>
 <td>+0.01 ms</td>
 </tr>
 <tr>
 <td>Perceptual tonemapper instead of ACES</td>
-<td>—</td>
+<td>no difference</td>
 <td>no difference</td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>Chromatic aberration in Spectral mode</strong> is the most expensive effect here. Everything else adds a few hundredths of a millisecond. Values this small are close to the measurement noise, the tonemapper pass alone moves by about 0.01 to 0.03 ms between measurements.</p>
-<p>The depth-based LUT blending result was also checked against the total: Postprocessing went from 2.28 to 2.33 ms, the same 0.05 ms the tonemapper pass grew by.</p>
+<p class="section-note">* Measured several times: in the farm scene the pass was slightly faster with the vignette on. Treat it as no extra cost.</p>
+<p>The two scenes give almost the same numbers, so these costs don't depend much on the scene. <strong>Chromatic aberration in Spectral mode</strong> is the most expensive effect here. Everything else adds a few hundredths of a millisecond. Values this small are close to the measurement noise, the tonemapper pass alone moves by about 0.01 to 0.03 ms between measurements.</p>
+<p>Two results were also checked against the Postprocessing total in Soul City, and it grew by the same amount as the tonemapper pass: depth-based LUT blending took it from 2.28 to 2.33 ms, and barrel distortion from 2.22 to 2.27 ms.</p>
 
 <h3 id="the-lut-pass">The Perceptual tonemapper and the LUT pass</h3>
 <p>The Perceptual tonemapper cost the same as ACES every frame (0.13 and 0.14 ms). Its heavy math is done in the color grading LUT pass, and that pass only runs when a color setting changes or is being blended. In a normal scene it doesn't run at all.</p>
@@ -405,7 +411,7 @@
 <tr>
 <td>Anamorphic Azure</td>
 <td>2.09 ms</td>
-<td>—</td>
+<td>58.79 ms</td>
 </tr>
 </tbody>
 </table></div>
@@ -423,7 +429,7 @@
 
 <h2 id="reducing-the-cost">Reducing the cost</h2>
 <ul>
-<li><strong>Pick the glare mode with care.</strong> It is the biggest single cost. Directional Blur is the cheapest. Three Streak gets expensive in bright scenes, Diffraction Starburst costs more in dark scenes with many lights.</li>
+<li><strong>Pick the glare mode with care.</strong> It is the biggest single cost. Directional Blur is the cheapest. Three Streak gets expensive in bright scenes, and Diffraction Starburst was expensive in both test scenes.</li>
 <li><strong>Leave unused effects at exactly 0.0.</strong> Then they don't run at all.</li>
 <li><strong>Use Basic chromatic aberration</strong> if you don't need the Spectral look. It costs a fraction as much.</li>
 <li><strong>Keep bloom and lens flares on Standard quality</strong> unless you can see the difference. Cinematic bloom costs about 0.1 ms more.</li>
