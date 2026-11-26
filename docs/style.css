@@ -634,6 +634,18 @@ figcaption {
 }
 .pager .next { margin-left: auto; text-align: right; }
 
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 20px 24px 28px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+.site-footer p { margin: 0; }
+.site-footer strong { color: var(--text); font-weight: 600; }
+
 /* ---------- Small screens ---------- */
 
 @media (max-width: 860px) {

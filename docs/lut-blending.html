@@ -55,6 +55,7 @@
         <li><a href="performance.html">Performance</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="about.html">About and contact</a></li>
       </ul>
     </nav>
 
@@ -123,40 +124,25 @@
 </tbody>
 </table></div>
 <figure>
-  <!-- Replace with: assets/images/lut-blending/depth-desaturate.png -->
-  <img src="assets/placeholder.svg" alt="Depth-based blending desaturating the background">
+  <img src="assets/images/lut-blending/depth-desaturate.webp" alt="A stylized farm where the lantern, wheat and fence in the foreground keep their warm colors while the barn, house and sky in the distance are grey." loading="lazy">
   <figcaption>The background is desaturated while the foreground keeps its colors.</figcaption>
 </figure>
 <p>It's also an easy way to make distant fog. You can use a LUT for that or the color correction settings. I used both in the example.</p>
 <figure>
-  <!-- Replace with: assets/images/lut-blending/depth-fog-night.png -->
-  <img src="assets/placeholder.svg" alt="Distant fog made with depth-based blending">
+  <img src="assets/images/lut-blending/depth-fog.webp" alt="A narrow alley with string lights. The walls nearby keep their color, while the courtyard at the end fades into blue fog." loading="lazy">
   <figcaption>Distant fog made with depth-based blending.</figcaption>
-</figure>
-<figure>
-  <!-- Replace with: assets/images/lut-blending/depth-fog-day.png -->
-  <img src="assets/placeholder.svg" alt="Stylized dark blue fog during the day">
-  <figcaption>The same idea during the day. This time I wanted the fog to look stylized and dark blue.</figcaption>
 </figure>
 <h2 id="custom-mask-blending">Custom mask blending</h2>
 <p>Add a grayscale texture as the <strong>Custom Blend Mask</strong>. Black shows ChannelA, white shows ChannelB and grey mixes them. The texture is stretched to fill the screen whatever its size or aspect ratio.</p>
-<p>This could be really useful for weapon scopes. You can tint, desaturate or darken what's seen through the scope or everything around it.</p>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/lut-blending/scope-1.png -->
-  <img src="assets/placeholder.svg" alt="Desaturated scene with a normal-color scope view">
-  <figcaption>The scene is desaturated, the scope shows normal colors.</figcaption>
-</figure>
-<figure>
-  <!-- Replace with: assets/images/lut-blending/scope-2.png -->
-  <img src="assets/placeholder.svg" alt="Saturated, darkened scene with a desaturated scope view">
-  <figcaption>The scene is saturated and darker, the scope is desaturated.</figcaption>
-</figure>
-</div>
-<aside class="callout warning">
-<p class="callout-title">Moving scopes</p>
-<p>The mask is fixed to the screen, so it has to match where the scope actually is. If the scope moves, then the mask will be off. You should drive the mask from a render target or only show the effect when the weapon is fairly still.</p>
+<aside class="callout note">
+<p class="callout-title">Weapon scopes: a possible future use</p>
+<p>One idea for custom masks is a weapon scope: tint, desaturate or darken what's seen through the scope, or everything around it. The image below shows what that can look like.</p>
+<p>It isn't something you can rely on yet. The mask is fixed to the screen, so as soon as the scope moves, sways or the weapon bobs, the mask no longer lines up with it. Making this work well is on the roadmap as a possible future improvement, but there's no promise on when or how.</p>
 </aside>
+<figure>
+  <img src="assets/images/lut-blending/scope-example.webp" alt="Looking through a weapon scope in a brick courtyard. The scene around the scope is desaturated." loading="lazy">
+  <figcaption>An example of the scope idea. Not currently supported for moving scopes.</figcaption>
+</figure>
 <p>It works for UI too. Unreal can blur and tint the background of a widget, but it can't change the colors of the scene behind it. With a custom mask you can saturate or desaturate the scene behind a HUD element.</p>
 <p>Virtual textures don't work with post-processing, you will get a warning if you use one.</p>
 <h2 id="time-of-day-blending">Time-of-Day blending</h2>
@@ -201,8 +187,7 @@
 </table></div>
 <p>Values outside the range wrap around, so 25 hours is 1 AM.</p>
 <figure>
-  <!-- Replace with: assets/images/lut-blending/time-of-day-blueprint.png -->
-  <img src="assets/placeholder.svg" alt="Blueprint setup for Time-of-Day LUT blending">
+  <img src="assets/images/lut-blending/time-of-day-blueprint.webp" alt="A Blueprint graph: Event Tick calls Set Time Of Day Timecode on the Post Process Settings Subsystem, with a Current Time variable plugged into TC." loading="lazy">
   <figcaption>Setting up Time-of-Day LUT blending in a Blueprint.</figcaption>
 </figure>
 <h3 id="time-jumps">Time jumps</h3>
@@ -253,5 +238,8 @@
       </nav>
     </main>
   </div>
+  <footer class="site-footer">
+    <p>HLSLens documentation by <strong>Riipitud</strong> · <a href="mailto:riipitud@gmail.com">riipitud@gmail.com</a> · <a href="https://www.fab.com/listings/c26661c8-1361-46d6-a72d-710aba5a2811">HLSLens on Fab</a> · <a href="about.html">About, contact and privacy</a></p>
+  </footer>
 </body>
 </html>
