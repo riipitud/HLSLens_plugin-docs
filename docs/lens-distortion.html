@@ -111,6 +111,11 @@
 </tr>
 </tbody>
 </table></div>
+<figure class="compare">
+  <img data-label="None" src="assets/images/lens-distortion/none.webp" alt="A narrow alley with string lights and straight walls, without lens distortion." loading="lazy">
+  <img data-label="Barrel" src="assets/images/lens-distortion/barrel.webp" alt="The same alley with barrel distortion. The middle of the image is pushed outward and the walls bow out." loading="lazy">
+  <figcaption>Drag the slider to compare no distortion (left) with barrel distortion (right).</figcaption>
+</figure>
 <h2 id="pincushion-distortion">Pincushion distortion</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -146,18 +151,11 @@
 </tr>
 </tbody>
 </table></div>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/lens-distortion/pincushion-positive-1.png -->
-  <img src="assets/placeholder.svg" alt="Pincushion Intensity 1.0">
-  <figcaption>Pincushion Intensity 1.0, the image bows outward.</figcaption>
+<figure class="compare">
+  <img data-label="None" src="assets/images/lens-distortion/none.webp" alt="A narrow alley with string lights and straight walls, without lens distortion." loading="lazy">
+  <img data-label="Pincushion" src="assets/images/lens-distortion/pincushion.webp" alt="The same alley with pincushion distortion. The lines bow inward toward the middle." loading="lazy">
+  <figcaption>Drag the slider to compare no distortion (left) with pincushion distortion (right).</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/lens-distortion/pincushion-negative-0-7.png -->
-  <img src="assets/placeholder.svg" alt="Pincushion Intensity −0.7">
-  <figcaption>Pincushion Intensity −0.7, the edges bow inward.</figcaption>
-</figure>
-</div>
 <h2 id="how-the-edges-are-handled">How the edges are handled</h2>
 <p>Distorting the image pulls pixels in from outside the screen, where there's nothing to show. To avoid black or smeared borders, HLSLens zooms in a little as the intensity goes up. So strong distortion also crops the edges of the frame slightly, and the camera feels a bit narrower.</p>
 <p>Both effects are corrected for the screen's aspect ratio, so the distortion stays round on wide screens instead of turning oval.</p>
@@ -181,5 +179,6 @@
   <footer class="site-footer">
     <p>HLSLens documentation by <strong>Riipitud</strong> · <a href="mailto:riipitud@gmail.com">riipitud@gmail.com</a> · <a href="https://www.fab.com/listings/c26661c8-1361-46d6-a72d-710aba5a2811">HLSLens on Fab</a> · <a href="about.html">About, contact and privacy</a></p>
   </footer>
+<script src="figures.js" defer></script>
 </body>
 </html>
