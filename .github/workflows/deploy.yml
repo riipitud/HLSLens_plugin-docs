@@ -12,19 +12,27 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  # The site is plain HTML in docs/, so "build" only packages that folder.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  # Deploying in a separate job gives the uploaded artifact time to register,
+  # which avoids "No artifacts named github-pages were found".
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      # The site is plain HTML in docs/, so there is nothing to build.
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
       - id: deployment
         uses: actions/deploy-pages@v4
