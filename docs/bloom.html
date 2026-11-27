@@ -68,40 +68,49 @@
       <p class="kicker">Effects</p>
       <h1>Bloom</h1>
 
-<p>Bloom is the soft glow around bright things. Camera lenses and our eyes both scatter a bit of light from anything bright, so a street lamp never has a perfectly sharp edge, it glows. That glow is a big part of why a scene feels bright and not flat.</p>
-<p>HLSLens replaces Unreal's built-in bloom. It works on the final image, so there's nothing to set up on your lights. Lights, emissive materials, the sky, a shiny reflection, anything bright enough will glow.</p>
+<p>Bloom is the soft glow around bright things. Camera lenses and eyes both scatter a bit of light from anything bright, so a street lamp never has a perfectly sharp edge, it glows. That glow is a big part of why a scene feels bright and not flat.</p>
+<p>HLSLens replaces Unreal's built-in bloom. Lights, emissive materials, the sky, a shiny reflection, anything bright enough will glow.</p>
 <div class="glance">
 <dl>
 <dt>Where to find it</dt>
 <dd>Bloom &amp; Lens Flares → Bloom, and Bloom &amp; Lens Flares → Threshold</dd>
 <dt>Cost</dt>
-<dd>Standard is cheap. Cinematic does about twice the work, and a higher Blur Pass Amount costs more too.</dd>
+<dd>Standard is cheap. Cinematic does about twice the work and a higher Blur Pass Amount costs more too.</dd>
 </dl>
 </div>
 <h2 id="how-bloom-works">How bloom works</h2>
 <p>You never have to touch these steps, but knowing them makes the settings easier to understand.</p>
+<figure class="stages">
+<ol>
+  <li><img src="assets/images/bloom/stage-1-threshold.webp" alt="The input after the threshold: only the bright sphere is left." loading="lazy"><span>Isolate</span></li>
+  <li><img src="assets/images/bloom/stage-2-downsample.webp" alt="One of the smaller copies." class="px" loading="lazy"><span>Shrink</span></li>
+  <li><img src="assets/images/bloom/stage-3-upsample.webp" alt="A copy on the way back up, with the smaller copies blended in." class="px" loading="lazy"><span>Weight and merge</span></li>
+  <li><img src="assets/images/bloom/stage-4-final.webp" alt="All passes combined." loading="lazy"><span>Merged bloom</span></li>
+  <li><img src="assets/images/bloom/stage-5-tonemapped.webp" alt="The final bloom after tonemapping." loading="lazy"><span>On screen</span></li>
+</ol>
+  <figcaption>The real stages for one emissive sphere in front of a black wall, with Cinematic bloom. Cinematic makes 18 smaller copies and then combines them back up in 18 steps. The second and third frames show one copy from that chain.</figcaption>
+</figure>
 <div class="steps">
 <div>
-<p><span class="n"><b>01</b>Isolate</span>
+<p><span class="n">Isolate</span>
 Pick out the bright parts of the image. Only happens if a threshold is on.</p>
 </div>
 <div>
-<p><span class="n"><b>02</b>Shrink</span>
+<p><span class="n">Shrink</span>
 Make smaller, blurrier copies of the image, each about twice as blurry as the last.</p>
 </div>
 <div>
-<p><span class="n"><b>03</b>Weight</span>
+<p><span class="n">Weight</span>
 Decide how much each copy counts. Falloff controls this.</p>
 </div>
 <div>
-<p><span class="n"><b>04</b>Merge</span>
+<p><span class="n">Merge</span>
 Stack the copies back together into one smooth glow.</p>
 </div>
 </div>
-<p>A bright light keeps all of its energy through these steps, so even a small lamp gets a big soft halo without cranking up Intensity.</p>
-<p>The engine's bloom uses a fixed set of blur steps, and in some scenes you can see rings in the glow where they meet. HLSLens blends the steps into one smooth curve so the glow fades out without those rings. The <a href="#compared-with-the-engines-bloom">comparison</a> further down shows the difference.</p>
+<p>The engine's bloom uses a fixed set of blur steps and in some scenes you can see rings in the bloom glow. HLSLens blends the steps into one smooth curve so the glow fades out without those rings. The <a href="#compared-with-the-engines-bloom">comparison</a> further down shows the difference.</p>
 <h2 id="standard-and-cinematic">Standard and Cinematic</h2>
-<p>The look stays about the same in both modes. Cinematic uses twice as many blur steps, so the glow is a little smoother, and it unlocks three extra settings.</p>
+<p>The look stays about the same in both modes. Cinematic uses twice as many blur steps, so the glow is a little smoother and it unlocks three extra settings.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -130,10 +139,10 @@ Stack the copies back together into one smooth glow.</p>
 </table></div>
 <aside class="callout performance">
 <p class="callout-title">Performance</p>
-<p>Start with Standard and only switch to Cinematic if you can actually see a difference in your scene. It isn't a big one.</p>
+<p>I recommend that you start with Standard and only switch to Cinematic if you can actually see a difference in your scene. Both of the modes look fairly similar.</p>
 </aside>
 <h2 id="threshold">Threshold</h2>
-<p>The threshold decides how bright a pixel has to be before it glows. Anything darker than the Threshold Level is ignored, and the Knee softens the cut-off so things don't pop on and off.</p>
+<p>The threshold decides how bright a pixel has to be before it glows. Anything darker than the Threshold Level is ignored, the Knee softens the cutoff so things don't pop on and off.</p>
 <p>Bloom and lens flares share this section, and <strong>Threshold Mode</strong> chooses which of them gets a threshold:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -149,7 +158,7 @@ Stack the copies back together into one smooth glow.</p>
 </tr>
 <tr>
 <td>Shared (Bloom + Lens Flare)</td>
-<td>Both use the same threshold values. This is the one to pick when you use both effects, because it only builds one set of blurred images instead of two.</td>
+<td>Both use the same threshold values. This is the one to pick when you want both effects to use a threshold. It also only builds one set of blurred images instead of two, this saves some performance.</td>
 </tr>
 <tr>
 <td>Bloom Only</td>
@@ -157,7 +166,7 @@ Stack the copies back together into one smooth glow.</p>
 </tr>
 <tr>
 <td>Lens Flare Only</td>
-<td>Only lens flares have a threshold. Bloom sees the raw image.</td>
+<td>Only lens flares have a threshold. Bloom uses the raw image.</td>
 </tr>
 </tbody>
 </table></div>
@@ -185,10 +194,10 @@ Stack the copies back together into one smooth glow.</p>
 </table></div>
 <aside class="callout tip">
 <p class="callout-title">Tip</p>
-<p>For a fully realistic look you can disable the threshold, since in the real world every bright surface blooms a little. A threshold is still a great way to stop the whole scene from glowing and getting that dreamy look when you don't want it.</p>
+<p>For a fully realistic look you can disable the threshold, since in the real world every bright surface blooms a little. A threshold is still a great way to stop the whole scene from glowing too much and getting that dreamy look.</p>
 </aside>
 <h2 id="shaping-the-glow">Shaping the glow</h2>
-<p>Think of a street lamp. The <strong>core</strong> is the sharp bright part right around the bulb, the <strong>body</strong> is the medium glow where most of the bloom is, and the <strong>haze</strong> is the wide faint glow further out. Falloff and three sliders control the balance between them.</p>
+<p>Think of a street lamp. The <strong>core</strong> is the sharp bright part right around the bulb, the <strong>body</strong> is the medium glow where most of the bloom is, the <strong>haze</strong> is the wide faint glow further out. Falloff and the four sliders control this.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -231,7 +240,7 @@ Stack the copies back together into one smooth glow.</p>
 </tr>
 </tbody>
 </table></div>
-<p>Some starting points for Falloff:</p>
+<p>Some good starting points for Falloff:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -254,7 +263,7 @@ Stack the copies back together into one smooth glow.</p>
 </tr>
 </tbody>
 </table></div>
-<p>Falloff and the three intensities don't affect the overall Intensity. So you can change the character of the glow, say less haze and a stronger core, without having to rebalance the brightness afterwards.</p>
+<p>Falloff and the three intensities don't affect the overall Intensity. So you can change the character of the glow and don't have to rebalance the brightness afterwards.</p>
 <h2 id="cinematic-only-settings">Cinematic-only settings</h2>
 <p>These only appear when Bloom Quality is set to Cinematic.</p>
 <div class="table-wrap"><table>
@@ -269,7 +278,7 @@ Stack the copies back together into one smooth glow.</p>
 <tbody>
 <tr>
 <td>Haze Ignores Threshold</td>
-<td>Normally the haze only comes from pixels above the threshold. Turn this up and the widest haze is made from the whole image instead, like the soft veil of light on a real lens. It also stops the glow from popping when something crosses the threshold. Does nothing without a threshold, and costs a bit more.</td>
+<td>Normally the haze only comes from pixels above the threshold. If you turn this up, then the widest haze is made from the whole image instead, like the soft veil of light on a real lens. It also stops the glow from popping when something crosses the threshold. Does nothing without a threshold and it costs some performance.</td>
 <td>0</td>
 <td>0 to 1</td>
 </tr>
@@ -338,7 +347,7 @@ Stack the copies back together into one smooth glow.</p>
 </table></div>
 <aside class="callout note">
 <p class="callout-title">Note</p>
-<p>The default Tint is a dark grey (about 0.08), not white, and it scales the bloom. Keep that in mind if you set the Tint to white: the bloom gets roughly twelve times brighter, so lower the Intensity to match.</p>
+<p>The default Tint is very dark grey (about 0.08), not white. Keep that in mind if you set the Tint to white, the bloom gets roughly twelve times brighter, that is why the tint is set to grey by default.</p>
 </aside>
 <h2 id="looks-you-can-create">Looks you can create</h2>
 <p>A few ideas to start from. I'd still tune everything to your own scene, but these should point you in the right direction.</p>
@@ -368,13 +377,13 @@ Stack the copies back together into one smooth glow.</p>
 </tr>
 <tr>
 <td>Clean and natural</td>
-<td>Leave the defaults and only adjust Intensity.</td>
+<td>Just leave the defaults and only adjust Intensity.</td>
 </tr>
 </tbody>
 </table></div>
 <h2 id="compared-with-the-engines-bloom">Compared with the engine's bloom</h2>
-<p>These images show the same bright light with the engine's bloom and with HLSLens. Zoom in to see the difference. Both blooms can be tuned a lot, so the exact result depends on the settings.</p>
-<p>I used the engine's default bloom settings and only raised Bloom Intensity and Bloom Gaussian Intensity. For HLSLens I only raised Bloom Intensity.</p>
+<p>These images show the same bright light with the engine's bloom and with HLSLens. Both blooms can be tuned a lot, so the exact result depends on the settings.</p>
+<p>I used the engine's default bloom settings and only raised Bloom Intensity and Bloom Gaussian Intensity.</p>
 <figure class="compare">
   <img data-label="Engine" src="assets/images/bloom/engine.webp" alt="A single bright light with the engine's bloom. The glow has a visible edge a short distance from the light." loading="lazy">
   <img data-label="HLSLens" src="assets/images/bloom/hlslens.webp" alt="The same light with the HLSLens bloom. The glow fades out smoothly with no visible edge." loading="lazy">
@@ -423,7 +432,7 @@ Stack the copies back together into one smooth glow.</p>
 <polyline class="line hlslens" points="56.0,256.0 58.2,256.0 60.3,256.0 62.5,256.0 64.6,256.0 66.8,256.0 69.0,256.0 71.1,255.9 73.3,255.9 75.4,255.9 77.6,255.8 79.8,255.8 81.9,255.8 84.1,255.8 86.2,255.7 88.4,255.6 90.6,255.3 92.7,254.6 94.9,252.5 97.0,248.4 99.2,242.1 101.4,234.0 103.5,223.9 105.7,212.3 107.8,199.7 110.0,187.8 112.2,177.8 114.3,169.8 116.5,163.7 118.6,159.3 120.8,156.4 123.0,154.6 125.1,153.2 127.3,151.8 129.4,150.2 131.6,148.8 133.8,147.2 135.9,145.8 138.1,144.6 140.2,143.5 142.4,142.4 144.6,141.4 146.7,140.5 148.9,139.9 151.0,139.5 153.2,139.4 155.4,139.6 157.5,140.1 159.7,140.7 161.8,141.7 164.0,142.8 166.2,144.3 168.3,146.2 170.5,148.3 172.6,150.7 174.8,153.3 177.0,156.2 179.1,159.3 181.3,162.3 183.4,165.2 185.6,168.1 187.8,170.8 189.9,173.5 192.1,175.8 194.2,178.0 196.4,180.3 198.6,182.7 200.7,185.0 202.9,187.3 205.0,189.6 207.2,192.1 209.4,194.2 211.5,196.0 213.7,197.8 215.8,199.6 218.0,201.1 220.2,202.5 222.3,204.1 224.5,206.0 226.6,207.8 228.8,209.4 231.0,210.8 233.1,212.5 235.3,214.1 237.4,215.3 239.6,216.0 241.8,216.8 243.9,217.8 246.1,218.9 248.2,219.8 250.4,220.5 252.6,221.4 254.7,222.5 256.9,223.6 259.0,224.4 261.2,225.1 263.4,225.8 265.5,226.5 267.7,227.1 269.8,227.7 272.0,228.3 274.2,228.9 276.3,229.7 278.5,230.6 280.6,231.5 282.8,232.5 285.0,233.5 287.1,234.5 289.3,235.4 291.4,236.1 293.6,236.6 295.8,236.8 297.9,237.1 300.1,237.2 302.2,237.3 304.4,237.4 306.6,237.6 308.7,238.1 310.9,238.6 313.0,239.0 315.2,239.4 317.4,239.7 319.5,240.0 321.7,240.2 323.8,240.3 326.0,240.6 328.2,240.9 330.3,241.3 332.5,241.8 334.6,242.3 336.8,242.7 339.0,243.0 341.1,243.0 343.3,243.1 345.4,243.1 347.6,243.0 349.8,243.1 351.9,243.4 354.1,243.9 356.2,244.6 358.4,245.3 360.6,245.9 362.7,246.6 364.9,247.0 367.0,247.3 369.2,247.4 371.4,247.3 373.5,247.0 375.7,246.6 377.8,246.2 380.0,245.9 382.2,245.6 384.3,245.5 386.5,245.6 388.6,245.9 390.8,246.5 393.0,247.1 395.1,247.8 397.3,248.4 399.4,248.8 401.6,249.1 403.8,249.2 405.9,249.2 408.1,249.2 410.2,249.2 412.4,249.2 414.6,249.4 416.7,249.6 418.9,249.7 421.0,249.8 423.2,249.8 425.4,249.7 427.5,249.7 429.7,249.8 431.8,250.0 434.0,250.2 436.2,250.6 438.3,250.9 440.5,251.3 442.6,251.6 444.8,251.7 447.0,251.8 449.1,251.9 451.3,252.0 453.4,252.1 455.6,252.2 457.8,252.2 459.9,252.2 462.1,252.1 464.2,252.1 466.4,252.1 468.6,252.2 470.7,252.4 472.9,252.7 475.0,253.2 477.2,253.5 479.4,253.8 481.5,253.8 483.7,253.7 485.8,253.4 488.0,253.1 490.2,252.8 492.3,252.7 494.5,252.8 496.6,253.1 498.8,253.4 501.0,253.8 503.1,254.0 505.3,254.1 507.4,254.0 509.6,253.8 511.8,253.5 513.9,253.2 516.1,253.1 518.2,253.1 520.4,253.3 522.6,253.7 524.7,254.1 526.9,254.7 529.0,255.1 531.2,255.5 533.4,255.7 535.5,255.8 537.7,255.8 539.8,255.6 542.0,255.5 544.2,255.2 546.3,255.1 548.5,254.9 550.6,254.8 552.8,254.8 555.0,254.7 557.1,254.6 559.3,254.5 561.4,254.3 563.6,254.0 565.8,253.7 567.9,253.5 570.1,253.3 572.2,253.3 574.4,253.3 576.6,253.6 578.7,253.9 580.9,254.3 583.0,254.7 585.2,255.1 587.4,255.4 589.5,255.7 591.7,255.9 593.8,256.0 596.0,256.0 598.2,256.0 600.3,256.0 602.5,256.0 604.6,256.0 606.8,256.0 609.0,256.0 611.1,256.0 613.3,256.0 615.4,256.0 617.6,256.0 619.8,256.0 621.9,256.0 624.1,256.0 626.2,256.0 628.4,256.0 630.6,256.0 632.7,256.0 634.9,256.0 637.0,256.0 639.2,256.0 641.4,256.0 643.5,256.0 645.7,255.9 647.8,255.9 650.0,255.8 652.2,255.6 654.3,255.4 656.5,255.2 658.6,254.9 660.8,254.5 663.0,254.2 665.1,253.8 667.3,253.5 669.4,253.2 671.6,253.0 673.8,252.9 675.9,252.9 678.1,253.0 680.2,253.1 682.4,253.4 684.6,253.7 686.7,254.0 688.9,254.5 691.0,254.9 693.2,255.3 695.4,255.7 697.5,256.0 699.7,256.0 701.8,256.0 704.0,256.0"/>
 </svg>
 <p class="chart-legend"><span class="key engine"></span>Engine bloom <span class="key hlslens"></span>HLSLens bloom</p>
-  <figcaption><strong>Figure 2.</strong> How fast the brightness fades at each distance. The engine's curve has a sharp spike that stops abruptly, and that sudden change is the hard edge you see. HLSLens has one gentle, gradual hump.</figcaption>
+  <figcaption><strong>Figure 2.</strong> How fast the brightness fades at each distance. The engine's curve has a sharp spike, this sudden change is the hard edge you see.</figcaption>
 </figure>
 <h2 id="common-questions">Common questions</h2>
 <details>

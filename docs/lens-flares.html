@@ -88,9 +88,8 @@
 </aside>
 <p>Flares are an artistic imitation of a lens rather than a simulation of one specific lens, so shape them however you need.</p>
 <figure>
-  <!-- Replace with: assets/images/lens-flares/scene.png -->
-  <img src="assets/placeholder.svg" alt="A night scene with HLSLens lens flares">
-  <figcaption>Nothing was placed by hand here. The flares come from the bright signs and windows.</figcaption>
+  <img src="assets/images/lens-flares/scene.webp" alt="Glowing yellow neon signs on a rainy night street, with soft lens flare ghosts and halos around them." loading="lazy">
+  <figcaption>Nothing was placed by hand here. The flares come from the bright sign.</figcaption>
 </figure>
 <h2 id="profile-and-volume">Profile and volume</h2>
 <p>A <strong>Lens Flare Profile</strong> is a data asset that describes one lens: its ghosts, halo, streak and glare. You can make one in the Content Browser or just modify the presets that come with the plugin. A new default Advanced Post Process Volume uses the <strong>Classic Prime</strong> profile.</p>
@@ -516,22 +515,26 @@
 <td><strong>Cost</strong></td>
 <td>Higher</td>
 <td>Much cheaper</td>
-<td>Not benchmarked yet</td>
+<td>Higher</td>
 </tr>
 </tbody>
 </table></div>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/lens-flares/glare-three-streak.png -->
-  <img src="assets/placeholder.svg" alt="Three Streak glare">
-  <figcaption>Three Streak Glare</figcaption>
-</figure>
-<figure>
-  <!-- Replace with: assets/images/lens-flares/glare-directional.png -->
-  <img src="assets/placeholder.svg" alt="Directional Blur glare">
-  <figcaption>Directional Blur</figcaption>
-</figure>
+<div class="tabs">
+  <input type="radio" name="glare-mode" id="glare-ts" checked>
+  <input type="radio" name="glare-mode" id="glare-db">
+  <input type="radio" name="glare-mode" id="glare-ds">
+  <div class="tab-list">
+    <label for="glare-ts">Three Streak</label>
+    <label for="glare-db">Directional Blur</label>
+    <label for="glare-ds">Diffraction Starburst</label>
+  </div>
+  <div class="tab-panels">
+    <figure><img src="assets/images/lens-flares/glare-three-streak.webp" alt="Paper lanterns on a building at night with Three Streak glare: a tapered star of streaks on each light." loading="lazy"><figcaption>Three Streak</figcaption></figure>
+    <figure><img src="assets/images/lens-flares/glare-directional-blur.webp" alt="The same lanterns with Directional Blur glare: the lights are smeared into soft rays." loading="lazy"><figcaption>Directional Blur</figcaption></figure>
+    <figure><img src="assets/images/lens-flares/glare-diffraction-starburst.webp" alt="The same lanterns with Diffraction Starburst glare: thin spiky stars on each light." loading="lazy"><figcaption>Diffraction Starburst</figcaption></figure>
+  </div>
 </div>
+<p class="section-note">The same scene with each glare mode. Pick a tab to switch between them.</p>
 <p>Settings every mode has:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -838,18 +841,15 @@
 </table></div>
 <div class="grid">
 <figure>
-  <!-- Replace with: assets/images/lens-flares/preset-classic-prime.png -->
-  <img src="assets/placeholder.svg" alt="Classic Prime preset">
+  <img src="assets/images/lens-flares/preset-classic-prime.webp" alt="A character in a corridor lit by glowing wall lamps, with the Classic Prime lens flare preset." loading="lazy">
   <figcaption>Classic Prime</figcaption>
 </figure>
 <figure>
-  <!-- Replace with: assets/images/lens-flares/preset-anamorphic-azure.png -->
-  <img src="assets/placeholder.svg" alt="Anamorphic Azure preset">
+  <img src="assets/images/lens-flares/preset-anamorphic-azure.webp" alt="A character in a corridor lit by glowing wall lamps, with the Anamorphic Azure lens flare preset." loading="lazy">
   <figcaption>Anamorphic Azure</figcaption>
 </figure>
 <figure>
-  <!-- Replace with: assets/images/lens-flares/preset-anamorphic-amber.png -->
-  <img src="assets/placeholder.svg" alt="Anamorphic Amber preset">
+  <img src="assets/images/lens-flares/preset-anamorphic-amber.webp" alt="A character in a corridor lit by glowing wall lamps, with the Anamorphic Amber lens flare preset." loading="lazy">
   <figcaption>Anamorphic Amber</figcaption>
 </figure>
 <figure>
@@ -858,13 +858,11 @@
   <figcaption>Sci-Fi Anamorphic</figcaption>
 </figure>
 <figure>
-  <!-- Replace with: assets/images/lens-flares/preset-modern-hex.png -->
-  <img src="assets/placeholder.svg" alt="Modern Hex preset">
+  <img src="assets/images/lens-flares/preset-modern-hex.webp" alt="A character in a corridor lit by glowing wall lamps, with the Modern Hex lens flare preset." loading="lazy">
   <figcaption>Modern Hex</figcaption>
 </figure>
 <figure>
-  <!-- Replace with: assets/images/lens-flares/preset-diffraction-star.png -->
-  <img src="assets/placeholder.svg" alt="Diffraction Star preset">
+  <img src="assets/images/lens-flares/preset-diffraction-star.webp" alt="A character in a corridor lit by glowing wall lamps, with the Diffraction Star lens flare preset." loading="lazy">
   <figcaption>Diffraction Star</figcaption>
 </figure>
 <figure>

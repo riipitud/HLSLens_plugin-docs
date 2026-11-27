@@ -589,25 +589,83 @@ figcaption {
 .key.engine { border-top-style: dashed; border-color: var(--muted); }
 .key.hlslens { border-color: var(--accent); margin-left: 14px; }
 
-/* ---------- Bloom pipeline ---------- */
+/* ---------- Pipeline steps ---------- */
+/* A plain two-column list: step name on the left, explanation on the right,
+   hairlines between rows. The bloom page adds a small diagram above it. */
 
-.steps {
+.steps { margin: 12px 0 28px; border-bottom: 1px solid var(--rule); }
+.steps > div { border-top: 1px solid var(--rule); }
+.steps p {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 24px 0;
-  counter-reset: step;
-}
-.steps > div {
-  padding: 12px 14px;
-  border-top: 2px solid var(--accent);
-  background: var(--surface);
-  font-size: 0.88rem;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  gap: 16px;
+  margin: 0;
+  padding: 10px 0;
   color: var(--muted);
+  font-size: 0.93rem;
 }
-.steps p { margin: 0; }
-.steps .n { display: block; color: var(--text); font-weight: 600; margin-bottom: 4px; }
-.steps .n b { color: var(--gold-text); font-weight: 400; margin-right: 6px; }
+.steps .n { color: var(--text); font-weight: 600; }
+
+.stages { margin: 24px 0 4px; }
+.stages ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stages li { margin: 0; }
+.stages img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2.21;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #000;
+}
+.stages img.px { image-rendering: pixelated; }
+.stages span {
+  display: block;
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.stages figcaption { margin-top: 10px; }
+
+/* ---------- Tabs (CSS only) ---------- */
+
+.tabs { margin: 24px 0 8px; }
+.tabs > input { position: absolute; opacity: 0; pointer-events: none; }
+.tab-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tab-list label {
+  padding: 5px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tab-list label:hover { color: var(--text); border-color: var(--muted); }
+.tab-panels figure { display: none; margin: 0; }
+.tabs > input:nth-of-type(1):checked ~ .tab-panels figure:nth-child(1),
+.tabs > input:nth-of-type(2):checked ~ .tab-panels figure:nth-child(2),
+.tabs > input:nth-of-type(3):checked ~ .tab-panels figure:nth-child(3),
+.tabs > input:nth-of-type(4):checked ~ .tab-panels figure:nth-child(4) { display: block; }
+.tabs > input:nth-of-type(1):checked ~ .tab-list label:nth-child(1),
+.tabs > input:nth-of-type(2):checked ~ .tab-list label:nth-child(2),
+.tabs > input:nth-of-type(3):checked ~ .tab-list label:nth-child(3),
+.tabs > input:nth-of-type(4):checked ~ .tab-list label:nth-child(4) {
+  border-color: var(--accent);
+  background: var(--gold-bg);
+  color: var(--gold-text);
+}
+.tabs > input:nth-of-type(1):focus-visible ~ .tab-list label:nth-child(1),
+.tabs > input:nth-of-type(2):focus-visible ~ .tab-list label:nth-child(2),
+.tabs > input:nth-of-type(3):focus-visible ~ .tab-list label:nth-child(3),
+.tabs > input:nth-of-type(4):focus-visible ~ .tab-list label:nth-child(4) { outline: 2px solid var(--link); outline-offset: 2px; }
 
 /* ---------- Overview page index ---------- */
 
@@ -687,7 +745,7 @@ figcaption {
   .sidebar .on-page { display: none; }
 
   h1 { font-size: 1.8rem; }
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps p { grid-template-columns: 1fr; gap: 2px; }
   .grid { grid-template-columns: 1fr; }
   .effects a { grid-template-columns: 1fr; gap: 2px; }
   .glance dl { grid-template-columns: 1fr; gap: 0; }
