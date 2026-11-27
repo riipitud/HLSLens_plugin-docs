@@ -258,7 +258,7 @@
 </details>
 <aside class="callout tip">
 <p class="callout-title">Tip</p>
-<p>With Source Radius Min and Max you can make ghosts that only appear when the light is near the edge of the screen, or only near the center. It's a nice way to make the flare feel alive when the camera moves.</p>
+<p>With Source Radius Min and Max you can make ghosts that only appear when the light is near the edge of the screen or only near the center. It's a nice way to make the flare feel alive when the camera moves.</p>
 </aside>
 <p>These apply to all ghosts in the profile at once:</p>
 <div class="table-wrap"><table>
@@ -419,7 +419,7 @@
 </details>
 <h2 id="streak">Streak</h2>
 <p>The streak is the thin horizontal line through a bright light that anamorphic lenses are known for. It has a bright core line, a wider band of glow around it and a few faint extra lines, each part has its own color. So a streak can go from a white center to a blue or orange tail.</p>
-<p>Not every lens has one. Classic Prime and Modern Hex have no streak, while the anamorphic presets are mostly built around it. At Intensity <code>0</code> the streak is skipped.</p>
+<p>Not every lens has one since its only meant for the anamorphic presets, they are mostly built around it. At Intensity <code>0</code> the streak is skipped.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -501,7 +501,7 @@
 <tbody>
 <tr>
 <td><strong>Look</strong></td>
-<td>A tapered star of three streaks: one upright, two diagonal. They tilt outward and get shorter toward the screen edges.</td>
+<td>A tapered star of three streaks. One upright, two diagonal. They tilt outward and get shorter toward the screen edges.</td>
 <td>The bright parts of the image are smeared in several directions. Big bright objects make wide, soft smears.</td>
 <td>The spiky star a real aperture makes, with rainbow colors along the spikes. Can also do vanes and star filter rays.</td>
 </tr>
@@ -509,7 +509,7 @@
 <td><strong>Feel</strong></td>
 <td>Photographic</td>
 <td>More artificial, very adjustable</td>
-<td>Physical, camera-like</td>
+<td>Physical</td>
 </tr>
 <tr>
 <td><strong>Cost</strong></td>
@@ -534,7 +534,6 @@
     <figure><img src="assets/images/lens-flares/glare-diffraction-starburst.webp" alt="The same lanterns with Diffraction Starburst glare: thin spiky stars on each light." loading="lazy"><figcaption>Diffraction Starburst</figcaption></figure>
   </div>
 </div>
-<p class="section-note">The same scene with each glare mode. Pick a tab to switch between them.</p>
 <p>Settings every mode has:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -871,10 +870,10 @@
   <figcaption>Star Filter</figcaption>
 </figure>
 </div>
-<p>The profile also has a <strong>Lens Flare Quality</strong> setting (advanced). Cinematic uses more expensive GPU work and makes the ghosts sharper. Standard and Performance look quite similar, Performance is just an easy way to save some GPU time. I recommend trying it out.</p>
+<p>The profile also has a <strong>Lens Flare Quality</strong> setting (advanced). Cinematic uses more expensive GPU work and makes the ghosts sharper. Standard and Performance look quite similar. Performance is just an easy way to save some GPU time. I recommend trying it.</p>
 <h3 id="blending-between-profiles">Blending between profiles</h3>
 <p>When volumes overlap, HLSLens blends their profiles by the volume weights. Colors and numbers blend smoothly like with all other post-processing settings. Things that can't blend, like a ghost's blade count, just switch over. Ghosts blend slot by slot, so a ghost that only exists in one profile fades in or out.</p>
-<p>So you can walk from a sunny street with a warm vintage lens into a dark corridor with a cold anamorphic one, with the flare changing gradually.</p>
+<p>So you can for example walk from a sunny street with a warm vintage lens into a dark corridor with a cold anamorphic one, with the flare changing gradually.</p>
 <h2 id="volume-settings">Volume settings</h2>
 <p>These are on the Advanced Post Process Volume under <strong>Bloom &amp; Lens Flares → Lens Flares</strong>.</p>
 <div class="table-wrap"><table>
