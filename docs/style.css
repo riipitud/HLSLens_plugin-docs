@@ -575,6 +575,20 @@ figcaption {
   .compare-label.r { right: 8px; }
 }
 
+/* ---------- Charts (inline SVG) ---------- */
+
+.chart { display: block; width: 100%; height: auto; overflow: visible; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--muted); stroke-width: 1; }
+.chart .tick, .chart .label { fill: var(--muted); font: 12px var(--font); }
+.chart .line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.chart .engine, .key.engine { stroke: var(--muted); stroke-dasharray: 6 5; }
+.chart .hlslens, .key.hlslens { stroke: var(--accent); }
+.chart-legend { margin: 6px 0 0; color: var(--muted); font-size: 0.85rem; }
+.key { display: inline-block; width: 26px; height: 0; margin: 0 6px 3px 0; border-top: 2.5px solid; vertical-align: middle; }
+.key.engine { border-top-style: dashed; border-color: var(--muted); }
+.key.hlslens { border-color: var(--accent); margin-left: 14px; }
+
 /* ---------- Bloom pipeline ---------- */
 
 .steps {

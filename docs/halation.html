@@ -161,18 +161,11 @@
 <p>Halation is built from the blurred bloom texture, so its size and shape follow your bloom settings. Because it checks the blurred bloom and not the raw pixels, tiny lights get diluted and may need a lower threshold. Exposure also changes which lights qualify.</p>
 </aside>
 <h2 id="example">Example</h2>
-<div class="grid">
-<figure>
-  <!-- Replace with: assets/images/halation/with.png -->
-  <img src="assets/placeholder.svg" alt="Scene with halation">
-  <figcaption>With halation</figcaption>
+<figure class="compare">
+  <img data-label="Without" src="assets/images/halation/without.webp" alt="Light shining through gaps in dark metal beams, without halation." loading="lazy">
+  <img data-label="With" src="assets/images/halation/with.webp" alt="The same scene with halation. A warm glow spreads from the bright gaps onto the dark beams around them." loading="lazy">
+  <figcaption>Drag the slider to compare without halation (left) and with halation (right).</figcaption>
 </figure>
-<figure>
-  <!-- Replace with: assets/images/halation/without.png -->
-  <img src="assets/placeholder.svg" alt="Scene without halation">
-  <figcaption>Without halation</figcaption>
-</figure>
-</div>
 
       <nav class="pager" aria-label="Previous and next page">
       <a class="prev" href="bloom.html"><span>Previous</span>Bloom</a>
@@ -183,5 +176,6 @@
   <footer class="site-footer">
     <p>HLSLens documentation by <strong>Riipitud</strong> · <a href="mailto:riipitud@gmail.com">riipitud@gmail.com</a> · <a href="https://www.fab.com/listings/c26661c8-1361-46d6-a72d-710aba5a2811">HLSLens on Fab</a> · <a href="about.html">About, contact and privacy</a></p>
   </footer>
+<script src="figures.js" defer></script>
 </body>
 </html>
